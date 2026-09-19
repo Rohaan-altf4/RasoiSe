@@ -1,0 +1,71 @@
+/* RasoiSe Custom Design System & Utility Styles */
+:root {
+  --brand-cream: #FDF8F0;
+  --brand-almond: #F8E7C8;
+  --brand-saffron: #E68A00;
+  --brand-saffron-hover: #CF7B00;
+  --brand-dark: #331507;
+  --brand-border: #EEDBCA;
+  --brand-footer: #241005;
+}
+
+body {
+  background-color: var(--brand-cream);
+  color: var(--brand-dark);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, .font-serif {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F5E8D3;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D8B788;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #C49B60;
+}
+
+/* Card Transitions */
+.card-hover {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px -6px rgba(51, 21, 7, 0.08), 0 4px 8px -2px rgba(51, 21, 7, 0.04);
+}
+
+/* Toast Animation */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.toast-enter {
+  animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Custom Checkbox / Radio Accent */
+input[type="radio"], input[type="checkbox"] {
+  accent-color: var(--brand-saffron);
+}

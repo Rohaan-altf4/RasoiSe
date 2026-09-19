@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RasoiSe - Fresh Home Food Delivered Near You</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & Playfair Display / Serif for headings -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandCream: '#FDF8F0',
+            brandAlmond: '#F8E7C8',
+            brandAmber: '#E68A00',
+            brandAmberHover: '#CF7B00',
+            brandRust: '#B45309',
+            brandDark: '#331507',
+            brandFooter: '#241005',
+            brandPillBg: '#FFF2D6',
+            brandPillBorder: '#E6C587'
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="w-full bg-white border-b border-[#F0E2CA] py-3.5 px-8 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      
+      <!-- Left: Logo & Location Filter -->
+      <!-- Left: Logo & Hierarchical Location Filter -->
+      <div class="flex items-center space-x-4">
+        <a href="index.html" class="flex items-center space-x-1 text-2xl font-serif font-bold tracking-tight text-brandDark">
+          <span>Rasoi</span><span class="text-brandAmber">Se</span>
+        </a>
+
+        <!-- 1. Area Dropdown -->
+        <div class="relative">
+          <select id="areaSelect" class="appearance-none bg-white border border-[#DECDB3] text-brandDark text-xs font-semibold rounded-full pl-7 pr-7 py-1.5 focus:outline-none focus:ring-2 focus:ring-brandAmber cursor-pointer shadow-sm">
+            <option value="Gurugram Central" selected>Gurugram Central</option>
+            <option value="Golf Course Road">Golf Course Road</option>
+            <option value="Cyber City Belt">Cyber City Belt</option>
+            <option value="Sohna Road Corridor">Sohna Road Corridor</option>
+          </select>
+          <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-brandRust text-xs">🏙️</span>
+          <span class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 text-[10px] pointer-events-none">▼</span>
+        </div>
+
+        <!-- 2. Sector Dropdown (Cascading under Area) -->
+        <div class="relative">
+          <select id="sectorSelect" class="appearance-none bg-white border border-[#DECDB3] text-brandDark text-xs font-semibold rounded-full pl-7 pr-7 py-1.5 focus:outline-none focus:ring-2 focus:ring-brandAmber cursor-pointer shadow-sm">
+            <option value="Sector 11" selected>Sector 11</option>
+            <option value="Sector 14">Sector 14</option>
+            <option value="Sector 15">Sector 15</option>
+          </select>
+          <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-brandRust text-xs">📍</span>
+          <span class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 text-[10px] pointer-events-none">▼</span>
+        </div>
+
+        <!-- Within 1km Radius Pill -->
+        <button id="radiusToggle" class="hidden sm:flex items-center space-x-1.5 bg-brandPillBg border border-brandPillBorder text-brandRust text-xs font-medium rounded-full px-3.5 py-1.5 shadow-sm hover:bg-brandAlmond transition">
+          <span class="text-xs">🎯</span>
+          <span>Within 1 km radius</span>
+        </button>
+      </div>
+
+      <!-- Right: Links & User Authentication CTA -->
+      <nav class="flex items-center space-x-5">
+        <a href="chef-onboarding.html" class="text-xs font-medium text-gray-700 hover:text-brandAmber transition hidden md:inline">Become a Partner Chef</a>
+        <a href="calendar.html" title="Cart / Active Plan" class="text-gray-700 hover:text-brandAmber transition text-sm">🛍️</a>
+        
+        <!-- User Session / Auth Profile Button (Controlled by app.js) -->
+        <div id="userNavContainer" class="relative">
+          <button id="btnOpenAuthModal" class="flex items-center space-x-1.5 bg-brandDark hover:bg-[#4A200B] text-white text-xs font-semibold px-4 py-2 rounded-full transition shadow-sm">
+            <span>👤</span>
+            <span id="navAuthLabel">Sign In</span>
+          </button>
+          
+          <!-- User Profile Dropdown Menu (Hidden by default) -->
+          <div id="userDropdownMenu" class="absolute right-0 mt-2 w-64 bg-white rounded-2xl border border-brandBorder shadow-xl p-4 text-xs space-y-3 hidden z-50">
+            <div class="border-b border-[#F0E2CA] pb-2.5">
+              <p class="text-[10px] uppercase font-bold text-gray-400">Signed In As</p>
+              <p class="font-bold text-brandDark text-sm" id="dropdownUserName">User Name</p>
+              <p class="text-[11px] text-brandAmber font-semibold" id="dropdownUserRole">Customer</p>
+            </div>
+            <div class="space-y-1.5 text-gray-600">
+              <p class="text-[11px]">📍 <span id="dropdownUserAddress" class="text-gray-800">Address</span></p>
+              <p class="text-[11px]">💳 Wallet Balance: <strong class="text-brandDark" id="dropdownUserWallet">₹720</strong></p>
+            </div>
+            <div class="border-t border-[#F0E2CA] pt-2 flex items-center justify-between">
+              <a href="#" id="dropdownDashboardLink" class="text-brandAmber font-bold hover:underline">Dashboard →</a>
+              <button onclick="signOutUser()" class="text-red-600 hover:text-red-800 font-semibold">Sign Out</button>
+            </div>
+          </div>
+        </div>
+
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="max-w-7xl mx-auto px-8 pt-10 pb-16 flex-1 w-full">
+    
+    <!-- HERO SECTION -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-12">
+      <!-- Left Column: Title and Subtitle -->
+      <div class="lg:col-span-8">
+        <div class="flex items-center space-x-2 text-brandAmber text-xs font-bold uppercase tracking-wider mb-3">
+          <span class="inline-block w-4 h-0.5 bg-brandAmber"></span>
+          <span>Fresh Home Food</span>
+        </div>
+        <h1 class="text-4xl lg:text-[42px] leading-[1.18] font-serif font-bold text-brandDark mb-4">
+          Ghar ka khaana, delivered straight from local home kitchens
+        </h1>
+        <p class="text-sm leading-relaxed text-[#6E4F39] max-w-2xl">
+          Wholesome, hygienic, and authentic tiffins crafted by culinary mothers and passionate home chefs in Gurugram Central. Enjoy local trials before subscribing.
+        </p>
+      </div>
+
+      <!-- Right Column: Micro-Stat Feature Card -->
+      <div class="lg:col-span-4 flex justify-end">
+        <div class="bg-[#F8E7C8]/70 border border-[#E9D1AC] rounded-2xl p-5 w-full max-w-xs shadow-sm space-y-4">
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-700 text-sm mt-0.5">✔️</span>
+            <div>
+              <p class="text-xs font-bold text-brandDark">100% Homestyle</p>
+              <p class="text-[11px] text-gray-600">Fresh daily morning cooking</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-700 text-sm mt-0.5">✔️</span>
+            <div>
+              <p class="text-xs font-bold text-brandDark">100%</p>
+              <p class="text-[11px] text-gray-600">Hygiene & Taste Certified</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="text-emerald-700 text-sm mt-0.5">✔️</span>
+            <div>
+              <p class="text-xs font-bold text-brandDark">0 min</p>
+              <p class="text-[11px] text-gray-600">Delivery Hassles</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION TITLE & STATUS -->
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center space-x-3">
+        <h2 class="text-xl font-bold text-brandDark">Kitchens delivering near you</h2>
+        <span class="bg-brandAmber text-white text-[11px] font-semibold px-2.5 py-0.5 rounded-full shadow-sm" id="activeKitchensBadge">
+          2 Active Today
+        </span>
+      </div>
+      <div class="flex items-center space-x-1.5 text-xs text-[#7A5B44]">
+        <span>Showing kitchens in selected location</span>
+        <span class="text-brandAmber text-xs font-bold">📍</span>
+      </div>
+    </div>
+
+    <!-- KITCHEN MARKETPLACE CARDS GRID (AT MOST 2 TIFFIN SERVICES) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 max-w-4xl" id="marketplaceKitchenGrid">
+
+      <!-- CARD 1: Annapurna Kitchen -->
+      <div class="bg-white rounded-2xl p-4 border border-[#EEDBCA] shadow-sm hover:shadow-md transition flex flex-col justify-between kitchen-card" data-area="Gurugram Central" data-sector="Sector 11" data-distance="450">
+        <div>
+          <!-- Dish Image with Floating Distance Tag -->
+          <div class="relative h-52 w-full rounded-xl overflow-hidden mb-3.5">
+            <img src="https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?w=600&auto=format&fit=crop&q=80" alt="Gujarati Thali" class="w-full h-full object-cover" />
+            <div class="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-sm border border-gray-200 text-gray-800 text-[11px] font-medium px-2.5 py-1 rounded-full flex items-center space-x-1 shadow-sm">
+              <span class="text-[10px]">📍</span>
+              <span>450m away • Sector 11</span>
+            </div>
+          </div>
+
+          <!-- Metadata -->
+          <div class="flex items-center justify-between mb-1">
+            <p class="text-[10px] uppercase tracking-wider font-semibold text-gray-400">Annapurna Kitchen</p>
+            <div class="flex items-center space-x-1 text-xs font-semibold text-gray-800">
+              <span class="text-amber-500">★</span>
+              <span>4.9</span>
+            </div>
+          </div>
+
+          <h3 class="text-base font-bold text-brandDark mb-3">Gujarati Premium Thali</h3>
+          <p class="text-xs text-gray-500 mb-3 leading-relaxed">4 Soft Phulkas, Gujarati Kadhi, Sev Tameta, Basmati Rice, Salad & Sweet.</p>
+        </div>
+
+        <!-- Pricing & Trial Button -->
+        <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+          <div>
+            <p class="text-[9px] uppercase font-semibold text-gray-400">Trial Price</p>
+            <p class="text-base font-bold text-brandDark">₹80 <span class="text-[11px] font-normal text-gray-500">/ meal</span></p>
+          </div>
+          <a href="kitchen.html?id=1" class="bg-brandAmber hover:bg-brandAmberHover text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center space-x-1 shadow-sm">
+            <span>Book 1-Day Trial</span>
+            <span>→</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- CARD 2: Nanak's Rasoi -->
+      <div class="bg-white rounded-2xl p-4 border border-[#EEDBCA] shadow-sm hover:shadow-md transition flex flex-col justify-between kitchen-card" data-area="Gurugram Central" data-sector="Sector 14" data-distance="600">
+        <div>
+          <!-- Dish Image with Floating Distance Tag -->
+          <div class="relative h-52 w-full rounded-xl overflow-hidden mb-3.5">
+            <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600&auto=format&fit=crop&q=80" alt="Punjabi Thali" class="w-full h-full object-cover" />
+            <div class="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-sm border border-gray-200 text-gray-800 text-[11px] font-medium px-2.5 py-1 rounded-full flex items-center space-x-1 shadow-sm">
+              <span class="text-[10px]">📍</span>
+              <span>600m away • Sector 14</span>
+            </div>
+          </div>
+
+          <!-- Metadata -->
+          <div class="flex items-center justify-between mb-1">
+            <p class="text-[10px] uppercase tracking-wider font-semibold text-gray-400">Nanak's Rasoi</p>
+            <div class="flex items-center space-x-1 text-xs font-semibold text-gray-800">
+              <span class="text-amber-500">★</span>
+              <span>4.9</span>
+            </div>
+          </div>
+
+          <h3 class="text-base font-bold text-brandDark mb-3">Punjabi Special Thali</h3>
+          <p class="text-xs text-gray-500 mb-3 leading-relaxed">Dal Makhani, Paneer Bhurji, 4 Ghee Phulkas, Jeera Pulao & Boondi Raita.</p>
+        </div>
+
+        <!-- Pricing & Trial Button -->
+        <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+          <div>
+            <p class="text-[9px] uppercase font-semibold text-gray-400">Trial Price</p>
+            <p class="text-base font-bold text-brandDark">₹80 <span class="text-[11px] font-normal text-gray-500">/ meal</span></p>
+          </div>
+          <a href="kitchen.html?id=2" class="bg-brandAmber hover:bg-brandAmberHover text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center space-x-1 shadow-sm">
+            <span>Book 1-Day Trial</span>
+            <span>→</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- AUTHENTICATION & MAKE MY PROFILE MODAL -->
+  <div id="authProfileModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl border border-brandBorder max-w-md w-full p-6 sm:p-7 shadow-2xl space-y-5">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-[#F0E2CA] pb-3">
+        <div class="flex items-center space-x-2">
+          <span class="text-xl font-serif font-bold text-brandDark">Rasoi<span class="text-brandAmber">Se</span></span>
+          <span class="text-xs text-gray-400">• Access Portal</span>
+        </div>
+        <button id="closeAuthModal" class="text-gray-400 hover:text-brandDark text-xl font-bold p-1">✕</button>
+      </div>
+
+      <!-- Tab Buttons: Sign In vs Make My Profile -->
+      <div class="grid grid-cols-2 p-1 bg-brandCream rounded-2xl border border-brandBorder text-xs font-bold">
+        <button id="tabSignInBtn" onclick="switchAuthTab('signin')" class="py-2.5 px-3 rounded-xl transition shadow-xs bg-brandAmber text-white">
+          Sign In
+        </button>
+        <button id="tabSignUpBtn" onclick="switchAuthTab('signup')" class="py-2.5 px-3 rounded-xl transition text-gray-600 hover:text-brandDark">
+          Make My Profile
+        </button>
+      </div>
+
+      <!-- TAB 1: SIGN IN -->
+      <div id="tabSignInContent" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-brandDark mb-1">Email or 10-Digit Mobile</label>
+          <input 
+            type="text" 
+            id="loginIdentifier" 
+            placeholder="e.g. rohaan@gmail.com or 9876543210" 
+            class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brandAmber"
+          />
+          <p id="loginError" class="text-[11px] text-red-600 mt-1 font-semibold hidden"></p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-brandDark mb-1">I am signing in as:</label>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="flex items-center space-x-2 p-2.5 bg-[#FFF9F0] border border-brandAmber rounded-xl cursor-pointer text-xs font-semibold">
+              <input type="radio" name="loginRole" value="Customer" checked class="text-brandAmber">
+              <span>👤 Customer</span>
+            </label>
+            <label class="flex items-center space-x-2 p-2.5 bg-white border border-brandBorder rounded-xl cursor-pointer text-xs font-semibold">
+              <input type="radio" name="loginRole" value="Chef" class="text-brandAmber">
+              <span>👩‍🍳 Home Chef</span>
+            </label>
+          </div>
+        </div>
+
+        <button onclick="handleUserSignIn()" class="w-full bg-brandAmber hover:bg-brandAmberHover text-white text-xs font-bold py-3 rounded-xl transition shadow-md">
+          Validate & Sign In →
+        </button>
+
+        <p class="text-[11px] text-center text-gray-500">
+          New to RasoiSe? <button type="button" onclick="switchAuthTab('signup')" class="text-brandAmber font-bold hover:underline">Create your profile</button>
+        </p>
+      </div>
+
+      <!-- TAB 2: MAKE MY PROFILE -->
+      <div id="tabSignUpContent" class="space-y-3.5 hidden">
+        <div>
+          <label class="block text-xs font-bold text-brandDark mb-1">Full Name <span class="text-red-500">*</span></label>
+          <input 
+            type="text" 
+            id="profileName" 
+            placeholder="e.g. Rohaan Sharma" 
+            class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs rounded-xl px-3.5 py-2 focus:outline-none focus:ring-2 focus:ring-brandAmber"
+          />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-brandDark mb-1">Email <span class="text-red-500">*</span></label>
+            <input 
+              type="email" 
+              id="profileEmail" 
+              placeholder="name@email.com" 
+              class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brandAmber"
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-brandDark mb-1">Mobile (10 Digits) <span class="text-red-500">*</span></label>
+            <input 
+              type="tel" 
+              id="profilePhone" 
+              placeholder="9876543210" 
+              maxlength="10" 
+              class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brandAmber"
+            />
+          </div>
+        </div>
+
+        <!-- Hierarchical Area & Sector in Profile -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-brandDark mb-1">Area <span class="text-red-500">*</span></label>
+            <select id="profileArea" onchange="updateProfileSectors()" class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs font-semibold rounded-xl px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-brandAmber">
+              <option value="Gurugram Central">Gurugram Central</option>
+              <option value="Golf Course Road">Golf Course Road</option>
+              <option value="Cyber City Belt">Cyber City Belt</option>
+              <option value="Sohna Road Corridor">Sohna Road Corridor</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-brandDark mb-1">Sector <span class="text-red-500">*</span></label>
+            <select id="profileSector" class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs font-semibold rounded-xl px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-brandAmber">
+              <option value="Sector 11">Sector 11</option>
+              <option value="Sector 14">Sector 14</option>
+              <option value="Sector 15">Sector 15</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-brandDark mb-1">Society & Flat Address <span class="text-red-500">*</span></label>
+          <input 
+            type="text" 
+            id="profileAddress" 
+            placeholder="e.g. Flat 402, Tower B, Silver Oaks" 
+            class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs rounded-xl px-3.5 py-2 focus:outline-none focus:ring-2 focus:ring-brandAmber"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-brandDark mb-1">Account Role</label>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="flex items-center space-x-2 p-2 bg-[#FFF9F0] border border-brandAmber rounded-xl cursor-pointer text-xs font-semibold">
+              <input type="radio" name="profileRole" value="Customer" checked class="text-brandAmber">
+              <span>👤 Customer</span>
+            </label>
+            <label class="flex items-center space-x-2 p-2 bg-white border border-brandBorder rounded-xl cursor-pointer text-xs font-semibold">
+              <input type="radio" name="profileRole" value="Chef" class="text-brandAmber">
+              <span>👩‍🍳 Home Chef</span>
+            </label>
+          </div>
+        </div>
+
+        <p id="profileError" class="text-[11px] text-red-600 font-semibold hidden"></p>
+
+        <button onclick="handleCreateProfile()" class="w-full bg-brandDark hover:bg-[#4A200B] text-white text-xs font-bold py-3 rounded-xl transition shadow-md">
+          Save & Make My Profile ✓
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="w-full bg-brandFooter text-white pt-10 pb-8 px-8 border-t border-[#3A1E0D]">
+    <div class="max-w-7xl mx-auto space-y-6">
+      
+      <!-- Upper Footer Row -->
+      <div class="flex flex-col md:flex-row items-center justify-between pb-6 border-b border-[#3D1E0C] gap-4">
+        <a href="index.html" class="text-2xl font-serif font-bold text-white tracking-tight">
+          <span>Rasoi</span><span class="text-brandAmber">Se</span>
+        </a>
+        <p class="text-xs text-[#BBA594]">
+          © 2026 RasoiSe Foodtech Pvt Ltd. All rights reserved.
+        </p>
+      </div>
+
+      <!-- Lower Footer Row -->
+      <div class="flex flex-col md:flex-row items-center justify-between text-xs text-[#BBA594] gap-4">
+        <div class="flex items-center space-x-6">
+          <a href="#" class="hover:text-white transition">About Us</a>
+          <a href="#" class="hover:text-white transition">Privacy Policy</a>
+          <a href="#" class="hover:text-white transition">Terms of Service</a>
+          <a href="#" class="hover:text-white transition">Help Center</a>
+        </div>
+        <p class="text-[11px] text-[#9E8574]">
+          Home Chef Hygiene Certification: ISO-22000 Compliant
+        </p>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- App Helper Scripts -->
+  <script src="js/app.js"></script>
+</body>
+</html>

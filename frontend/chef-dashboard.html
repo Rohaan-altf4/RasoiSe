@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chef Operations Hub - RasoiSe</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandCream: '#FDF8F0',
+            brandAlmond: '#F8E7C8',
+            brandAmber: '#E68A00',
+            brandAmberHover: '#CF7B00',
+            brandRust: '#B45309',
+            brandDark: '#331507',
+            brandFooter: '#241005',
+            brandBorder: '#EEDBCA'
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="min-h-screen flex flex-col justify-between bg-brandCream text-brandDark">
+
+  <!-- TOP BAR -->
+  <header class="w-full bg-white border-b border-[#F0E2CA] py-3.5 px-6 lg:px-8 sticky top-0 z-50 shadow-xs">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+      
+      <!-- Brand & Kitchen Title -->
+      <div class="flex items-center space-x-4">
+        <a href="index.html" class="flex items-center space-x-1 text-2xl font-serif font-bold tracking-tight text-brandDark">
+          <span>Rasoi</span><span class="text-brandAmber">Se</span>
+        </a>
+        <div class="h-6 w-px bg-gray-300 hidden md:block"></div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="text-sm md:text-base font-bold text-brandDark">Annapurna Kitchen</h1>
+            <span class="bg-brandCream border border-brandBorder text-brandRust text-[10px] font-bold px-2 py-0.5 rounded-full">
+              Chef Asha Sharma
+            </span>
+          </div>
+          <p class="text-[11px] text-gray-500">Sector 11 Micro-Hub • Verified Kitchen ID #K-1104</p>
+        </div>
+      </div>
+
+      <!-- Kitchen Status Badge & Nav Links -->
+      <div class="flex items-center space-x-4">
+        <!-- Cut-Off Alert Pill -->
+        <div class="flex items-center space-x-2 bg-red-50 border border-red-200 text-red-700 px-3.5 py-1.5 rounded-full text-xs font-semibold shadow-xs">
+          <span class="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
+          <span>Lunch Prep Cut-off: CLOSED at 8:00 AM</span>
+        </div>
+
+        <nav class="flex items-center space-x-3 text-xs">
+          <a href="kitchen.html" class="text-gray-600 hover:text-brandAmber transition font-medium">Public Storefront</a>
+          <a href="admin-console.html" class="text-gray-600 hover:text-brandAmber transition font-medium">Admin View</a>
+        </nav>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toastNotification" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 hidden transition-all duration-300">
+    <div class="bg-brandDark text-white px-5 py-3 rounded-2xl shadow-xl flex items-center space-x-3 border border-brandBorder text-xs font-semibold">
+      <span class="text-emerald-400 text-base">💰</span>
+      <span id="toastMessage">₹80 deducted from customer wallet</span>
+    </div>
+  </div>
+
+  <!-- MAIN DASHBOARD CONTENT -->
+  <main class="max-w-7xl mx-auto px-6 lg:px-8 py-8 flex-1 w-full space-y-8">
+
+    <!-- DASHBOARD TITLE & ACTION STRIP -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center space-x-2 text-xs font-bold text-brandAmber uppercase tracking-wider mb-1">
+          <span>● Live Operations</span>
+          <span>•</span>
+          <span id="currentDateStr">Today</span>
+        </div>
+        <h2 class="text-2xl lg:text-3xl font-serif font-bold text-brandDark">Today's Lunch Manifest & Prep Plan</h2>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center space-x-3">
+        <button onclick="window.print()" class="bg-white border border-brandBorder hover:bg-gray-50 text-brandDark text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center space-x-1.5 shadow-xs">
+          <span>🖨️</span>
+          <span>Print Manifest</span>
+        </button>
+        <button onclick="markAllDispatched()" class="bg-brandAmber hover:bg-brandAmberHover text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center space-x-1.5 shadow-sm">
+          <span>🚀</span>
+          <span>Dispatch All Pending</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 4 LARGE HEADCOUNT METRIC CARDS -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      
+      <!-- Card 1: Total Portions -->
+      <div class="bg-white rounded-2xl p-5 border border-brandBorder shadow-sm relative overflow-hidden">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-gray-400">Total Portions</span>
+          <span class="p-2 bg-brandCream rounded-xl text-base">🍱</span>
+        </div>
+        <p class="text-3xl lg:text-4xl font-bold font-serif text-brandDark" id="metricTotalPortions">34</p>
+        <div class="mt-3 flex items-center space-x-2 text-[11px] text-gray-500 font-medium">
+          <span class="text-emerald-600 font-bold">↑ 4 more</span>
+          <span>than yesterday</span>
+        </div>
+      </div>
+
+      <!-- Card 2: Pure Veg (Emerald Green) -->
+      <div class="bg-emerald-50/70 rounded-2xl p-5 border border-emerald-200 shadow-sm relative overflow-hidden">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-800">Pure Veg</span>
+          <span class="p-2 bg-emerald-100 rounded-xl text-base text-emerald-800">🌱</span>
+        </div>
+        <p class="text-3xl lg:text-4xl font-bold font-serif text-emerald-900" id="metricVegPortions">26</p>
+        <div class="mt-3 flex items-center space-x-2 text-[11px] text-emerald-700 font-semibold">
+          <span>76.5% of total prep batch</span>
+        </div>
+      </div>
+
+      <!-- Card 3: Non-Veg (Amber) -->
+      <div class="bg-amber-50/80 rounded-2xl p-5 border border-amber-200 shadow-sm relative overflow-hidden">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-amber-900">Non-Veg</span>
+          <span class="p-2 bg-amber-100 rounded-xl text-base text-amber-800">🍗</span>
+        </div>
+        <p class="text-3xl lg:text-4xl font-bold font-serif text-amber-950" id="metricNonVegPortions">8</p>
+        <div class="mt-3 flex items-center space-x-2 text-[11px] text-amber-800 font-semibold">
+          <span>Special Egg/Chicken prep</span>
+        </div>
+      </div>
+
+      <!-- Card 4: Paused Subscriptions (Muted Gray) -->
+      <div class="bg-gray-100/90 rounded-2xl p-5 border border-gray-300 shadow-sm relative overflow-hidden">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-gray-600">Paused Subscriptions</span>
+          <span class="p-2 bg-gray-200 rounded-xl text-base text-gray-700">⏸️</span>
+        </div>
+        <p class="text-3xl lg:text-4xl font-bold font-serif text-gray-700" id="metricPausedPortions">4</p>
+        <div class="mt-3 flex items-center space-x-2 text-[11px] text-gray-500 font-semibold">
+          <span>Funds preserved in wallet</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- DELIVERY DISPATCH MANIFEST TABLE -->
+    <div class="bg-white rounded-3xl border border-brandBorder shadow-sm overflow-hidden">
+      
+      <!-- Table Header & Filter Strip -->
+      <div class="p-5 border-b border-[#F0E2CA] flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h3 class="text-lg font-bold font-serif text-brandDark">Sector 11 Dispatch Manifest</h3>
+          <p class="text-xs text-gray-500">All riders depart at 12:15 PM for guaranteed 12:30 PM - 1:30 PM meal delivery window.</p>
+        </div>
+
+        <div class="flex items-center space-x-3 text-xs">
+          <span class="text-gray-500">Manifest Status:</span>
+          <span id="dispatchedCountBadge" class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded-full border border-emerald-200">
+            1 of 6 Dispatched
+          </span>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse" id="manifestTable">
+          <thead>
+            <tr class="bg-[#F8E7C8]/50 text-brandDark border-b border-brandBorder uppercase tracking-wider font-bold text-[11px]">
+              <th class="py-3.5 px-4">Token #</th>
+              <th class="py-3.5 px-4">Customer Name</th>
+              <th class="py-3.5 px-4">Flat / Society Address</th>
+              <th class="py-3.5 px-4">Meal Type</th>
+              <th class="py-3.5 px-4">Dietary Notes</th>
+              <th class="py-3.5 px-4">Status</th>
+              <th class="py-3.5 px-4 text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#F3E5D4]" id="manifestTableBody">
+            
+            <!-- Row 1 -->
+            <tr class="hover:bg-brandCream/50 transition manifest-row" data-token="RS-101" data-price="80">
+              <td class="py-3.5 px-4 font-mono font-bold text-brandDark">#RS-101</td>
+              <td class="py-3.5 px-4 font-semibold text-gray-900">Rajiv Malhotra</td>
+              <td class="py-3.5 px-4 text-gray-700">Flat 402, Tower B, Silver Oaks</td>
+              <td class="py-3.5 px-4">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800">
+                  🌱 Pure Veg Deluxe
+                </span>
+              </td>
+              <td class="py-3.5 px-4 text-gray-500">Less spice, extra salad</td>
+              <td class="py-3.5 px-4 status-cell">
+                <span class="status-badge inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+                  ⏳ Pending
+                </span>
+              </td>
+              <td class="py-3.5 px-4 text-center action-cell">
+                <button onclick="markAsDispatched(this, 'RS-101', 'Rajiv Malhotra')" class="btn-dispatch bg-brandAmber hover:bg-brandAmberHover text-white text-xs font-semibold px-3 py-1.5 rounded-xl transition shadow-xs">
+                  Mark as Dispatched
+                </button>
+              </td>
+            </tr>
+
+            <!-- Row 2 -->
+            <tr class="hover:bg-brandCream/50 transition manifest-row" data-token="RS-102" data-price="80">
+              <td class="py-3.5 px-4 font-mono font-bold text-brandDark">#RS-102</td>
+              <td class="py-3.5 px-4 font-semibold text-gray-900">Sneha Kulkarni</td>
+              <td class="py-3.5 px-4 text-gray-700">Flat B-12, Palm Heights</td>
+              <td class="py-3.5 px-4">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800">
+                  🌱 Pure Veg Homestyle
+                </span>
+              </td>
+              <td class="py-3.5 px-4 text-gray-500">No onions in dal</td>
+              <td class="py-3.5 px-4 status-cell">
+                <span class="status-badge inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+                  ⏳ Pending
+                </span>
+              </td>
+              <td class="py-3.5 px-4 text-center action-cell">
+                <button onclick="markAsDispatched(this, 'RS-102', 'Sneha Kulkarni')" class="btn-dispatch bg-brandAmber hover:bg-brandAmberHover text-white text-xs font-semibold px-3 py-1.5 rounded-xl transition shadow-xs">
+                  Mark as Dispatched
+                </button>
+              </td>
+            </tr>
+
+            <!-- Row 3 -->
+            <tr class="hover:bg-brandCream/50 transition manifest-row" data-token="RS-103" data-price="80">
+              <td class="py-3.5 px-4 font-mono font-bold text-brandDark">#RS-103</td>
+              <td class="py-3.5 px-4 font-semibold text-gray-900">Vikram Batra</td>
+              <td class="py-3.5 px-4 text-gray-700">House 71, Sector 11 Main Road</td>
+              <td class="py-3.5 px-4">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 text-amber-900">
+                  🍗 Non-Veg Special
+                </span>
+              </td>
+              <td class="py-3.5 px-4 text-gray-500">Include extra green chilies</td>
+              <td class="py-3.5 px-4 status-cell">
+                <span class="status-badge inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+                  ⏳ Pending
+                </span>
+              </td>
+              <td class="py-3.5 px-4 text-center action-cell">
+                <button onclick="markAsDispatched(this, 'RS-103', 'Vikram Batra')" class="btn-dispatch bg-brandAmber hover:bg-brandAmberHover text-white text-xs font-semibold px-3 py-1.5 rounded-xl transition shadow-xs">
+                  Mark as Dispatched
+                </button>
+              </td>
+            </tr>
+
+            <!-- Row 4 (Already Dispatched) -->
+            <tr class="hover:bg-brandCream/50 transition manifest-row bg-emerald-50/30" data-token="RS-104" data-price="80">
+              <td class="py-3.5 px-4 font-mono font-bold text-brandDark">#RS-104</td>
+              <td class="py-3.5 px-4 font-semibold text-gray-900">Ananya Roy</td>
+              <td class="py-3.5 px-4 text-gray-700">Flat C-104, Green Glen Apartment</td>
+              <td class="py-3.5 px-4">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800">
+                  🌱 Pure Veg Deluxe
+                </span>
+              </td>
+              <td class="py-3.5 px-4 text-gray-500">Deliver to society security desk</td>
+              <td class="py-3.5 px-4 status-cell">
+                <span class="status-badge inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                  ✓ Dispatched
+                </span>
+              </td>
+              <td class="py-3.5 px-4 text-center action-cell">
+                <button disabled class="bg-gray-200 text-gray-500 text-xs font-medium px-3 py-1.5 rounded-xl cursor-not-allowed">
+                  Dispatched ✓
+                </button>
+              </td>
+            </tr>
+
+            <!-- Row 5 -->
+            <tr class="hover:bg-brandCream/50 transition manifest-row" data-token="RS-105" data-price="80">
+              <td class="py-3.5 px-4 font-mono font-bold text-brandDark">#RS-105</td>
+              <td class="py-3.5 px-4 font-semibold text-gray-900">Mohit Verma</td>
+              <td class="py-3.5 px-4 text-gray-700">Flat 501, Royal Enclave</td>
+              <td class="py-3.5 px-4">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800">
+                  🌱 Pure Veg Homestyle
+                </span>
+              </td>
+              <td class="py-3.5 px-4 text-gray-500">Warm phulkas packed in foil</td>
+              <td class="py-3.5 px-4 status-cell">
+                <span class="status-badge inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+                  ⏳ Pending
+                </span>
+              </td>
+              <td class="py-3.5 px-4 text-center action-cell">
+                <button onclick="markAsDispatched(this, 'RS-105', 'Mohit Verma')" class="btn-dispatch bg-brandAmber hover:bg-brandAmberHover text-white text-xs font-semibold px-3 py-1.5 rounded-xl transition shadow-xs">
+                  Mark as Dispatched
+                </button>
+              </td>
+            </tr>
+
+            <!-- Row 6 -->
+            <tr class="hover:bg-brandCream/50 transition manifest-row" data-token="RS-106" data-price="80">
+              <td class="py-3.5 px-4 font-mono font-bold text-brandDark">#RS-106</td>
+              <td class="py-3.5 px-4 font-semibold text-gray-900">Divya Nair</td>
+              <td class="py-3.5 px-4 text-gray-700">Flat 204, Block 3, Silver Oaks</td>
+              <td class="py-3.5 px-4">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 text-amber-900">
+                  🍗 Non-Veg Special
+                </span>
+              </td>
+              <td class="py-3.5 px-4 text-gray-500">Standard packaging</td>
+              <td class="py-3.5 px-4 status-cell">
+                <span class="status-badge inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+                  ⏳ Pending
+                </span>
+              </td>
+              <td class="py-3.5 px-4 text-center action-cell">
+                <button onclick="markAsDispatched(this, 'RS-106', 'Divya Nair')" class="btn-dispatch bg-brandAmber hover:bg-brandAmberHover text-white text-xs font-semibold px-3 py-1.5 rounded-xl transition shadow-xs">
+                  Mark as Dispatched
+                </button>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- BOTTOM CARD: TODAY'S FULFILLMENTS & SETTLEMENT -->
+    <div class="bg-gradient-to-r from-[#F8E7C8] via-[#FAF0DC] to-[#F8E7C8] rounded-3xl border border-brandBorder p-6 lg:p-7 shadow-sm">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        
+        <!-- Left: Earnings and Portions -->
+        <div class="flex items-start md:items-center space-x-5">
+          <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-2xl shadow-sm border border-brandBorder">
+            💵
+          </div>
+          <div>
+            <span class="text-[11px] uppercase tracking-wider font-bold text-gray-500">Daily Revenue Summary</span>
+            <div class="flex items-baseline space-x-3 mt-0.5">
+              <h3 class="text-2xl lg:text-3xl font-bold font-serif text-brandDark">
+                Today's Fulfillments: <span class="text-brandAmber" id="fulfillmentAmount">₹2,720</span>
+              </h3>
+              <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded-full border border-emerald-300">
+                Settled to UPI
+              </span>
+            </div>
+            <p class="text-xs text-[#6B4B35] font-medium mt-1">
+              34 meals delivered × ₹80 standard payout rate • 0% platform deductions this month
+            </p>
+          </div>
+        </div>
+
+        <!-- Right: UPI & Payout Status -->
+        <div class="bg-white/90 backdrop-blur-sm border border-brandBorder p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center gap-4">
+          <div>
+            <p class="text-[10px] uppercase font-bold text-gray-400">Direct UPI Settlement</p>
+            <p class="text-xs font-mono font-bold text-brandDark">asha.sharma@okaxis</p>
+            <p class="text-[10px] text-gray-500 mt-0.5">Auto-transfer at 2:00 PM IST daily</p>
+          </div>
+          <button onclick="requestInstantPayout()" class="bg-brandDark hover:bg-[#4A200B] text-white text-xs font-semibold px-4 py-2 rounded-xl transition shadow-xs whitespace-nowrap">
+            Instant UPI Transfer ⚡
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="w-full bg-brandFooter text-white pt-8 pb-6 px-8 border-t border-[#3A1E0D] mt-12">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between text-xs text-[#BBA594] gap-4">
+      <div class="flex items-center space-x-2">
+        <span class="text-white font-serif font-bold text-base">RasoiSe</span>
+        <span>• Chef Operations Hub v2.4</span>
+      </div>
+      <p class="text-[11px] text-[#9E8574]">
+        Automated Hyperlocal Dispatch Engine • Sector 11 Cluster
+      </p>
+    </div>
+  </footer>
+
+  <!-- Interactivity Scripts -->
+  <script>
+    let fulfilledCount = 1; // Row 4 starts dispatched
+    const totalRows = 6;
+    let totalRevenue = 2720;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const today = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+      const dateEl = document.getElementById('currentDateStr');
+      if (dateEl) dateEl.innerText = today.toLocaleDateString('en-IN', options);
+    });
+
+    function showToast(message) {
+      const toast = document.getElementById('toastNotification');
+      const msgEl = document.getElementById('toastMessage');
+      if (toast && msgEl) {
+        msgEl.innerText = message;
+        toast.classList.remove('hidden');
+        toast.classList.add('toast-enter');
+
+        setTimeout(() => {
+          toast.classList.add('hidden');
+          toast.classList.remove('toast-enter');
+        }, 3000);
+      }
+    }
+
+    function markAsDispatched(btn, token, customerName) {
+      const row = btn.closest('tr');
+      const statusCell = row.querySelector('.status-cell');
+      
+      // Update Status Badge
+      statusCell.innerHTML = `
+        <span class="status-badge inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+          ✓ Dispatched
+        </span>
+      `;
+
+      // Update Button
+      btn.disabled = true;
+      btn.className = 'bg-gray-200 text-gray-500 text-xs font-medium px-3 py-1.5 rounded-xl cursor-not-allowed';
+      btn.innerText = 'Dispatched ✓';
+
+      // Highlight Row
+      row.classList.add('bg-emerald-50/30');
+
+      // Update Counts
+      fulfilledCount++;
+      const badge = document.getElementById('dispatchedCountBadge');
+      if (badge) {
+        badge.innerText = `${fulfilledCount} of ${totalRows} Dispatched`;
+      }
+
+      // Show the required alert notification
+      showToast('₹80 deducted from customer wallet');
+    }
+
+    function markAllDispatched() {
+      const pendingButtons = document.querySelectorAll('.manifest-row .btn-dispatch:not([disabled])');
+      if (pendingButtons.length === 0) {
+        alert('All orders in today\'s manifest are already marked as dispatched!');
+        return;
+      }
+
+      pendingButtons.forEach(btn => {
+        btn.click();
+      });
+
+      showToast(`All remaining portions dispatched. Wallet settlements completed!`);
+    }
+
+    function requestInstantPayout() {
+      alert(`Instant UPI Settlement of ₹2,720 requested.\nSent to VPA: asha.sharma@okaxis\nStatus: Transaction Successful (Ref #UPI/2026/0923/8812)`);
+    }
+  </script>
+</body>
+</html>

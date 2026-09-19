@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meal Calendar & Wallet - RasoiSe</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandCream: '#FDF8F0',
+            brandAlmond: '#F8E7C8',
+            brandAmber: '#E68A00',
+            brandAmberHover: '#CF7B00',
+            brandRust: '#B45309',
+            brandDark: '#331507',
+            brandFooter: '#241005',
+            brandBorder: '#EEDBCA'
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="min-h-screen flex flex-col justify-between bg-brandCream text-brandDark">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="w-full bg-white border-b border-[#F0E2CA] py-3.5 px-6 lg:px-8 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+
+      <!-- Brand & Links -->
+      <div class="flex items-center space-x-6">
+        <a href="index.html"
+          class="flex items-center space-x-1 text-2xl font-serif font-bold tracking-tight text-brandDark">
+          <span>Rasoi</span><span class="text-brandAmber">Se</span>
+        </a>
+        <a href="index.html"
+          class="flex items-center space-x-1.5 text-xs font-medium text-gray-600 hover:text-brandAmber transition">
+          <span>←</span>
+          <span>Explore Kitchens</span>
+        </a>
+      </div>
+
+      <!-- Right: Wallet Widget & Navigation -->
+      <div class="flex items-center space-x-5">
+
+        <!-- Customer Wallet Pill -->
+        <div
+          class="flex items-center bg-[#FFF8EB] border border-[#E9D1AC] px-3.5 py-1.5 rounded-full space-x-2.5 shadow-xs">
+          <span class="text-xs">💳</span>
+          <span class="text-xs text-gray-600 font-medium">Wallet:</span>
+          <span id="walletBalanceDisplay" class="wallet-balance-amount text-xs font-bold text-brandDark">₹720</span>
+          <button id="btnTopUpModal"
+            class="bg-brandAmber hover:bg-brandAmberHover text-white text-[10px] font-bold px-2 py-0.5 rounded-full transition shadow-xs">
+            + Top Up
+          </button>
+        </div>
+
+        <nav class="flex items-center space-x-4 text-xs font-medium">
+          <a href="kitchen.html" class="text-gray-700 hover:text-brandAmber transition">Annapurna Kitchen</a>
+          <a href="shef-dashboard.html"
+            class="flex items-center space-x-1.5 bg-brandDark text-white px-3.5 py-2 rounded-full hover:bg-[#4A200B] transition">
+            <span>👩‍🍳</span>
+            <span>Chef Hub</span>
+          </a>
+        </nav>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN CALENDAR CONTAINER -->
+  <main class="max-w-7xl mx-auto px-6 lg:px-8 py-8 flex-1 w-full space-y-8">
+
+    <!-- SUBSCRIPTION HERO BANNER -->
+    <div
+      class="bg-gradient-to-r from-[#F8E7C8] via-[#FAF1E2] to-[#F8E7C8] border border-brandBorder rounded-3xl p-6 lg:p-7 shadow-sm">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-5">
+
+        <div class="space-y-1.5">
+          <div class="flex items-center space-x-2">
+            <span
+              class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-emerald-300">
+              Active Subscription
+            </span>
+            <span class="text-xs font-bold text-gray-500">Plan #SUB-9021</span>
+          </div>
+          <h1 class="text-2xl lg:text-3xl font-serif font-bold text-brandDark">
+            Annapurna Kitchen • 5-Day Mon-Fri Lunch Plan
+          </h1>
+          <p class="text-xs text-[#6E4F39]">
+            Assigned Chef: <strong>Asha Sharma</strong> • Sector 11 • Standard Meal Price: ₹80/meal
+          </p>
+        </div>
+
+        <!-- Flexi-Pause Callout -->
+        <div class="bg-white/85 backdrop-blur-sm border border-brandBorder rounded-2xl p-4 max-w-sm">
+          <div class="flex items-start space-x-2.5">
+            <span class="text-lg text-brandAmber mt-0.5">🛡️</span>
+            <div>
+              <p class="text-xs font-bold text-brandDark">100% Flexi-Pause Guarantee</p>
+              <p class="text-[11px] text-gray-600 mt-0.5 leading-relaxed">
+                Going out or fasting? Pause any individual day before <strong>8:00 AM</strong>. Your ₹80 meal cost
+                remains safe in your wallet for future days.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CALENDAR SCHEDULE HEADER -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <h2 class="text-xl font-bold font-serif text-brandDark">Weekly Meal Schedule</h2>
+        <p class="text-xs text-gray-500">Manage your upcoming lunch dispatches for the week.</p>
+      </div>
+
+      <div class="flex items-center space-x-2 text-xs">
+        <span class="text-gray-500">Current Week:</span>
+        <span class="bg-white border border-brandBorder px-3 py-1.5 rounded-xl font-bold text-brandDark shadow-xs">
+          Sep 22 - Sep 28 (Week 39)
+        </span>
+      </div>
+    </div>
+
+    <!-- 7-DAY MEAL CALENDAR GRID (MON - SUN) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+
+      <!-- DAY 1: Monday -->
+      <div
+        class="calendar-day-card bg-white rounded-2xl p-5 border border-brandBorder shadow-sm flex flex-col justify-between space-y-4"
+        data-day="Monday, Sep 22" data-price="80" data-status="active">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-brandDark">Mon, Sep 22</span>
+            <span
+              class="meal-status-badge text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+              ● Active (Scheduled)
+            </span>
+          </div>
+          <h3 class="text-sm font-bold text-brandDark">Paneer Bhurji & Dal Makhani</h3>
+          <p class="text-[11px] text-gray-500 mt-1">4 Phulkas + Jeera Rice + Boondi Raita</p>
+          <div class="mt-3 flex items-center space-x-2 text-[10px] text-gray-500">
+            <span>⏰ Slot: 12:30 - 1:30 PM</span>
+            <span>•</span>
+            <span class="font-bold text-brandDark">₹80</span>
+          </div>
+        </div>
+        <button
+          class="btn-toggle-meal w-full py-2 bg-brandCream hover:bg-brandAlmond border border-brandBorder text-brandDark rounded-xl text-xs font-bold transition">
+          Pause Meal (Save ₹80)
+        </button>
+      </div>
+
+      <!-- DAY 2: Tuesday -->
+      <div
+        class="calendar-day-card bg-white rounded-2xl p-5 border border-brandBorder shadow-sm flex flex-col justify-between space-y-4"
+        data-day="Tuesday, Sep 23" data-price="80" data-status="active">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-brandDark">Tue, Sep 23</span>
+            <span
+              class="meal-status-badge text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+              ● Active (Scheduled)
+            </span>
+          </div>
+          <h3 class="text-sm font-bold text-brandDark">Sev Tameta Nu Shaak & Kadhi</h3>
+          <p class="text-[11px] text-gray-500 mt-1">4 Ghee Phulkas + Steamed Rice + Chhunda</p>
+          <div class="mt-3 flex items-center space-x-2 text-[10px] text-gray-500">
+            <span>⏰ Slot: 12:30 - 1:30 PM</span>
+            <span>•</span>
+            <span class="font-bold text-brandDark">₹80</span>
+          </div>
+        </div>
+        <button
+          class="btn-toggle-meal w-full py-2 bg-brandCream hover:bg-brandAlmond border border-brandBorder text-brandDark rounded-xl text-xs font-bold transition">
+          Pause Meal (Save ₹80)
+        </button>
+      </div>
+
+      <!-- DAY 3: Wednesday (Paused Example) -->
+      <div
+        class="calendar-day-card bg-gray-50/80 opacity-85 rounded-2xl p-5 border border-brandBorder shadow-sm flex flex-col justify-between space-y-4"
+        data-day="Wednesday, Sep 24" data-price="80" data-status="paused">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-brandDark">Wed, Sep 24</span>
+            <span
+              class="meal-status-badge text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
+              ⏸️ Paused (Refunded)
+            </span>
+          </div>
+          <h3 class="text-sm font-bold text-brandDark">Aloo Gobi & Rajma Masala</h3>
+          <p class="text-[11px] text-gray-500 mt-1">4 Phulkas + Basmati Rice + Salad</p>
+          <div class="mt-3 flex items-center space-x-2 text-[10px] text-gray-500">
+            <span>⏰ Cutoff passed (8:00 AM)</span>
+            <span>•</span>
+            <span class="font-bold text-brandAmber">Refunded to Wallet</span>
+          </div>
+        </div>
+        <button
+          class="btn-toggle-meal w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-xs">
+          Resume Meal (-₹80)
+        </button>
+      </div>
+
+      <!-- DAY 4: Thursday -->
+      <div
+        class="calendar-day-card bg-white rounded-2xl p-5 border border-brandBorder shadow-sm flex flex-col justify-between space-y-4"
+        data-day="Thursday, Sep 25" data-price="80" data-status="active">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-brandDark">Thu, Sep 25</span>
+            <span
+              class="meal-status-badge text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+              ● Active (Scheduled)
+            </span>
+          </div>
+          <h3 class="text-sm font-bold text-brandDark">Baingan Bharta & Panchmel Dal</h3>
+          <p class="text-[11px] text-gray-500 mt-1">4 Multigrain Rotis + Matar Pulao + Sweet</p>
+          <div class="mt-3 flex items-center space-x-2 text-[10px] text-gray-500">
+            <span>⏰ Slot: 12:30 - 1:30 PM</span>
+            <span>•</span>
+            <span class="font-bold text-brandDark">₹80</span>
+          </div>
+        </div>
+        <button
+          class="btn-toggle-meal w-full py-2 bg-brandCream hover:bg-brandAlmond border border-brandBorder text-brandDark rounded-xl text-xs font-bold transition">
+          Pause Meal (Save ₹80)
+        </button>
+      </div>
+
+      <!-- DAY 5: Friday -->
+      <div
+        class="calendar-day-card bg-white rounded-2xl p-5 border border-brandBorder shadow-sm flex flex-col justify-between space-y-4"
+        data-day="Friday, Sep 26" data-price="80" data-status="active">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-brandDark">Fri, Sep 26</span>
+            <span
+              class="meal-status-badge text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+              ● Active (Scheduled)
+            </span>
+          </div>
+          <h3 class="text-sm font-bold text-brandDark">Lauki Kofta & Pindi Chole</h3>
+          <p class="text-[11px] text-gray-500 mt-1">4 Phulkas + Jeera Pulao + Pickled Onions</p>
+          <div class="mt-3 flex items-center space-x-2 text-[10px] text-gray-500">
+            <span>⏰ Slot: 12:30 - 1:30 PM</span>
+            <span>•</span>
+            <span class="font-bold text-brandDark">₹80</span>
+          </div>
+        </div>
+        <button
+          class="btn-toggle-meal w-full py-2 bg-brandCream hover:bg-brandAlmond border border-brandBorder text-brandDark rounded-xl text-xs font-bold transition">
+          Pause Meal (Save ₹80)
+        </button>
+      </div>
+
+      <!-- DAY 6: Saturday (Off-Day on 5-Day Plan) -->
+      <div
+        class="bg-brandCream/70 rounded-2xl p-5 border border-dashed border-[#DFCBB0] flex flex-col justify-between space-y-4">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-gray-500">Sat, Sep 27</span>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-200 text-gray-600">
+              Weekend Off
+            </span>
+          </div>
+          <h3 class="text-sm font-semibold text-gray-600">No Subscription Scheduled</h3>
+          <p class="text-[11px] text-gray-400 mt-1">Your 5-Day plan runs Monday through Friday.</p>
+        </div>
+        <a href="kitchen.html"
+          class="w-full py-2 text-center bg-white border border-brandBorder text-brandAmber rounded-xl text-xs font-semibold hover:bg-brandAlmond transition">
+          Order 1-Day Trial Weekend Meal →
+        </a>
+      </div>
+
+      <!-- DAY 7: Sunday (Off-Day on 5-Day Plan) -->
+      <div
+        class="bg-brandCream/70 rounded-2xl p-5 border border-dashed border-[#DFCBB0] flex flex-col justify-between space-y-4">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-gray-500">Sun, Sep 28</span>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-200 text-gray-600">
+              Weekend Off
+            </span>
+          </div>
+          <h3 class="text-sm font-semibold text-gray-600">No Subscription Scheduled</h3>
+          <p class="text-[11px] text-gray-400 mt-1">Upgrade to 7-Day Plan to include Sundays.</p>
+        </div>
+        <a href="kitchen.html"
+          class="w-full py-2 text-center bg-white border border-brandBorder text-brandAmber rounded-xl text-xs font-semibold hover:bg-brandAlmond transition">
+          View Sunday Feast Menu →
+        </a>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- WALLET TOP UP MODAL -->
+  <div id="topUpModal"
+    class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl border border-brandBorder max-w-md w-full p-6 shadow-2xl space-y-5">
+
+      <div class="flex items-center justify-between pb-3 border-b border-[#F0E2CA]">
+        <div class="flex items-center space-x-2">
+          <span class="text-xl">💳</span>
+          <h3 class="text-lg font-bold font-serif text-brandDark">Top Up RasoiSe Wallet</h3>
+        </div>
+        <button id="closeTopUpModal" class="text-gray-400 hover:text-gray-700 text-lg font-bold">✕</button>
+      </div>
+
+      <div class="bg-brandCream p-4 rounded-2xl border border-brandBorder flex items-center justify-between">
+        <div>
+          <p class="text-[10px] uppercase font-bold text-gray-400">Current Balance</p>
+          <p class="text-xl font-bold text-brandDark wallet-balance-amount">₹720</p>
+        </div>
+        <span
+          class="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+          Instant Recharge
+        </span>
+      </div>
+
+      <!-- Quick Preset Chips -->
+      <div>
+        <label class="block text-xs font-bold text-brandDark mb-2">Select Top-up Amount</label>
+        <div class="grid grid-cols-3 gap-3">
+          <button onclick="triggerWalletTopUp(200)"
+            class="py-2.5 px-3 bg-brandCream hover:bg-brandAlmond border border-brandBorder rounded-xl text-xs font-bold text-brandDark transition">
+            + ₹200
+          </button>
+          <button onclick="triggerWalletTopUp(500)"
+            class="py-2.5 px-3 bg-brandCream hover:bg-brandAlmond border border-brandBorder rounded-xl text-xs font-bold text-brandDark transition">
+            + ₹500
+          </button>
+          <button onclick="triggerWalletTopUp(1000)"
+            class="py-2.5 px-3 bg-[#FFF2D6] hover:bg-brandAlmond border border-brandAmber text-brandDark rounded-xl text-xs font-bold transition">
+            + ₹1,000 ⭐
+          </button>
+        </div>
+      </div>
+
+      <p class="text-[11px] text-gray-500 text-center">
+        Supported methods: Google Pay, PhonePe, Paytm, BHIM UPI & Netbanking.
+      </p>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="w-full bg-brandFooter text-white pt-8 pb-6 px-8 border-t border-[#3A1E0D] mt-16">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between text-xs text-[#BBA594] gap-4">
+      <div class="flex items-center space-x-2">
+        <span class="text-white font-serif font-bold text-base">RasoiSe</span>
+        <span>• Smart Tiffin Calendar & Wallet</span>
+      </div>
+      <div class="flex items-center space-x-6">
+        <a href="index.html" class="hover:text-white transition">Marketplace</a>
+        <a href="kitchen.html" class="hover:text-white transition">Kitchen Details</a>
+        <a href="shef-dashboard.html" class="hover:text-white transition">Chef Hub</a>
+        <a href="admin-console.html" class="hover:text-white transition">Admin Console</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- App Helper Scripts -->
+  <script src="js/app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Annapurna Kitchen - RasoiSe Tiffin Subscription</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandCream: '#FDF8F0',
+            brandAlmond: '#F8E7C8',
+            brandAmber: '#E68A00',
+            brandAmberHover: '#CF7B00',
+            brandRust: '#B45309',
+            brandDark: '#331507',
+            brandFooter: '#241005',
+            brandBorder: '#EEDBCA'
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="min-h-screen flex flex-col justify-between bg-brandCream text-brandDark">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="w-full bg-white border-b border-[#F0E2CA] py-3.5 px-8 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <!-- Left: Logo & Back Link -->
+      <div class="flex items-center space-x-6">
+        <a href="index.html" class="flex items-center space-x-1 text-2xl font-serif font-bold tracking-tight text-brandDark">
+          <span>Rasoi</span><span class="text-brandAmber">Se</span>
+        </a>
+        <a href="index.html" class="flex items-center space-x-1.5 text-xs font-medium text-gray-600 hover:text-brandAmber transition">
+          <span>←</span>
+          <span>Back to Kitchens</span>
+        </a>
+      </div>
+
+      <!-- Right Navigation Links -->
+      <nav class="flex items-center space-x-6">
+        <a href="chef-onboarding.html" class="text-xs font-medium text-gray-700 hover:text-brandAmber transition">Become a Partner Chef</a>
+        <a href="calendar.html" class="text-xs font-medium text-gray-700 hover:text-brandAmber transition flex items-center space-x-1">
+          <span>📅</span>
+          <span>My Meal Calendar</span>
+        </a>
+        <a href="shef-dashboard.html" class="flex items-center space-x-1.5 bg-brandDark hover:bg-[#4A200B] text-white text-xs font-semibold px-4 py-2 rounded-full transition shadow-sm">
+          <span>👩‍🍳</span>
+          <span>Chef Hub</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN KITCHEN SHOWCASE -->
+  <main class="max-w-7xl mx-auto px-6 lg:px-8 py-8 flex-1 w-full">
+
+    <!-- CHEF SHOWCASE BANNER -->
+    <div class="bg-gradient-to-r from-[#F8E7C8] via-[#FDF5E6] to-[#F8E7C8] border border-brandBorder rounded-3xl p-6 lg:p-8 mb-8 shadow-sm">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div class="flex items-start md:items-center space-x-5">
+          <div class="relative">
+            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&auto=format&fit=crop&q=80" alt="Chef Asha Sharma" class="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover border-4 border-white shadow-md" />
+            <span class="absolute -bottom-1 -right-1 bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full border-2 border-white shadow-sm flex items-center space-x-0.5">
+              <span>✓</span>
+              <span>FSSAI</span>
+            </span>
+          </div>
+          <div>
+            <div class="flex flex-wrap items-center gap-2 mb-1.5">
+              <h1 class="text-2xl lg:text-3xl font-serif font-bold text-brandDark">Annapurna Kitchen</h1>
+              <span class="bg-emerald-100 text-emerald-800 text-[11px] font-semibold px-2.5 py-0.5 rounded-full flex items-center space-x-1 border border-emerald-300">
+                <span>🛡️</span>
+                <span>FSSAI Verified #20822003001889</span>
+              </span>
+            </div>
+            <p class="text-xs text-[#6B4B35] font-medium mb-2.5">
+              Master Home Chef: <strong class="text-brandDark">Asha Sharma</strong> • Homestyle Gujarati & North Indian Comfort Food
+            </p>
+            <div class="flex flex-wrap items-center gap-3 text-xs">
+              <span class="flex items-center space-x-1 bg-white px-2.5 py-1 rounded-full border border-brandBorder font-semibold text-brandDark shadow-xs">
+                <span class="text-amber-500">★</span>
+                <span>4.9 (418 Reviews)</span>
+              </span>
+              <span class="flex items-center space-x-1 bg-white px-2.5 py-1 rounded-full border border-brandBorder text-gray-700 shadow-xs">
+                <span>📍</span>
+                <span>Sector 11 (450m away)</span>
+              </span>
+              <span class="flex items-center space-x-1 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 text-emerald-800 font-medium shadow-xs">
+                <span>🌱</span>
+                <span>100% Pure Vegetarian Kitchen</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-4 bg-white/80 backdrop-blur-sm border border-brandBorder p-3.5 rounded-2xl">
+          <div class="text-center px-3 border-r border-[#E8D0B5]">
+            <p class="text-[10px] uppercase font-bold text-gray-400">Meals Served</p>
+            <p class="text-lg font-bold text-brandDark">4,200+</p>
+          </div>
+          <div class="text-center px-3 border-r border-[#E8D0B5]">
+            <p class="text-[10px] uppercase font-bold text-gray-400">Preparation</p>
+            <p class="text-lg font-bold text-brandAmber">Fresh Daily</p>
+          </div>
+          <div class="text-center px-3">
+            <p class="text-[10px] uppercase font-bold text-gray-400">Hygiene Score</p>
+            <p class="text-lg font-bold text-emerald-600">5.0 / 5.0</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2-COLUMN LAYOUT -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+      <!-- LEFT COLUMN: Photo Gallery & Rotating Weekly Menu -->
+      <div class="lg:col-span-7 space-y-8">
+
+        <!-- PHOTO GALLERY -->
+        <section class="bg-white rounded-3xl border border-brandBorder p-6 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h2 class="text-xl font-bold font-serif text-brandDark">Signature Gujarati Deluxe Thali</h2>
+              <p class="text-xs text-gray-500">Cooked freshly every morning with cold-pressed oils, desi ghee, and zero soda.</p>
+            </div>
+            <span class="bg-[#FFF2D6] text-brandRust border border-[#E6C587] text-xs font-semibold px-3 py-1 rounded-full">
+              Chef's Special
+            </span>
+          </div>
+
+          <!-- Main Feature Photo -->
+          <div class="relative h-72 md:h-80 w-full rounded-2xl overflow-hidden mb-4 shadow-sm group">
+            <img id="mainGalleryImage" src="https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?w=1000&auto=format&fit=crop&q=80" alt="Gujarati Deluxe Thali" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            <div class="absolute bottom-3 left-3 bg-brandDark/85 backdrop-blur-md text-white px-3.5 py-1.5 rounded-full text-xs flex items-center space-x-2">
+              <span>🍽️</span>
+              <span id="galleryCaption">Complete Thali: 4 Soft Phulkas, Gujarati Kadhi, Sev Tameta, Basmati Rice, Salad & Sweet</span>
+            </div>
+          </div>
+
+          <!-- Interactive Thumbnails -->
+          <div class="grid grid-cols-4 gap-3">
+            <button onclick="changeGalleryImage('https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?w=1000&auto=format&fit=crop&q=80', 'Complete Deluxe Thali with rotis, sabzi, kadhi, and rice')" class="h-20 rounded-xl overflow-hidden border-2 border-brandAmber focus:outline-none transition opacity-100 hover:opacity-90">
+              <img src="https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?w=300&auto=format&fit=crop&q=80" alt="Full Thali" class="w-full h-full object-cover" />
+            </button>
+            <button onclick="changeGalleryImage('https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=1000&auto=format&fit=crop&q=80', 'Fresh Hand-rolled Phulka Rotis with Desi Gir Cow Ghee')" class="h-20 rounded-xl overflow-hidden border border-brandBorder hover:border-brandAmber focus:outline-none transition opacity-80 hover:opacity-100">
+              <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=300&auto=format&fit=crop&q=80" alt="Fresh Phulkas" class="w-full h-full object-cover" />
+            </button>
+            <button onclick="changeGalleryImage('https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=1000&auto=format&fit=crop&q=80', 'Slow-cooked Dal Tadka tempered with Hing & Jeera in Clay Pot')" class="h-20 rounded-xl overflow-hidden border border-brandBorder hover:border-brandAmber focus:outline-none transition opacity-80 hover:opacity-100">
+              <img src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=300&auto=format&fit=crop&q=80" alt="Dal Tadka" class="w-full h-full object-cover" />
+            </button>
+            <button onclick="changeGalleryImage('https://images.unsplash.com/photo-1601050690597-df0568f70950?w=1000&auto=format&fit=crop&q=80', 'Seasonal Green Sabzi with fresh garden spices and crisp salad')" class="h-20 rounded-xl overflow-hidden border border-brandBorder hover:border-brandAmber focus:outline-none transition opacity-80 hover:opacity-100">
+              <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=300&auto=format&fit=crop&q=80" alt="Seasonal Sabzi" class="w-full h-full object-cover" />
+            </button>
+          </div>
+
+          <!-- Quality Badges Grid -->
+          <div class="mt-6 pt-5 border-t border-[#F3E5D4] grid grid-cols-3 gap-3 text-center">
+            <div class="p-2.5 bg-brandCream rounded-xl border border-brandBorder">
+              <span class="text-lg">🌿</span>
+              <p class="text-[11px] font-bold text-brandDark mt-1">100% Desi Ghee & RO</p>
+              <p class="text-[10px] text-gray-500">Zero palm oil or adulterants</p>
+            </div>
+            <div class="p-2.5 bg-brandCream rounded-xl border border-brandBorder">
+              <span class="text-lg">🫓</span>
+              <p class="text-[11px] font-bold text-brandDark mt-1">Freshly Rolled Phulkas</p>
+              <p class="text-[10px] text-gray-500">Packed piping hot in foil</p>
+            </div>
+            <div class="p-2.5 bg-brandCream rounded-xl border border-brandBorder">
+              <span class="text-lg">🍲</span>
+              <p class="text-[11px] font-bold text-brandDark mt-1">Low Spice & Digestible</p>
+              <p class="text-[10px] text-gray-500">True mother's kitchen style</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- WEEKLY ROTATING MENU TABLE (MON-SUN) -->
+        <section class="bg-white rounded-3xl border border-brandBorder p-6 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h2 class="text-xl font-bold font-serif text-brandDark">Weekly Rotating Menu</h2>
+              <p class="text-xs text-gray-500">Menu changes daily so you never get bored of everyday ghar ka swaad.</p>
+            </div>
+            <span class="bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-medium px-3 py-1 rounded-full flex items-center space-x-1">
+              <span>●</span>
+              <span>Updated for This Week</span>
+            </span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="bg-[#F8E7C8]/60 text-brandDark border-b border-brandBorder">
+                  <th class="py-3 px-3.5 font-bold uppercase tracking-wider text-[11px]">Day</th>
+                  <th class="py-3 px-3 font-bold uppercase tracking-wider text-[11px]">Main Sabzi</th>
+                  <th class="py-3 px-3 font-bold uppercase tracking-wider text-[11px]">Dal / Curry</th>
+                  <th class="py-3 px-3 font-bold uppercase tracking-wider text-[11px]">Breads & Rice</th>
+                  <th class="py-3 px-3 font-bold uppercase tracking-wider text-[11px]">Sweet / Sides</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-[#F3E5D4]">
+                <tr class="hover:bg-[#FDF8F0] transition">
+                  <td class="py-3 px-3.5 font-bold text-brandDark flex items-center space-x-1.5">
+                    <span class="w-2 h-2 rounded-full bg-brandAmber"></span>
+                    <span>Monday</span>
+                  </td>
+                  <td class="py-3 px-3 font-semibold text-gray-800">Paneer Bhurji Homestyle</td>
+                  <td class="py-3 px-3 text-gray-600">Dal Makhani (Maa di Dal)</td>
+                  <td class="py-3 px-3 text-gray-600">4 Phulkas + Jeera Rice</td>
+                  <td class="py-3 px-3 text-brandRust font-medium">Boondi Raita + Salad</td>
+                </tr>
+                <tr class="hover:bg-[#FDF8F0] transition bg-[#FDF8F0]/40">
+                  <td class="py-3 px-3.5 font-bold text-brandDark flex items-center space-x-1.5">
+                    <span class="w-2 h-2 rounded-full bg-brandAmber"></span>
+                    <span>Tuesday</span>
+                  </td>
+                  <td class="py-3 px-3 font-semibold text-gray-800">Sev Tameta Nu Shaak</td>
+                  <td class="py-3 px-3 text-gray-600">Sweet-Tangy Gujarati Kadhi</td>
+                  <td class="py-3 px-3 text-gray-600">4 Ghee Phulkas + Steamed Rice</td>
+                  <td class="py-3 px-3 text-brandRust font-medium">Kachumber + Mango Chhunda</td>
+                </tr>
+                <tr class="hover:bg-[#FDF8F0] transition">
+                  <td class="py-3 px-3.5 font-bold text-brandDark flex items-center space-x-1.5">
+                    <span class="w-2 h-2 rounded-full bg-brandAmber"></span>
+                    <span>Wednesday</span>
+                  </td>
+                  <td class="py-3 px-3 font-semibold text-gray-800">Aloo Gobi Adraki</td>
+                  <td class="py-3 px-3 text-gray-600">Punjabi Rajma Masala</td>
+                  <td class="py-3 px-3 text-gray-600">4 Phulkas + Basmati Rice</td>
+                  <td class="py-3 px-3 text-brandRust font-medium">Mint-Coriander Chutney + Onion</td>
+                </tr>
+                <tr class="hover:bg-[#FDF8F0] transition bg-[#FDF8F0]/40">
+                  <td class="py-3 px-3.5 font-bold text-brandDark flex items-center space-x-1.5">
+                    <span class="w-2 h-2 rounded-full bg-brandAmber"></span>
+                    <span>Thursday</span>
+                  </td>
+                  <td class="py-3 px-3 font-semibold text-gray-800">Smoked Baingan Bharta</td>
+                  <td class="py-3 px-3 text-gray-600">Panchmel Rajasthani Dal</td>
+                  <td class="py-3 px-3 text-gray-600">4 Multigrain Rotis + Matar Pulao</td>
+                  <td class="py-3 px-3 text-brandRust font-medium">Hot Gulab Jamun (1 pc)</td>
+                </tr>
+                <tr class="hover:bg-[#FDF8F0] transition">
+                  <td class="py-3 px-3.5 font-bold text-brandDark flex items-center space-x-1.5">
+                    <span class="w-2 h-2 rounded-full bg-brandAmber"></span>
+                    <span>Friday</span>
+                  </td>
+                  <td class="py-3 px-3 font-semibold text-gray-800">Dudhi Lauki Malai Kofta</td>
+                  <td class="py-3 px-3 text-gray-600">Pindi Chole Masala</td>
+                  <td class="py-3 px-3 text-gray-600">4 Phulkas + Jeera Pulao</td>
+                  <td class="py-3 px-3 text-brandRust font-medium">Pickled Sirka Onions + Papad</td>
+                </tr>
+                <tr class="hover:bg-[#FDF8F0] transition bg-[#FDF8F0]/40">
+                  <td class="py-3 px-3.5 font-bold text-brandDark flex items-center space-x-1.5">
+                    <span class="w-2 h-2 rounded-full bg-brandAmber"></span>
+                    <span>Saturday</span>
+                  </td>
+                  <td class="py-3 px-3 font-semibold text-gray-800">Methi Matar Malai</td>
+                  <td class="py-3 px-3 text-gray-600">Yellow Moong Dal Tadka</td>
+                  <td class="py-3 px-3 text-gray-600">4 Phulkas + Steamed Rice</td>
+                  <td class="py-3 px-3 text-brandRust font-medium">Roasted Papad + Nimbu Pickle</td>
+                </tr>
+                <tr class="hover:bg-[#FDF8F0] transition">
+                  <td class="py-3 px-3.5 font-bold text-brandDark flex items-center space-x-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+                    <span>Sunday (Special)</span>
+                  </td>
+                  <td class="py-3 px-3 font-semibold text-brandAmber">Paneer Butter Masala</td>
+                  <td class="py-3 px-3 text-gray-600">Gujarati Sweet Dal</td>
+                  <td class="py-3 px-3 text-gray-600">4 Crispy Pooris + Kashmiri Pulao</td>
+                  <td class="py-3 px-3 text-emerald-700 font-bold">Shahi Moong Dal Halwa</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- RIGHT COLUMN: Sticky Booking Card -->
+      <div class="lg:col-span-5 sticky top-20">
+        <div class="bg-white rounded-3xl border border-brandBorder shadow-lg p-6 lg:p-7">
+
+          <!-- Card Header & Pricing -->
+          <div class="flex items-center justify-between pb-4 border-b border-[#F0E2CA] mb-5">
+            <div>
+              <p class="text-xs uppercase font-bold text-gray-400">Order from Kitchen</p>
+              <h3 class="text-xl font-bold font-serif text-brandDark">Annapurna Kitchen</h3>
+            </div>
+            <div class="text-right">
+              <span class="text-2xl font-bold text-brandDark">₹80</span>
+              <span class="text-xs text-gray-500">/ trial meal</span>
+            </div>
+          </div>
+
+          <!-- TWO TAB TOGGLE -->
+          <div class="grid grid-cols-2 p-1 bg-brandCream rounded-2xl border border-brandBorder mb-6">
+            <button id="tabTrialBtn" onclick="switchBookingTab('trial')" class="py-2.5 px-3 rounded-xl text-xs font-bold transition shadow-xs bg-brandAmber text-white">
+              1-Day Tasting Trial
+            </button>
+            <button id="tabSubBtn" onclick="switchBookingTab('subscription')" class="py-2.5 px-3 rounded-xl text-xs font-bold transition text-gray-600 hover:text-brandDark">
+              Monthly Subscription
+            </button>
+          </div>
+
+          <!-- TAB CONTENT 1: 1-Day Paid Tasting Trial -->
+          <div id="trialTabContent" class="space-y-5">
+            
+            <!-- Date Selector -->
+            <div>
+              <label class="block text-xs font-bold text-brandDark mb-1.5">Select Trial Date</label>
+              <div class="relative">
+                <input type="date" id="trialDate" class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs font-semibold rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brandAmber" />
+              </div>
+              <p class="text-[10px] text-gray-500 mt-1">Bookings cut off 3 hours prior to meal dispatch.</p>
+            </div>
+
+            <!-- Lunch / Dinner Toggle -->
+            <div>
+              <label class="block text-xs font-bold text-brandDark mb-1.5">Meal Slot</label>
+              <div class="grid grid-cols-2 gap-3">
+                <label class="relative flex flex-col p-3 border-2 border-brandAmber bg-[#FFF9F0] rounded-xl cursor-pointer">
+                  <input type="radio" name="trialMealSlot" value="Lunch" checked class="sr-only" onchange="updateMealSlotUI(this)">
+                  <span class="text-xs font-bold text-brandDark flex items-center justify-between">
+                    <span>☀️ Lunch</span>
+                    <span class="text-brandAmber text-sm">●</span>
+                  </span>
+                  <span class="text-[10px] text-gray-500 mt-1">Delivery: 12:30 - 1:30 PM</span>
+                </label>
+                <label class="relative flex flex-col p-3 border-2 border-[#EEDBCA] bg-white rounded-xl cursor-pointer hover:border-brandAmber transition">
+                  <input type="radio" name="trialMealSlot" value="Dinner" class="sr-only" onchange="updateMealSlotUI(this)">
+                  <span class="text-xs font-bold text-brandDark flex items-center justify-between">
+                    <span>🌙 Dinner</span>
+                    <span class="text-gray-300 text-sm">○</span>
+                  </span>
+                  <span class="text-[10px] text-gray-500 mt-1">Delivery: 7:30 - 8:30 PM</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Delivery Address / Sector -->
+            <div>
+              <label class="block text-xs font-bold text-brandDark mb-1.5">Delivery Address (Within Sector 11)</label>
+              <input type="text" id="trialAddress" placeholder="e.g. Flat 402, Tower B, Silver Oaks" value="Flat 402, Silver Oaks Society, Sector 11" class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brandAmber" />
+            </div>
+
+            <!-- Cost Breakdown -->
+            <div class="p-3.5 bg-brandCream rounded-xl border border-brandBorder space-y-2 text-xs">
+              <div class="flex justify-between text-gray-600">
+                <span>1x Gujarati Deluxe Thali Trial</span>
+                <span>₹80.00</span>
+              </div>
+              <div class="flex justify-between text-emerald-700">
+                <span>Local Hyperlocal Delivery (450m)</span>
+                <span class="font-semibold">FREE</span>
+              </div>
+              <div class="flex justify-between text-emerald-700">
+                <span>Eco-Friendly Heat Retention Box</span>
+                <span class="font-semibold">FREE</span>
+              </div>
+              <div class="pt-2 border-t border-[#EEDBCA] flex justify-between font-bold text-brandDark text-sm">
+                <span>To Pay Now</span>
+                <span class="text-brandAmber">₹80.00</span>
+              </div>
+            </div>
+
+            <!-- Checkout Button -->
+            <button id="btnTrialCheckout" onclick="processTrialCheckout()" class="w-full bg-brandAmber hover:bg-brandAmberHover text-white text-sm font-bold py-3 px-4 rounded-xl transition shadow-md flex items-center justify-center space-x-2">
+              <span>💳</span>
+              <span>Pay ₹80 & Book Tasting Trial</span>
+            </button>
+            <p class="text-[11px] text-center text-gray-500 flex items-center justify-center space-x-1">
+              <span>🔒</span>
+              <span>100% Satisfaction Guarantee. No auto-renewal.</span>
+            </p>
+          </div>
+
+          <!-- TAB CONTENT 2: Monthly Subscription -->
+          <div id="subscriptionTabContent" class="space-y-5 hidden">
+            
+            <!-- 5-Day vs 7-Day choice -->
+            <div>
+              <label class="block text-xs font-bold text-brandDark mb-1.5">Subscription Plan</label>
+              <div class="grid grid-cols-2 gap-3">
+                <label class="relative flex flex-col p-3 border-2 border-brandAmber bg-[#FFF9F0] rounded-xl cursor-pointer" id="plan5Label">
+                  <input type="radio" name="subPlan" value="5day" checked class="sr-only" onchange="updateSubPlanUI('5day')">
+                  <span class="text-xs font-bold text-brandDark flex items-center justify-between">
+                    <span>5-Day Plan</span>
+                    <span class="text-brandAmber text-sm">●</span>
+                  </span>
+                  <span class="text-[10px] text-gray-600 mt-1 font-semibold">Mon to Fri (22 meals)</span>
+                  <span class="text-[11px] text-brandAmber font-bold mt-1.5">₹1,760 / month</span>
+                </label>
+                <label class="relative flex flex-col p-3 border-2 border-[#EEDBCA] bg-white rounded-xl cursor-pointer hover:border-brandAmber transition" id="plan7Label">
+                  <input type="radio" name="subPlan" value="7day" class="sr-only" onchange="updateSubPlanUI('7day')">
+                  <span class="text-xs font-bold text-brandDark flex items-center justify-between">
+                    <span>7-Day Plan</span>
+                    <span class="text-gray-300 text-sm">○</span>
+                  </span>
+                  <span class="text-[10px] text-gray-600 mt-1 font-semibold">Mon to Sun (30 meals)</span>
+                  <span class="text-[11px] text-brandAmber font-bold mt-1.5">₹2,380 / month</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Meal Type Selector -->
+            <div>
+              <label class="block text-xs font-bold text-brandDark mb-1.5">Meal Preference</label>
+              <select id="subMealPreference" class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs font-semibold rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brandAmber">
+                <option value="lunch">Lunch Only (12:30 PM - 1:30 PM)</option>
+                <option value="dinner">Dinner Only (7:30 PM - 8:30 PM)</option>
+                <option value="both">Both Lunch & Dinner</option>
+              </select>
+            </div>
+
+            <!-- Start Date -->
+            <div>
+              <label class="block text-xs font-bold text-brandDark mb-1.5">Subscription Start Date</label>
+              <input type="date" id="subStartDate" class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs font-semibold rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brandAmber" />
+            </div>
+
+            <!-- PAUSE GUARANTEE NOTICE -->
+            <div class="p-3.5 bg-amber-50 rounded-2xl border border-amber-200 text-xs">
+              <div class="flex items-start space-x-2.5">
+                <span class="text-base text-brandAmber mt-0.5">🛡️</span>
+                <div>
+                  <h4 class="font-bold text-brandDark text-xs">100% Flexi-Pause Guarantee</h4>
+                  <p class="text-[11px] text-gray-600 leading-relaxed mt-1">
+                    Going out of town or dining out? Pause any individual meal day before <strong>8:00 AM</strong> right from your interactive calendar. Your credit of ₹80 per paused meal is never lost and remains credited to your wallet balance.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Subscribe Button -->
+            <button onclick="processSubscription()" class="w-full bg-brandAmber hover:bg-brandAmberHover text-white text-sm font-bold py-3 px-4 rounded-xl transition shadow-md flex items-center justify-center space-x-2">
+              <span>📅</span>
+              <span id="subBtnText">Start 5-Day Plan (₹1,760)</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- CONFIRMATION MODAL -->
+  <div id="bookingModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl border border-brandBorder max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-emerald-600 text-2xl">
+        ✓
+      </div>
+      <div class="text-center">
+        <h3 id="modalTitle" class="text-xl font-bold font-serif text-brandDark">Trial Meal Booked!</h3>
+        <p id="modalDesc" class="text-xs text-gray-600 mt-1 leading-relaxed">
+          Your order has been sent to Chef Asha Sharma at Annapurna Kitchen.
+        </p>
+      </div>
+
+      <div id="modalDetails" class="bg-brandCream p-4 rounded-2xl border border-brandBorder text-xs space-y-1.5 text-gray-700">
+        <div class="flex justify-between">
+          <span class="text-gray-500">Meal:</span>
+          <span class="font-bold">Gujarati Deluxe Thali</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-500">Scheduled:</span>
+          <span id="modalScheduledDate" class="font-bold">Tomorrow, Lunch (12:30 PM)</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-500">Delivery Address:</span>
+          <span id="modalAddress" class="font-bold">Flat 402, Silver Oaks</span>
+        </div>
+        <div class="flex justify-between text-emerald-700 font-bold pt-1.5 border-t border-brandBorder">
+          <span>Amount Paid:</span>
+          <span>₹80.00</span>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3 pt-2">
+        <button onclick="closeBookingModal()" class="w-1/2 py-2.5 border border-brandBorder text-gray-700 rounded-xl text-xs font-semibold hover:bg-gray-50 transition">
+          Close
+        </button>
+        <a href="calendar.html" class="w-1/2 py-2.5 bg-brandDark text-white rounded-xl text-xs font-semibold text-center hover:bg-[#4A200B] transition">
+          View in Calendar →
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="w-full bg-brandFooter text-white pt-10 pb-8 px-8 border-t border-[#3A1E0D] mt-16">
+    <div class="max-w-7xl mx-auto space-y-6">
+      <div class="flex flex-col md:flex-row items-center justify-between pb-6 border-b border-[#3D1E0C] gap-4">
+        <a href="index.html" class="text-2xl font-serif font-bold text-white tracking-tight">
+          <span>Rasoi</span><span class="text-brandAmber">Se</span>
+        </a>
+        <p class="text-xs text-[#BBA594]">
+          © 2026 RasoiSe Foodtech Pvt Ltd. All rights reserved.
+        </p>
+      </div>
+      <div class="flex flex-col md:flex-row items-center justify-between text-xs text-[#BBA594] gap-4">
+        <div class="flex items-center space-x-6">
+          <a href="index.html" class="hover:text-white transition">Home</a>
+          <a href="chef-onboarding.html" class="hover:text-white transition">Partner With Us</a>
+          <a href="calendar.html" class="hover:text-white transition">Meal Calendar</a>
+          <a href="shef-dashboard.html" class="hover:text-white transition">Chef Hub</a>
+        </div>
+        <p class="text-[11px] text-[#9E8574]">
+          Home Chef Hygiene Certification: ISO-22000 Compliant
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Page Interactivity Scripts -->
+  <script>
+    // Set default dates
+    document.addEventListener('DOMContentLoaded', () => {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const tomorrowStr = tomorrow.toISOString().split('T')[0];
+      
+      const trialDateInput = document.getElementById('trialDate');
+      if (trialDateInput) {
+        trialDateInput.value = tomorrowStr;
+        trialDateInput.min = new Date().toISOString().split('T')[0];
+      }
+
+      const subStartDateInput = document.getElementById('subStartDate');
+      if (subStartDateInput) {
+        subStartDateInput.value = tomorrowStr;
+        subStartDateInput.min = tomorrowStr;
+      }
+    });
+
+    function changeGalleryImage(src, caption) {
+      const mainImg = document.getElementById('mainGalleryImage');
+      const captionEl = document.getElementById('galleryCaption');
+      if (mainImg) mainImg.src = src;
+      if (captionEl) captionEl.innerText = caption;
+    }
+
+    function switchBookingTab(tab) {
+      const trialBtn = document.getElementById('tabTrialBtn');
+      const subBtn = document.getElementById('tabSubBtn');
+      const trialContent = document.getElementById('trialTabContent');
+      const subContent = document.getElementById('subscriptionTabContent');
+
+      if (tab === 'trial') {
+        trialBtn.className = 'py-2.5 px-3 rounded-xl text-xs font-bold transition shadow-xs bg-brandAmber text-white';
+        subBtn.className = 'py-2.5 px-3 rounded-xl text-xs font-bold transition text-gray-600 hover:text-brandDark';
+        trialContent.classList.remove('hidden');
+        subContent.classList.add('hidden');
+      } else {
+        subBtn.className = 'py-2.5 px-3 rounded-xl text-xs font-bold transition shadow-xs bg-brandAmber text-white';
+        trialBtn.className = 'py-2.5 px-3 rounded-xl text-xs font-bold transition text-gray-600 hover:text-brandDark';
+        subContent.classList.remove('hidden');
+        trialContent.classList.add('hidden');
+      }
+    }
+
+    function updateMealSlotUI(radio) {
+      const parent = radio.closest('.grid');
+      const labels = parent.querySelectorAll('label');
+      labels.forEach(lbl => {
+        const input = lbl.querySelector('input');
+        const indicator = lbl.querySelector('span > span:last-child');
+        if (input.checked) {
+          lbl.className = 'relative flex flex-col p-3 border-2 border-brandAmber bg-[#FFF9F0] rounded-xl cursor-pointer';
+          indicator.className = 'text-brandAmber text-sm';
+          indicator.innerText = '●';
+        } else {
+          lbl.className = 'relative flex flex-col p-3 border-2 border-[#EEDBCA] bg-white rounded-xl cursor-pointer hover:border-brandAmber transition';
+          indicator.className = 'text-gray-300 text-sm';
+          indicator.innerText = '○';
+        }
+      });
+    }
+
+    function updateSubPlanUI(plan) {
+      const label5 = document.getElementById('plan5Label');
+      const label7 = document.getElementById('plan7Label');
+      const btnText = document.getElementById('subBtnText');
+
+      if (plan === '5day') {
+        label5.className = 'relative flex flex-col p-3 border-2 border-brandAmber bg-[#FFF9F0] rounded-xl cursor-pointer';
+        label5.querySelector('span > span:last-child').className = 'text-brandAmber text-sm';
+        label5.querySelector('span > span:last-child').innerText = '●';
+
+        label7.className = 'relative flex flex-col p-3 border-2 border-[#EEDBCA] bg-white rounded-xl cursor-pointer hover:border-brandAmber transition';
+        label7.querySelector('span > span:last-child').className = 'text-gray-300 text-sm';
+        label7.querySelector('span > span:last-child').innerText = '○';
+
+        btnText.innerText = 'Start 5-Day Plan (₹1,760)';
+      } else {
+        label7.className = 'relative flex flex-col p-3 border-2 border-brandAmber bg-[#FFF9F0] rounded-xl cursor-pointer';
+        label7.querySelector('span > span:last-child').className = 'text-brandAmber text-sm';
+        label7.querySelector('span > span:last-child').innerText = '●';
+
+        label5.className = 'relative flex flex-col p-3 border-2 border-[#EEDBCA] bg-white rounded-xl cursor-pointer hover:border-brandAmber transition';
+        label5.querySelector('span > span:last-child').className = 'text-gray-300 text-sm';
+        label5.querySelector('span > span:last-child').innerText = '○';
+
+        btnText.innerText = 'Start 7-Day Plan (₹2,380)';
+      }
+    }
+
+    function processTrialCheckout() {
+      const dateVal = document.getElementById('trialDate').value || 'Tomorrow';
+      const slotVal = document.querySelector('input[name="trialMealSlot"]:checked')?.value || 'Lunch';
+      const addrVal = document.getElementById('trialAddress').value || 'Flat 402, Silver Oaks';
+
+      document.getElementById('modalTitle').innerText = 'Tasting Trial Confirmed!';
+      document.getElementById('modalDesc').innerText = 'Your ₹80 trial order has been confirmed with Chef Asha Sharma.';
+      document.getElementById('modalScheduledDate').innerText = `${dateVal}, ${slotVal}`;
+      document.getElementById('modalAddress').innerText = addrVal;
+
+      document.getElementById('bookingModal').classList.remove('hidden');
+    }
+
+    function processSubscription() {
+      const plan = document.querySelector('input[name="subPlan"]:checked')?.value === '7day' ? '7-Day Monthly Plan (₹2,380)' : '5-Day Monthly Plan (₹1,760)';
+      const startDate = document.getElementById('subStartDate').value || 'Tomorrow';
+
+      document.getElementById('modalTitle').innerText = 'Subscription Activated!';
+      document.getElementById('modalDesc').innerText = `You are now subscribed to ${plan}. You can pause days any time.`;
+      document.getElementById('modalScheduledDate').innerText = `Starting: ${startDate}`;
+      document.getElementById('modalAddress').innerText = 'Sector 11 Address (Saved)';
+
+      document.getElementById('bookingModal').classList.remove('hidden');
+    }
+
+    function closeBookingModal() {
+      document.getElementById('bookingModal').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>

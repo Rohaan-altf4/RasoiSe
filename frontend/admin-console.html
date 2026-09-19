@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trust & Safety Moderation - RasoiSe Admin Console</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            adminBg: '#0F0E0D',
+            adminSidebar: '#141211',
+            adminCard: '#191715',
+            adminCardBorder: '#292522',
+            adminCardHover: '#201D1A',
+            adminTextMuted: '#8A8177',
+            brandAmber: '#E68A00',
+            brandRed: '#E53E3E'
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #0F0E0D;
+      color: #ECE7E1;
+      font-family: 'Inter', sans-serif;
+    }
+    /* Custom dark scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #141211;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #2D2925;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex bg-adminBg text-[#ECE7E1]">
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="w-64 bg-adminSidebar border-r border-adminCardBorder flex flex-col justify-between p-5 min-h-screen flex-shrink-0">
+    
+    <!-- Top Branding & Navigation -->
+    <div class="space-y-7">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center space-x-3 px-1">
+        <div class="w-9 h-9 rounded-xl bg-[#593012] border border-[#8C4A1A] flex items-center justify-center font-bold text-amber-300 text-lg shadow-sm">
+          R
+        </div>
+        <div>
+          <h1 class="text-sm font-bold text-white tracking-tight leading-none">RasoiSe</h1>
+          <p class="text-[9px] uppercase tracking-wider font-bold text-[#E68A00] mt-1">ADMIN CONSOLE</p>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="space-y-1.5 text-xs font-medium">
+        
+        <!-- Moderation Hub (Active) -->
+        <a href="admin-console.html" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-[#241A12] border border-[#523319] text-[#F39C12] font-semibold transition">
+          <div class="flex items-center space-x-3">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+            </svg>
+            <span>Moderation Hub</span>
+          </div>
+          <span class="bg-[#3D2513] text-[#F39C12] text-[10px] font-bold px-2 py-0.5 rounded-md">12</span>
+        </a>
+
+        <!-- Kitchen Directory -->
+        <a href="index.html" target="_blank" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-adminTextMuted hover:text-white hover:bg-adminCard transition">
+          <div class="flex items-center space-x-3">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+            </svg>
+            <span>Kitchen Directory</span>
+          </div>
+        </a>
+
+        <!-- Complaints Queue -->
+        <a href="#" onclick="alert('Complaints Queue: 8 pending consumer escalations under review.'); return false;" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-adminTextMuted hover:text-white hover:bg-adminCard transition">
+          <div class="flex items-center space-x-3">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <span>Complaints Queue</span>
+          </div>
+          <span class="bg-[#331C14] text-red-400 text-[10px] font-bold px-2 py-0.5 rounded-md">8</span>
+        </a>
+
+        <!-- Refund Register -->
+        <a href="#" onclick="alert('Total refunds today: ₹14,240 auto-credited to customer wallets.'); return false;" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-adminTextMuted hover:text-white hover:bg-adminCard transition">
+          <div class="flex items-center space-x-3">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+            <span>Refund Register</span>
+          </div>
+        </a>
+
+        <!-- Compliance Logs -->
+        <a href="#compliance-logs" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-adminTextMuted hover:text-white hover:bg-adminCard transition">
+          <div class="flex items-center space-x-3">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+            </svg>
+            <span>Compliance Logs</span>
+          </div>
+        </a>
+
+      </nav>
+    </div>
+
+    <!-- Bottom Status Card -->
+    <div class="bg-adminCard rounded-2xl p-4 border border-adminCardBorder space-y-2">
+      <div class="flex items-center justify-between">
+        <span class="text-[11px] font-semibold text-gray-300">Console Status</span>
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+      </div>
+      <div class="text-[10px] text-adminTextMuted space-y-0.5">
+        <p>Region: <span class="text-gray-300 font-mono">IN-North-1</span></p>
+        <p>Uptime: <span class="text-gray-300 font-mono">99.98%</span></p>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- MAIN CONTENT AREA -->
+  <main class="flex-1 p-8 overflow-y-auto space-y-8">
+    
+    <!-- TOP BAR: Title, Subtitle, Moderator Pill -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-bold text-white tracking-tight">Trust & Safety Moderation</h1>
+        <p class="text-xs text-adminTextMuted mt-1">Real-time compliance monitoring, health reviews, and critical safety interventions.</p>
+      </div>
+
+      <!-- Moderator Status Pill -->
+      <div class="inline-flex items-center space-x-2 bg-[#17231A] border border-[#25422B] text-emerald-400 text-xs font-medium px-3.5 py-1.5 rounded-full">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span>Moderator-09 Active</span>
+      </div>
+    </div>
+
+    <!-- 4 METRIC STAT CARDS -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      
+      <!-- Card 1: Active Kitchens -->
+      <div class="bg-adminCard rounded-2xl p-5 border border-adminCardBorder shadow-sm relative">
+        <div class="flex items-center justify-between text-adminTextMuted">
+          <span class="text-[11px] font-bold uppercase tracking-wider">ACTIVE KITCHENS</span>
+          <svg class="w-4 h-4 text-adminTextMuted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+          </svg>
+        </div>
+        <p class="text-3xl font-bold text-white mt-2" id="statActiveKitchens">142</p>
+        <p class="text-[11px] text-emerald-400 mt-2 font-medium">
+          +4% this week <span class="text-adminTextMuted">operational home kitch...</span>
+        </p>
+      </div>
+
+      <!-- Card 2: Complaints (Amber Border Highlight) -->
+      <div class="bg-adminCard rounded-2xl p-5 border-2 border-[#8C531B] shadow-sm relative">
+        <div class="flex items-center justify-between text-adminTextMuted">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-amber-200">COMPLAINTS</span>
+          <span class="w-4 h-4 rounded-full bg-[#522D11] text-amber-400 flex items-center justify-center text-[10px] font-bold">!</span>
+        </div>
+        <p class="text-3xl font-bold text-amber-500 mt-2" id="statComplaints">12</p>
+        <p class="text-[11px] text-[#E57373] mt-2 font-medium">
+          6 requires action <span class="text-adminTextMuted">critical escalations...</span>
+        </p>
+      </div>
+
+      <!-- Card 3: Pending Review -->
+      <div class="bg-adminCard rounded-2xl p-5 border border-adminCardBorder shadow-sm relative">
+        <div class="flex items-center justify-between text-adminTextMuted">
+          <span class="text-[11px] font-bold uppercase tracking-wider">PENDING REVIEW</span>
+          <svg class="w-4 h-4 text-adminTextMuted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+          </svg>
+        </div>
+        <p class="text-3xl font-bold text-white mt-2" id="statPendingReview">8</p>
+        <p class="text-[11px] text-emerald-400 mt-2 font-medium">
+          -2 since yesterday <span class="text-adminTextMuted">kitchens flagged...</span>
+        </p>
+      </div>
+
+      <!-- Card 4: Total Refunds Today -->
+      <div class="bg-adminCard rounded-2xl p-5 border border-adminCardBorder shadow-sm relative">
+        <div class="flex items-center justify-between text-adminTextMuted">
+          <span class="text-[11px] font-bold uppercase tracking-wider">TOTAL REFUNDS TODAY</span>
+          <svg class="w-4 h-4 text-adminTextMuted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+          </svg>
+        </div>
+        <p class="text-3xl font-bold text-white mt-2" id="statTotalRefunds">₹14,240</p>
+        <p class="text-[11px] text-[#E57373] mt-2 font-medium">
+          +18% vs avg <span class="text-adminTextMuted">issued via auto-reconcile</span>
+        </p>
+      </div>
+
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="adminToast" class="fixed top-6 right-6 z-50 hidden transition-all duration-300 max-w-md">
+      <div class="bg-[#1F1916] border border-[#8C4A1A] text-white p-4 rounded-2xl shadow-2xl flex items-start space-x-3 text-xs">
+        <span class="text-amber-400 text-lg">🛡️</span>
+        <div>
+          <p class="font-bold text-amber-300" id="toastTitle">Emergency Action Executed</p>
+          <p class="text-gray-300 mt-0.5 leading-relaxed" id="toastMessage"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLAGGED REGISTERED KITCHENS SECTION -->
+    <div class="space-y-4">
+      
+      <!-- Section Header with Search Input -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="flex items-center space-x-3">
+          <h2 class="text-base font-bold text-white">Flagged Registered Kitchens</h2>
+          <span class="bg-[#2D1612] text-[#F87171] border border-[#52241E] text-[11px] font-semibold px-2.5 py-0.5 rounded-full" id="urgentActionsBadge">
+            6 Urgent Actions
+          </span>
+        </div>
+
+        <!-- Filter Input -->
+        <div class="relative w-full sm:w-72">
+          <span class="absolute left-3 top-1/2 -translate-y-1/2 text-adminTextMuted text-xs">🔍</span>
+          <input 
+            type="text" 
+            id="filterKitchensInput" 
+            placeholder="Filter by kitchen or ID..." 
+            class="w-full bg-[#171513] border border-adminCardBorder text-xs text-white rounded-xl pl-8 pr-3.5 py-2 focus:outline-none focus:border-amber-600 transition placeholder:text-gray-500"
+          />
+        </div>
+      </div>
+
+      <!-- Moderation Table Container -->
+      <div class="bg-adminCard border border-adminCardBorder rounded-2xl overflow-hidden shadow-sm">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse" id="flaggedKitchensTable">
+            <thead>
+              <tr class="border-b border-adminCardBorder text-adminTextMuted uppercase tracking-wider text-[10px] font-bold bg-[#141211]">
+                <th class="py-3.5 px-5">KITCHEN IDENTITY</th>
+                <th class="py-3.5 px-4">HYGIENE RATING</th>
+                <th class="py-3.5 px-4">COMPLAINTS</th>
+                <th class="py-3.5 px-4">STATUS</th>
+                <th class="py-3.5 px-5 text-right">EMERGENCY ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-adminCardBorder" id="flaggedTableBody">
+              <!-- Dynamically populated from /api/admin/flagged-kitchens -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RECENT COMPLIANCE AUDIT FEED -->
+    <div id="compliance-logs" class="bg-adminCard border border-adminCardBorder rounded-2xl p-6 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-adminCardBorder">
+        <div class="flex items-center space-x-2">
+          <span class="text-amber-500">📜</span>
+          <h3 class="text-sm font-bold text-white">Live Compliance Intervention Logs</h3>
+        </div>
+        <span class="text-[10px] text-adminTextMuted font-mono">Immutable Audit Trail</span>
+      </div>
+
+      <div class="space-y-2.5 max-h-60 overflow-y-auto pr-1" id="auditFeedContainer">
+        <!-- Live audit items -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- App Helper Scripts -->
+  <script src="js/app.js"></script>
+</body>
+</html>

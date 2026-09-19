@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Become a Partner Chef - RasoiSe</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandCream: '#FDF8F0',
+            brandAlmond: '#F8E7C8',
+            brandAmber: '#E68A00',
+            brandAmberHover: '#CF7B00',
+            brandRust: '#B45309',
+            brandDark: '#331507',
+            brandFooter: '#241005',
+            brandBorder: '#EEDBCA'
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="min-h-screen flex flex-col justify-between bg-brandCream text-brandDark">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="w-full bg-white border-b border-[#F0E2CA] py-3.5 px-6 lg:px-8 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-6">
+        <a href="index.html" class="flex items-center space-x-1 text-2xl font-serif font-bold tracking-tight text-brandDark">
+          <span>Rasoi</span><span class="text-brandAmber">Se</span>
+        </a>
+        <a href="index.html" class="flex items-center space-x-1.5 text-xs font-medium text-gray-600 hover:text-brandAmber transition">
+          <span>←</span>
+          <span>Back to Marketplace</span>
+        </a>
+      </div>
+
+      <nav class="flex items-center space-x-6">
+        <a href="index.html" class="text-xs font-medium text-gray-700 hover:text-brandAmber transition">Find Food</a>
+        <a href="calendar.html" class="text-xs font-medium text-gray-700 hover:text-brandAmber transition">Meal Calendar</a>
+        <a href="shef-dashboard.html" class="flex items-center space-x-1.5 bg-brandDark hover:bg-[#4A200B] text-white text-xs font-semibold px-4 py-2 rounded-full transition shadow-sm">
+          <span>👩‍🍳</span>
+          <span>Chef Hub</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN REGISTRATION CONTENT -->
+  <main class="max-w-5xl mx-auto px-6 py-10 flex-1 w-full space-y-10">
+
+    <!-- HERO HEADER -->
+    <div class="text-center max-w-2xl mx-auto space-y-3">
+      <div class="inline-flex items-center space-x-2 bg-brandAlmond/80 border border-[#DECDB3] px-3.5 py-1 rounded-full text-xs font-bold text-brandRust">
+        <span>👩‍🍳 Chef Partnership Program</span>
+      </div>
+      <h1 class="text-3xl lg:text-4xl font-serif font-bold text-brandDark leading-tight">
+        Cook from home. Nourish your neighbors. Earn on your terms.
+      </h1>
+      <p class="text-xs lg:text-sm text-[#6E4F39] leading-relaxed">
+        Join over 45+ home chefs across Sectors 10, 11, 12 & 15. We handle local deliveries, payments, and client management — you focus solely on cooking heartfelt food.
+      </p>
+    </div>
+
+    <!-- 3 TRUST / VALUE PILLARS -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div class="bg-white p-5 rounded-2xl border border-brandBorder shadow-xs flex items-start space-x-3.5">
+        <span class="text-2xl p-2.5 bg-brandCream rounded-xl border border-brandBorder">💸</span>
+        <div>
+          <h2 class="text-xs font-bold text-brandDark">0% Commission Month 1</h2>
+          <p class="text-[11px] text-gray-500 mt-0.5 leading-relaxed">Keep 100% of your customer earnings for your first 30 days of active service.</p>
+        </div>
+      </div>
+      <div class="bg-white p-5 rounded-2xl border border-brandBorder shadow-xs flex items-start space-x-3.5">
+        <span class="text-2xl p-2.5 bg-brandCream rounded-xl border border-brandBorder">⚡</span>
+        <div>
+          <h2 class="text-xs font-bold text-brandDark">Daily UPI Payouts</h2>
+          <p class="text-[11px] text-gray-500 mt-0.5 leading-relaxed">Direct daily bank settlement at 2:00 PM for all morning dispatches without waiting.</p>
+        </div>
+      </div>
+      <div class="bg-white p-5 rounded-2xl border border-brandBorder shadow-xs flex items-start space-x-3.5">
+        <span class="text-2xl p-2.5 bg-brandCream rounded-xl border border-brandBorder">🛡️</span>
+        <div>
+          <h2 class="text-xs font-bold text-brandDark">FSSAI & Packaging Kit</h2>
+          <p class="text-[11px] text-gray-500 mt-0.5 leading-relaxed">Complimentary starter kit of heat-sealed meal trays and registration guidance.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- REGISTRATION FORM CARD -->
+    <div class="bg-white rounded-3xl border border-brandBorder p-6 lg:p-10 shadow-md">
+      
+      <div class="border-b border-[#F0E2CA] pb-5 mb-8">
+        <h2 class="text-xl font-bold font-serif text-brandDark">Home Chef Application Form</h2>
+        <p class="text-xs text-gray-500 mt-1">Please provide accurate contact details for hyper-local route assignments and FSSAI vetting.</p>
+      </div>
+
+      <!-- General Feedback Banner -->
+      <div id="formFeedback" class="mb-6 hidden"></div>
+
+      <!-- FORM -->
+      <form id="chefRegisterForm" class="space-y-6" novalidate>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- Chef Full Name -->
+          <div>
+            <label for="chefName" class="block text-xs font-bold text-brandDark mb-1.5">
+              Full Legal Name <span class="text-red-500">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="chefName" 
+              name="name" 
+              placeholder="e.g. Asha Sharma" 
+              class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brandAmber transition" 
+              required 
+            />
+            <p id="nameError" class="text-[11px] text-red-600 mt-1 hidden font-semibold"></p>
+          </div>
+
+          <!-- Email Address (RFC Standard) -->
+          <div>
+            <label for="chefEmail" class="block text-xs font-bold text-brandDark mb-1.5">
+              Email Address <span class="text-red-500">*</span>
+            </label>
+            <input 
+              type="email" 
+              id="chefEmail" 
+              name="email" 
+              placeholder="e.g. asha.sharma@gmail.com" 
+              class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brandAmber transition" 
+              required 
+            />
+            <p id="emailError" class="text-[11px] text-red-600 mt-1 hidden font-semibold"></p>
+          </div>
+
+          <!-- Phone Number (10-Digit Indian) -->
+          <div>
+            <label for="chefPhone" class="block text-xs font-bold text-brandDark mb-1.5">
+              10-Digit Indian Mobile Number <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-500">+91</span>
+              <input 
+                type="tel" 
+                id="chefPhone" 
+                name="phone" 
+                maxlength="10" 
+                placeholder="9876543210" 
+                class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs rounded-xl pl-12 pr-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brandAmber transition" 
+                required 
+              />
+            </div>
+            <p id="phoneError" class="text-[11px] text-red-600 mt-1 hidden font-semibold"></p>
+          </div>
+
+          <!-- Operating Sector -->
+          <div>
+            <label for="chefSector" class="block text-xs font-bold text-brandDark mb-1.5">
+              Operating Sector / Neighborhood <span class="text-red-500">*</span>
+            </label>
+            <select 
+              id="chefSector" 
+              name="sector" 
+              class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs font-semibold rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brandAmber cursor-pointer transition" 
+              required
+            >
+              <option value="">Select your delivery sector...</option>
+              <option value="Sector 11" selected>Sector 11 (High Demand Zone)</option>
+              <option value="Sector 10">Sector 10</option>
+              <option value="Sector 12">Sector 12</option>
+              <option value="Sector 15">Sector 15</option>
+            </select>
+            <p id="sectorError" class="text-[11px] text-red-600 mt-1 hidden font-semibold"></p>
+          </div>
+
+        </div>
+
+        <!-- Tiffin Meal Price & Description -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 border-t border-[#F5E6D3]">
+          
+          <div>
+            <label for="chefPrice" class="block text-xs font-bold text-brandDark mb-1.5">
+              Standard Thali Price (₹) <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-500">₹</span>
+              <input 
+                type="number" 
+                id="chefPrice" 
+                name="price" 
+                min="40" 
+                max="300" 
+                value="80" 
+                class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs font-bold rounded-xl pl-8 pr-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brandAmber transition" 
+                required 
+              />
+            </div>
+            <p class="text-[10px] text-gray-500 mt-1">Recommended trial benchmark: ₹80 per meal.</p>
+            <p id="priceError" class="text-[11px] text-red-600 mt-1 hidden font-semibold"></p>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-brandDark mb-1.5">Kitchen Specialization</label>
+            <div class="flex items-center space-x-4 pt-2">
+              <label class="flex items-center space-x-2 text-xs font-medium cursor-pointer">
+                <input type="radio" name="dietType" value="veg" checked class="text-brandAmber">
+                <span>🌱 100% Pure Veg</span>
+              </label>
+              <label class="flex items-center space-x-2 text-xs font-medium cursor-pointer">
+                <input type="radio" name="dietType" value="nonveg" class="text-brandAmber">
+                <span>🍗 Veg & Non-Veg</span>
+              </label>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Food Photo Upload with Real-Time Preview -->
+        <div class="pt-2 border-t border-[#F5E6D3]">
+          <label class="block text-xs font-bold text-brandDark mb-1.5">
+            Signature Dish / Thali Photo (Real-Time Preview)
+          </label>
+          <p class="text-[11px] text-gray-500 mb-3">Upload a bright, appetizing photo of your homestyle thali (JPG/PNG, up to 5MB).</p>
+
+          <!-- Upload Dropzone -->
+          <div class="border-2 border-dashed border-[#DECDB3] hover:border-brandAmber bg-[#FDF8F0] rounded-2xl p-6 text-center cursor-pointer transition relative">
+            <input 
+              type="file" 
+              id="foodPhoto" 
+              name="foodPhoto" 
+              accept="image/*" 
+              class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+            />
+            <div class="space-y-2 pointer-events-none">
+              <span class="text-3xl inline-block">📸</span>
+              <p class="text-xs font-semibold text-brandDark">
+                Click to browse or drag & drop your food photo here
+              </p>
+              <p class="text-[10px] text-gray-400">JPEG, PNG, WebP up to 5 MB</p>
+            </div>
+          </div>
+          <p id="photoError" class="text-[11px] text-red-600 mt-1 hidden font-semibold"></p>
+
+          <!-- Real-Time Photo Preview Container -->
+          <div id="photoPreviewContainer" class="mt-4 p-4 bg-brandCream rounded-2xl border border-brandBorder flex items-center justify-between hidden">
+            <div class="flex items-center space-x-4">
+              <img id="photoPreview" src="" alt="Food Preview" class="w-16 h-16 rounded-xl object-cover border border-brandBorder shadow-xs" />
+              <div>
+                <p class="text-xs font-bold text-brandDark">Selected Photo:</p>
+                <p id="previewFilename" class="text-[11px] text-gray-600 font-mono"></p>
+                <span class="inline-block mt-1 text-[10px] text-emerald-700 bg-emerald-100 font-bold px-2 py-0.5 rounded-full">
+                  Ready to upload
+                </span>
+              </div>
+            </div>
+            <button type="button" id="removePhotoBtn" class="text-xs text-red-600 hover:text-red-800 font-semibold px-3 py-1.5 rounded-lg border border-red-200 hover:bg-red-50 transition">
+              Remove
+            </button>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="pt-4">
+          <button 
+            type="submit" 
+            id="btnSubmitChef" 
+            class="w-full bg-brandAmber hover:bg-brandAmberHover text-white text-sm font-bold py-3.5 px-6 rounded-xl transition shadow-md flex items-center justify-center space-x-2"
+          >
+            <span>Submit Application & Launch Kitchen</span>
+            <span>→</span>
+          </button>
+          <p class="text-[11px] text-center text-gray-500 mt-3 flex items-center justify-center space-x-1">
+            <span>🔒</span>
+            <span>By registering, you agree to adhere to RasoiSe kitchen hygiene standards.</span>
+          </p>
+        </div>
+
+      </form>
+
+    </div>
+
+  </main>
+
+  <!-- SUCCESS CONFIRMATION MODAL -->
+  <div id="registrationSuccessModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl border border-brandBorder max-w-md w-full p-7 shadow-2xl space-y-5 text-center">
+      <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-emerald-600 text-3xl">
+        🎉
+      </div>
+      <div>
+        <h3 class="text-2xl font-bold font-serif text-brandDark">Welcome to RasoiSe!</h3>
+        <p class="text-xs text-gray-600 mt-1">
+          Your kitchen profile has been registered and verified for active neighborhood orders.
+        </p>
+      </div>
+
+      <div class="bg-brandCream p-4 rounded-2xl border border-brandBorder text-xs text-left space-y-2">
+        <div class="flex justify-between">
+          <span class="text-gray-500">Registered Kitchen:</span>
+          <span id="successKitchenName" class="font-bold text-brandDark">Asha's Rasoi</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-500">Operating Sector:</span>
+          <span id="successSector" class="font-bold text-brandDark">Sector 11</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-500">Trial Meal Rate:</span>
+          <span id="successPrice" class="font-bold text-brandAmber">₹80/meal</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-500">Status:</span>
+          <span class="inline-flex items-center text-emerald-700 font-bold">Active in Directory ✓</span>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-3 pt-2">
+        <a href="index.html" class="flex-1 py-3 bg-brandAmber hover:bg-brandAmberHover text-white rounded-xl text-xs font-bold text-center transition shadow-xs">
+          View in Marketplace
+        </a>
+        <a href="shef-dashboard.html" class="flex-1 py-3 bg-brandDark hover:bg-[#4A200B] text-white rounded-xl text-xs font-bold text-center transition shadow-xs">
+          Open Chef Dashboard
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="w-full bg-brandFooter text-white pt-10 pb-8 px-8 border-t border-[#3A1E0D] mt-16">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between text-xs text-[#BBA594] gap-4">
+      <a href="index.html" class="text-2xl font-serif font-bold text-white tracking-tight">
+        <span>Rasoi</span><span class="text-brandAmber">Se</span>
+      </a>
+      <div class="flex items-center space-x-6">
+        <a href="index.html" class="hover:text-white transition">Home</a>
+        <a href="kitchen.html" class="hover:text-white transition">Sample Kitchen</a>
+        <a href="shef-dashboard.html" class="hover:text-white transition">Chef Hub</a>
+        <a href="admin-console.html" class="hover:text-white transition">Admin</a>
+      </div>
+      <p class="text-[11px] text-[#9E8574]">
+        © 2026 RasoiSe Foodtech Pvt Ltd.
+      </p>
+    </div>
+  </footer>
+
+  <!-- Validation & Submission Script -->
+  <script src="js/validation.js"></script>
+</body>
+</html>
