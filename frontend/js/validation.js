@@ -281,6 +281,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       formData.append('serviceableSectors', JSON.stringify(checkedSectors));
 
+      // Append Weekly Menu to FormData
+      formData.append('weeklyMenu', JSON.stringify(weeklyMenuData));
+
       if (photoInput && photoInput.files && photoInput.files[0]) {
         formData.append('foodPhoto', photoInput.files[0]);
       }
@@ -322,6 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
             price: data.kitchen.price || 80,
             dish: data.kitchen.dish || 'Special Homestyle Daily Thali',
             role: 'Chef',
+            weeklyMenu: data.kitchen.weeklyMenu || weeklyMenuData,
             signedInAt: new Date().toISOString()
           }));
           // Show Success Modal or Banner
@@ -382,5 +386,155 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     });
+  }
+
+  // ==========================================
+  // MODULE: 7-DAY WEEKLY MENU PLANNER
+  // ==========================================
+  const MENU_PRESETS = {
+    north_indian: {
+      monday: { main: "Paneer Bhurji Homestyle", dal: "Dal Makhani (Maa di Dal)", breadRice: "4 Phulkas + Jeera Rice", sides: "Boondi Raita + Salad" },
+      tuesday: { main: "Aloo Gobi Adraki", dal: "Dal Tadka Tempered", breadRice: "4 Ghee Phulkas + Steamed Rice", sides: "Kachumber + Chutney" },
+      wednesday: { main: "Kadhai Paneer Special", dal: "Punjabi Rajma Masala", breadRice: "4 Phulkas + Basmati Rice", sides: "Mint Chutney + Onion" },
+      thursday: { main: "Smoked Baingan Bharta", dal: "Panchmel Dal", breadRice: "4 Multigrain Rotis + Matar Pulao", sides: "Hot Gulab Jamun (1 pc)" },
+      friday: { main: "Mix Veg Handi", dal: "Pindi Chole Masala", breadRice: "4 Phulkas + Jeera Pulao", sides: "Sirka Onions + Papad" },
+      saturday: { main: "Methi Matar Malai", dal: "Yellow Dal Fry", breadRice: "4 Phulkas + Steamed Rice", sides: "Roasted Papad + Pickle" },
+      sunday: { main: "Paneer Butter Masala", dal: "Shahi Dal Makhani", breadRice: "4 Pooris + Kashmiri Pulao", sides: "Shahi Moong Dal Halwa" }
+    },
+    gujarati: {
+      monday: { main: "Sev Tameta Nu Shaak", dal: "Gujarati Kadhi", breadRice: "4 Rotlis + Steamed Rice", sides: "Kachumber + Mango Chhunda" },
+      tuesday: { main: "Ringan No Olo (Bharta)", dal: "Sweet-Sour Tuvar Dal", breadRice: "4 Bajra Rotlas + Khichdi", sides: "Ghee-Gur + Garlic Chutney" },
+      wednesday: { main: "Bateta Nu Rasawala Shaak", dal: "Moong Dal Fry", breadRice: "4 Ghee Rotlis + Jeera Rice", sides: "Sambharo + Lemon Pickle" },
+      thursday: { main: "Dudhi Chana Dal Nu Shaak", dal: "Kathiawadi Kadhi", breadRice: "4 Phulkas + Masala Bhat", sides: "Fried Chillies + Chaas" },
+      friday: { main: "Bhindi Sambhariya", dal: "Panchratna Gujarati Dal", breadRice: "4 Phulkas + Steamed Rice", sides: "Khaman Dhokla + Salad" },
+      saturday: { main: "Valor Muthia Nu Shaak", dal: "Gujarati Dal", breadRice: "4 Phulkas + Veg Pulao", sides: "Roasted Papad + Salad" },
+      sunday: { main: "Surti Undhiyu (Special)", dal: "Gujarati Meethi Dal", breadRice: "4 Puri + Kesari Shrikhand", sides: "Jalebi (2 pcs) + Chaas" }
+    },
+    punjabi: {
+      monday: { main: "Shahi Paneer", dal: "Dal Makhani", breadRice: "4 Tawa Rotis + Jeera Rice", sides: "Mixed Raita + Green Salad" },
+      tuesday: { main: "Bhindi Do Pyaza", dal: "Yellow Dal Tadka", breadRice: "4 Butter Phulkas + Steamed Rice", sides: "Amritsari Achar + Papad" },
+      wednesday: { main: "Kadhi Pakora", dal: "Punjabi Rajma Masala", breadRice: "Steamed Rice + 2 Phulkas", sides: "Kachumber Salad + Chutney" },
+      thursday: { main: "Mutter Paneer", dal: "Kali Dal Langar Wali", breadRice: "4 Phulkas + Peas Pulao", sides: "Boondi Raita + Gulab Jamun" },
+      friday: { main: "Sarson Ka Saag (Seasonal)", dal: "Chana Dal Tadka", breadRice: "Makki / Wheat Rotis + Rice", sides: "White Butter + Gur" },
+      saturday: { main: "Amritsari Chole", dal: "Moong Dal Fry", breadRice: "4 Bhatura-style Rotis + Jeera Pulao", sides: "Pickled Onions + Fried Mirchi" },
+      sunday: { main: "Butter Paneer Masala", dal: "Langar Dal Special", breadRice: "4 Laccha Parathas + Matar Pulao", sides: "Kheer + Roasted Papad" }
+    },
+    comfort: {
+      monday: { main: "Lauki Chana Dal Mild", dal: "Moong Dal Tadka", breadRice: "3 Phulkas + Steamed Rice", sides: "Cucumber Salad + Chaas" },
+      tuesday: { main: "Tinda Masala Homestyle", dal: "Toor Dal Fry", breadRice: "3 Phulkas + Brown Rice", sides: "Fresh Curd + Jeera" },
+      wednesday: { main: "Gobi Matar Light Gravy", dal: "Masoor Dal", breadRice: "3 Multigrain Rotis + Steamed Rice", sides: "Green Salad + Lemon" },
+      thursday: { main: "Torai (Ridge Gourd) Sabzi", dal: "Yellow Moong Dal", breadRice: "3 Phulkas + Veg Khichdi", sides: "Carrot Beetroot Salad" },
+      friday: { main: "Malai Kofta in Tomato Gravy", dal: "Chana Dal", breadRice: "3 Phulkas + Jeera Rice", sides: "Mint Raita" },
+      saturday: { main: "Methi Aloo Low-Oil", dal: "Mixed Dal Tadka", breadRice: "3 Phulkas + Steamed Rice", sides: "Sprouts Salad" },
+      sunday: { main: "Paneer Bhurji Homestyle", dal: "Dal Tadka", breadRice: "3 Phulkas + Vegetable Pulao", sides: "Fruit Chaat" }
+    }
+  };
+
+  // State object storing current weekly menu
+  let weeklyMenuData = JSON.parse(JSON.stringify(MENU_PRESETS.north_indian));
+  let currentActiveDay = 'monday';
+
+  const dayHeading = document.getElementById('activeDayHeading');
+  const dayMainInput = document.getElementById('dayMainInput');
+  const dayDalInput = document.getElementById('dayDalInput');
+  const dayBreadRiceInput = document.getElementById('dayBreadRiceInput');
+  const daySidesInput = document.getElementById('daySidesInput');
+  const previewTableBody = document.getElementById('weeklyPreviewTableBody');
+
+  const DAY_LABELS = {
+    monday: 'Monday',
+    tuesday: 'Tuesday',
+    wednesday: 'Wednesday',
+    thursday: 'Thursday',
+    friday: 'Friday',
+    saturday: 'Saturday',
+    sunday: 'Sunday (Special)'
+  };
+
+  window.selectDayTab = function(dayKey) {
+    if (!weeklyMenuData[dayKey]) return;
+    currentActiveDay = dayKey;
+
+    // Update active tab styles
+    document.querySelectorAll('.day-tab').forEach(btn => {
+      if (btn.dataset.day === dayKey) {
+        btn.className = 'day-tab px-3.5 py-2 rounded-xl text-xs font-bold transition shadow-xs bg-brandAmber text-white';
+      } else {
+        const isSun = btn.dataset.day === 'sunday';
+        btn.className = `day-tab px-3.5 py-2 rounded-xl text-xs font-semibold ${isSun ? 'text-emerald-800 hover:text-emerald-950' : 'text-gray-700 hover:text-brandDark'} transition`;
+      }
+    });
+
+    if (dayHeading) {
+      dayHeading.innerHTML = `
+        <span class="w-2.5 h-2.5 rounded-full ${dayKey === 'sunday' ? 'bg-emerald-600' : 'bg-brandAmber'}"></span>
+        <span>Configuring Food Items for ${DAY_LABELS[dayKey]}</span>
+      `;
+    }
+
+    // Populate inputs
+    const item = weeklyMenuData[dayKey] || {};
+    if (dayMainInput) dayMainInput.value = item.main || '';
+    if (dayDalInput) dayDalInput.value = item.dal || '';
+    if (dayBreadRiceInput) dayBreadRiceInput.value = item.breadRice || '';
+    if (daySidesInput) daySidesInput.value = item.sides || '';
+  };
+
+  window.loadMenuPreset = function(presetKey) {
+    if (!MENU_PRESETS[presetKey]) return;
+    weeklyMenuData = JSON.parse(JSON.stringify(MENU_PRESETS[presetKey]));
+    selectDayTab(currentActiveDay);
+    renderWeeklyPreviewTable();
+  };
+
+  function updateActiveDayFromInputs() {
+    if (!weeklyMenuData[currentActiveDay]) {
+      weeklyMenuData[currentActiveDay] = {};
+    }
+    if (dayMainInput) weeklyMenuData[currentActiveDay].main = dayMainInput.value.trim();
+    if (dayDalInput) weeklyMenuData[currentActiveDay].dal = dayDalInput.value.trim();
+    if (dayBreadRiceInput) weeklyMenuData[currentActiveDay].breadRice = dayBreadRiceInput.value.trim();
+    if (daySidesInput) weeklyMenuData[currentActiveDay].sides = daySidesInput.value.trim();
+
+    renderWeeklyPreviewTable();
+  }
+
+  if (dayMainInput) dayMainInput.addEventListener('input', updateActiveDayFromInputs);
+  if (dayDalInput) dayDalInput.addEventListener('input', updateActiveDayFromInputs);
+  if (dayBreadRiceInput) dayBreadRiceInput.addEventListener('input', updateActiveDayFromInputs);
+  if (daySidesInput) daySidesInput.addEventListener('input', updateActiveDayFromInputs);
+
+  function renderWeeklyPreviewTable() {
+    if (!previewTableBody) return;
+    previewTableBody.innerHTML = '';
+
+    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
+    days.forEach((dayKey, idx) => {
+      const item = weeklyMenuData[dayKey] || { main: '-', dal: '-', breadRice: '-', sides: '-' };
+      const isSun = dayKey === 'sunday';
+      const tr = document.createElement('tr');
+      tr.className = `hover:bg-[#FDF8F0] transition cursor-pointer ${idx % 2 === 1 ? 'bg-[#FDF8F0]/30' : ''} ${currentActiveDay === dayKey ? 'bg-amber-50/60 font-semibold' : ''}`;
+      tr.onclick = () => selectDayTab(dayKey);
+
+      tr.innerHTML = `
+        <td class="py-2.5 px-3 font-bold ${isSun ? 'text-emerald-700' : 'text-brandDark'} flex items-center space-x-1.5 whitespace-nowrap">
+          <span class="w-2 h-2 rounded-full ${isSun ? 'bg-emerald-600' : 'bg-brandAmber'}"></span>
+          <span>${DAY_LABELS[dayKey]}</span>
+        </td>
+        <td class="py-2.5 px-3 font-medium text-gray-800">${item.main || '<span class="text-gray-400 italic">Not set</span>'}</td>
+        <td class="py-2.5 px-3 text-gray-600">${item.dal || '<span class="text-gray-400 italic">Not set</span>'}</td>
+        <td class="py-2.5 px-3 text-gray-600">${item.breadRice || '<span class="text-gray-400 italic">Not set</span>'}</td>
+        <td class="py-2.5 px-3 ${isSun ? 'text-emerald-700 font-semibold' : 'text-brandRust font-medium'}">${item.sides || '<span class="text-gray-400 italic">-</span>'}</td>
+      `;
+
+      previewTableBody.appendChild(tr);
+    });
+  }
+
+  // Initialize weekly menu UI on load
+  if (previewTableBody) {
+    selectDayTab('monday');
+    renderWeeklyPreviewTable();
   }
 });

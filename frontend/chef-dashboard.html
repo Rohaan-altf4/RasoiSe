@@ -98,6 +98,10 @@
 
       <!-- Action Buttons -->
       <div class="flex items-center space-x-3">
+        <button onclick="openMenuEditModal()" class="bg-white border border-brandBorder hover:bg-brandAlmond/50 text-brandDark text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center space-x-1.5 shadow-xs">
+          <span>📅</span>
+          <span>Manage Weekly Menu</span>
+        </button>
         <button onclick="window.print()" class="bg-white border border-brandBorder hover:bg-gray-50 text-brandDark text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center space-x-1.5 shadow-xs">
           <span>🖨️</span>
           <span>Print Manifest</span>
@@ -340,6 +344,47 @@
       </div>
     </div>
 
+    <!-- WEEKLY MENU & FOOD ITEMS MANAGEMENT CARD -->
+    <div class="bg-white rounded-3xl border border-brandBorder shadow-sm p-6 lg:p-7">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#F0E2CA] mb-5">
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="text-xl">📅</span>
+            <h3 class="text-lg font-bold font-serif text-brandDark">Active Weekly Rotating Menu</h3>
+            <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-300">
+              Live for Subscribers
+            </span>
+          </div>
+          <p class="text-xs text-gray-500 mt-0.5">
+            Dishes prepared each day for neighborhood lunch tiffins. Changes sync automatically to storefront & calendar.
+          </p>
+        </div>
+
+        <button onclick="openMenuEditModal()" class="bg-brandAmber hover:bg-brandAmberHover text-white text-xs font-semibold px-4 py-2 rounded-xl transition flex items-center space-x-1.5 shadow-xs whitespace-nowrap self-start sm:self-auto">
+          <span>✏️</span>
+          <span>Edit Food Items</span>
+        </button>
+      </div>
+
+      <!-- Weekly Schedule Table -->
+      <div class="overflow-x-auto rounded-2xl border border-brandBorder">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="bg-[#F8E7C8]/60 text-brandDark border-b border-brandBorder uppercase tracking-wider font-bold text-[10px]">
+              <th class="py-3 px-3.5">Day</th>
+              <th class="py-3 px-3">Main Sabzi / Entree</th>
+              <th class="py-3 px-3">Dal / Curry</th>
+              <th class="py-3 px-3">Breads & Rice</th>
+              <th class="py-3 px-3">Sweet / Sides</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#F3E5D4]" id="dashboardMenuTbody">
+            <!-- Populated dynamically via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- BOTTOM CARD: TODAY'S FULFILLMENTS & SETTLEMENT -->
     <div class="bg-gradient-to-r from-[#F8E7C8] via-[#FAF0DC] to-[#F8E7C8] rounded-3xl border border-brandBorder p-6 lg:p-7 shadow-sm">
       <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
@@ -382,6 +427,104 @@
 
   </main>
 
+  <!-- EDIT WEEKLY MENU MODAL -->
+  <div id="editMenuModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl border border-brandBorder max-w-2xl w-full p-6 lg:p-7 shadow-2xl space-y-5">
+      
+      <div class="flex items-center justify-between pb-3 border-b border-[#F0E2CA]">
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="text-xl">📅</span>
+            <h3 class="text-lg font-bold font-serif text-brandDark">Edit Weekly Food Items</h3>
+          </div>
+          <p class="text-xs text-gray-500 mt-0.5">Customize daily rotating dishes served Monday through Sunday.</p>
+        </div>
+        <button onclick="closeMenuEditModal()" class="text-gray-400 hover:text-gray-700 text-lg font-bold">✕</button>
+      </div>
+
+      <!-- Quick Presets -->
+      <div class="flex flex-wrap items-center gap-1.5 text-xs bg-brandCream p-2.5 rounded-xl border border-brandBorder">
+        <span class="text-[11px] font-bold text-gray-500 mr-1">Load Preset:</span>
+        <button type="button" onclick="loadDashboardMenuPreset('north_indian')" class="px-2.5 py-1 bg-white hover:bg-brandAlmond border border-brandBorder text-brandDark rounded-lg font-semibold text-[11px] transition shadow-2xs">
+          🍛 North Indian
+        </button>
+        <button type="button" onclick="loadDashboardMenuPreset('gujarati')" class="px-2.5 py-1 bg-white hover:bg-brandAlmond border border-brandBorder text-brandDark rounded-lg font-semibold text-[11px] transition shadow-2xs">
+          🫓 Gujarati
+        </button>
+        <button type="button" onclick="loadDashboardMenuPreset('punjabi')" class="px-2.5 py-1 bg-white hover:bg-brandAlmond border border-brandBorder text-brandDark rounded-lg font-semibold text-[11px] transition shadow-2xs">
+          🌾 Punjabi
+        </button>
+        <button type="button" onclick="loadDashboardMenuPreset('comfort')" class="px-2.5 py-1 bg-white hover:bg-brandAlmond border border-brandBorder text-brandDark rounded-lg font-semibold text-[11px] transition shadow-2xs">
+          🥗 Light Comfort
+        </button>
+      </div>
+
+      <!-- Day Selection Tabs -->
+      <div class="flex overflow-x-auto gap-1.5 p-1.5 bg-[#FAF3E8] rounded-2xl border border-brandBorder">
+        <button type="button" onclick="selectDashboardEditDay('monday')" class="dash-day-tab px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-xs bg-brandAmber text-white" data-day="monday">
+          Mon
+        </button>
+        <button type="button" onclick="selectDashboardEditDay('tuesday')" class="dash-day-tab px-3 py-1.5 rounded-xl text-xs font-semibold text-gray-700 hover:text-brandDark transition" data-day="tuesday">
+          Tue
+        </button>
+        <button type="button" onclick="selectDashboardEditDay('wednesday')" class="dash-day-tab px-3 py-1.5 rounded-xl text-xs font-semibold text-gray-700 hover:text-brandDark transition" data-day="wednesday">
+          Wed
+        </button>
+        <button type="button" onclick="selectDashboardEditDay('thursday')" class="dash-day-tab px-3 py-1.5 rounded-xl text-xs font-semibold text-gray-700 hover:text-brandDark transition" data-day="thursday">
+          Thu
+        </button>
+        <button type="button" onclick="selectDashboardEditDay('friday')" class="dash-day-tab px-3 py-1.5 rounded-xl text-xs font-semibold text-gray-700 hover:text-brandDark transition" data-day="friday">
+          Fri
+        </button>
+        <button type="button" onclick="selectDashboardEditDay('saturday')" class="dash-day-tab px-3 py-1.5 rounded-xl text-xs font-semibold text-gray-700 hover:text-brandDark transition" data-day="saturday">
+          Sat
+        </button>
+        <button type="button" onclick="selectDashboardEditDay('sunday')" class="dash-day-tab px-3 py-1.5 rounded-xl text-xs font-semibold text-emerald-800 hover:text-emerald-950 transition" data-day="sunday">
+          Sun
+        </button>
+      </div>
+
+      <!-- Inputs for Selected Day -->
+      <div class="bg-brandCream border border-brandBorder rounded-2xl p-4 space-y-3">
+        <h4 id="dashEditDayHeading" class="text-xs font-bold text-brandDark uppercase tracking-wider flex items-center space-x-1.5">
+          <span class="w-2.5 h-2.5 rounded-full bg-brandAmber"></span>
+          <span>Editing Dishes for Monday</span>
+        </h4>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label class="block text-[11px] font-bold text-brandDark mb-1">Main Sabzi / Entree</label>
+            <input type="text" id="dashEditMain" placeholder="e.g. Paneer Bhurji" class="w-full bg-white border border-[#DFCBB0] text-brandDark text-xs rounded-xl px-3 py-2 focus:ring-2 focus:ring-brandAmber focus:outline-none" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-brandDark mb-1">Dal / Curry / Kadhi</label>
+            <input type="text" id="dashEditDal" placeholder="e.g. Dal Makhani" class="w-full bg-white border border-[#DFCBB0] text-brandDark text-xs rounded-xl px-3 py-2 focus:ring-2 focus:ring-brandAmber focus:outline-none" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-brandDark mb-1">Breads & Rice</label>
+            <input type="text" id="dashEditBreadRice" placeholder="e.g. 4 Phulkas + Jeera Rice" class="w-full bg-white border border-[#DFCBB0] text-brandDark text-xs rounded-xl px-3 py-2 focus:ring-2 focus:ring-brandAmber focus:outline-none" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-brandDark mb-1">Sweet / Sides / Salad</label>
+            <input type="text" id="dashEditSides" placeholder="e.g. Boondi Raita + Salad" class="w-full bg-white border border-[#DFCBB0] text-brandDark text-xs rounded-xl px-3 py-2 focus:ring-2 focus:ring-brandAmber focus:outline-none" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center justify-end space-x-3 pt-2">
+        <button type="button" onclick="closeMenuEditModal()" class="px-4 py-2 border border-gray-300 rounded-xl text-xs font-semibold text-gray-700 hover:bg-gray-50 transition">
+          Cancel
+        </button>
+        <button type="button" id="btnSaveWeeklyMenu" onclick="saveWeeklyMenuSchedule()" class="px-5 py-2.5 bg-brandAmber hover:bg-brandAmberHover text-white rounded-xl text-xs font-bold transition shadow-xs flex items-center space-x-1.5">
+          <span>Save Weekly Schedule</span>
+          <span>✓</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- FOOTER -->
   <footer class="w-full bg-brandFooter text-white pt-8 pb-6 px-8 border-t border-[#3A1E0D] mt-12">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between text-xs text-[#BBA594] gap-4">
@@ -401,12 +544,245 @@
     const totalRows = 6;
     let totalRevenue = 2720;
 
+    // Active Dashboard Weekly Menu State
+    let chefWeeklyMenu = {
+      monday: { main: "Paneer Bhurji Homestyle", dal: "Dal Makhani (Maa di Dal)", breadRice: "4 Phulkas + Jeera Rice", sides: "Boondi Raita + Salad" },
+      tuesday: { main: "Sev Tameta Nu Shaak", dal: "Sweet-Tangy Gujarati Kadhi", breadRice: "4 Ghee Phulkas + Steamed Rice", sides: "Kachumber + Mango Chhunda" },
+      wednesday: { main: "Aloo Gobi Adraki", dal: "Punjabi Rajma Masala", breadRice: "4 Phulkas + Basmati Rice", sides: "Mint-Coriander Chutney + Onion" },
+      thursday: { main: "Smoked Baingan Bharta", dal: "Panchmel Rajasthani Dal", breadRice: "4 Multigrain Rotis + Matar Pulao", sides: "Hot Gulab Jamun (1 pc)" },
+      friday: { main: "Dudhi Lauki Malai Kofta", dal: "Pindi Chole Masala", breadRice: "4 Phulkas + Jeera Pulao", sides: "Pickled Sirka Onions + Papad" },
+      saturday: { main: "Methi Matar Malai", dal: "Yellow Moong Dal Tadka", breadRice: "4 Phulkas + Steamed Rice", sides: "Roasted Papad + Nimbu Pickle" },
+      sunday: { main: "Paneer Butter Masala", dal: "Gujarati Sweet Dal", breadRice: "4 Crispy Pooris + Kashmiri Pulao", sides: "Shahi Moong Dal Halwa" }
+    };
+    let activeEditDay = 'monday';
+
+    const DASH_DAY_LABELS = {
+      monday: 'Monday',
+      tuesday: 'Tuesday',
+      wednesday: 'Wednesday',
+      thursday: 'Thursday',
+      friday: 'Friday',
+      saturday: 'Saturday',
+      sunday: 'Sunday (Special)'
+    };
+
     document.addEventListener('DOMContentLoaded', () => {
       const today = new Date();
       const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
       const dateEl = document.getElementById('currentDateStr');
       if (dateEl) dateEl.innerText = today.toLocaleDateString('en-IN', options);
+
+      loadChefWeeklyMenu();
     });
+
+    async function loadChefWeeklyMenu() {
+      let storedUser = null;
+      try {
+        const raw = localStorage.getItem('rasoise_user_profile');
+        if (raw) storedUser = JSON.parse(raw);
+      } catch(e) {}
+
+      let kitchenId = storedUser?.kitchenId || 1;
+
+      try {
+        const res = await fetch(`/api/kitchens/${kitchenId}`);
+        const data = await res.json();
+        const k = data.kitchen || (data.length ? data[0] : null);
+        if (k && k.weeklyMenu) {
+          chefWeeklyMenu = k.weeklyMenu;
+        } else if (storedUser?.weeklyMenu) {
+          chefWeeklyMenu = storedUser.weeklyMenu;
+        }
+      } catch (err) {
+        console.warn('Could not fetch chef weekly menu from server:', err);
+        if (storedUser?.weeklyMenu) chefWeeklyMenu = storedUser.weeklyMenu;
+      }
+
+      renderDashboardWeeklyTable();
+    }
+
+    function renderDashboardWeeklyTable() {
+      const tbody = document.getElementById('dashboardMenuTbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      const dayKeys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
+      dayKeys.forEach((dKey, idx) => {
+        const item = chefWeeklyMenu[dKey] || {};
+        const isSun = dKey === 'sunday';
+        const isEven = idx % 2 === 1;
+
+        const tr = document.createElement('tr');
+        tr.className = `hover:bg-[#FDF8F0] transition ${isEven ? 'bg-[#FDF8F0]/30' : ''}`;
+
+        tr.innerHTML = `
+          <td class="py-3 px-3.5 font-bold ${isSun ? 'text-emerald-700' : 'text-brandDark'} flex items-center space-x-1.5 whitespace-nowrap">
+            <span class="w-2 h-2 rounded-full ${isSun ? 'bg-emerald-600' : 'bg-brandAmber'}"></span>
+            <span>${DASH_DAY_LABELS[dKey]}</span>
+          </td>
+          <td class="py-3 px-3 font-semibold ${isSun ? 'text-brandAmber' : 'text-gray-800'}">${item.main || 'Homestyle Special Sabzi'}</td>
+          <td class="py-3 px-3 text-gray-600">${item.dal || 'Dal Tadka'}</td>
+          <td class="py-3 px-3 text-gray-600">${item.breadRice || '4 Phulkas + Rice'}</td>
+          <td class="py-3 px-3 ${isSun ? 'text-emerald-700 font-bold' : 'text-brandRust font-medium'}">${item.sides || 'Salad & Chutney'}</td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    window.openMenuEditModal = function() {
+      const modal = document.getElementById('editMenuModal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        selectDashboardEditDay('monday');
+      }
+    };
+
+    window.closeMenuEditModal = function() {
+      const modal = document.getElementById('editMenuModal');
+      if (modal) modal.classList.add('hidden');
+    };
+
+    window.selectDashboardEditDay = function(dKey) {
+      activeEditDay = dKey;
+
+      document.querySelectorAll('.dash-day-tab').forEach(btn => {
+        if (btn.dataset.day === dKey) {
+          btn.className = 'dash-day-tab px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-xs bg-brandAmber text-white';
+        } else {
+          const isSun = btn.dataset.day === 'sunday';
+          btn.className = `dash-day-tab px-3 py-1.5 rounded-xl text-xs font-semibold ${isSun ? 'text-emerald-800 hover:text-emerald-950' : 'text-gray-700 hover:text-brandDark'} transition`;
+        }
+      });
+
+      const heading = document.getElementById('dashEditDayHeading');
+      if (heading) {
+        heading.innerHTML = `
+          <span class="w-2.5 h-2.5 rounded-full ${dKey === 'sunday' ? 'bg-emerald-600' : 'bg-brandAmber'}"></span>
+          <span>Editing Dishes for ${DASH_DAY_LABELS[dKey]}</span>
+        `;
+      }
+
+      const item = chefWeeklyMenu[dKey] || {};
+      document.getElementById('dashEditMain').value = item.main || '';
+      document.getElementById('dashEditDal').value = item.dal || '';
+      document.getElementById('dashEditBreadRice').value = item.breadRice || '';
+      document.getElementById('dashEditSides').value = item.sides || '';
+    };
+
+    function saveInputsToCurrentDay() {
+      if (!chefWeeklyMenu[activeEditDay]) chefWeeklyMenu[activeEditDay] = {};
+      chefWeeklyMenu[activeEditDay].main = document.getElementById('dashEditMain').value.trim();
+      chefWeeklyMenu[activeEditDay].dal = document.getElementById('dashEditDal').value.trim();
+      chefWeeklyMenu[activeEditDay].breadRice = document.getElementById('dashEditBreadRice').value.trim();
+      chefWeeklyMenu[activeEditDay].sides = document.getElementById('dashEditSides').value.trim();
+    }
+
+    ['dashEditMain', 'dashEditDal', 'dashEditBreadRice', 'dashEditSides'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('input', saveInputsToCurrentDay);
+    });
+
+    const DASH_PRESETS = {
+      north_indian: {
+        monday: { main: "Paneer Bhurji Homestyle", dal: "Dal Makhani (Maa di Dal)", breadRice: "4 Phulkas + Jeera Rice", sides: "Boondi Raita + Salad" },
+        tuesday: { main: "Aloo Gobi Adraki", dal: "Dal Tadka Tempered", breadRice: "4 Ghee Phulkas + Steamed Rice", sides: "Kachumber + Chutney" },
+        wednesday: { main: "Kadhai Paneer Special", dal: "Punjabi Rajma Masala", breadRice: "4 Phulkas + Basmati Rice", sides: "Mint Chutney + Onion" },
+        thursday: { main: "Smoked Baingan Bharta", dal: "Panchmel Dal", breadRice: "4 Multigrain Rotis + Matar Pulao", sides: "Hot Gulab Jamun (1 pc)" },
+        friday: { main: "Mix Veg Handi", dal: "Pindi Chole Masala", breadRice: "4 Phulkas + Jeera Pulao", sides: "Sirka Onions + Papad" },
+        saturday: { main: "Methi Matar Malai", dal: "Yellow Dal Fry", breadRice: "4 Phulkas + Steamed Rice", sides: "Roasted Papad + Pickle" },
+        sunday: { main: "Paneer Butter Masala", dal: "Shahi Dal Makhani", breadRice: "4 Pooris + Kashmiri Pulao", sides: "Shahi Moong Dal Halwa" }
+      },
+      gujarati: {
+        monday: { main: "Sev Tameta Nu Shaak", dal: "Gujarati Kadhi", breadRice: "4 Rotlis + Steamed Rice", sides: "Kachumber + Mango Chhunda" },
+        tuesday: { main: "Ringan No Olo (Bharta)", dal: "Sweet-Sour Tuvar Dal", breadRice: "4 Bajra Rotlas + Khichdi", sides: "Ghee-Gur + Garlic Chutney" },
+        wednesday: { main: "Bateta Nu Rasawala Shaak", dal: "Moong Dal Fry", breadRice: "4 Ghee Rotlis + Jeera Rice", sides: "Sambharo + Lemon Pickle" },
+        thursday: { main: "Dudhi Chana Dal Nu Shaak", dal: "Kathiawadi Kadhi", breadRice: "4 Phulkas + Masala Bhat", sides: "Fried Chillies + Chaas" },
+        friday: { main: "Bhindi Sambhariya", dal: "Panchratna Gujarati Dal", breadRice: "4 Phulkas + Steamed Rice", sides: "Khaman Dhokla + Salad" },
+        saturday: { main: "Valor Muthia Nu Shaak", dal: "Gujarati Dal", breadRice: "4 Phulkas + Veg Pulao", sides: "Roasted Papad + Salad" },
+        sunday: { main: "Surti Undhiyu (Special)", dal: "Gujarati Meethi Dal", breadRice: "4 Puri + Kesari Shrikhand", sides: "Jalebi (2 pcs) + Chaas" }
+      },
+      punjabi: {
+        monday: { main: "Shahi Paneer", dal: "Dal Makhani", breadRice: "4 Tawa Rotis + Jeera Rice", sides: "Mixed Raita + Green Salad" },
+        tuesday: { main: "Bhindi Do Pyaza", dal: "Yellow Dal Tadka", breadRice: "4 Butter Phulkas + Steamed Rice", sides: "Amritsari Achar + Papad" },
+        wednesday: { main: "Kadhi Pakora", dal: "Punjabi Rajma Masala", breadRice: "Steamed Rice + 2 Phulkas", sides: "Kachumber Salad + Chutney" },
+        thursday: { main: "Mutter Paneer", dal: "Kali Dal Langar Wali", breadRice: "4 Phulkas + Peas Pulao", sides: "Boondi Raita + Gulab Jamun" },
+        friday: { main: "Sarson Ka Saag (Seasonal)", dal: "Chana Dal Tadka", breadRice: "Makki / Wheat Rotis + Rice", sides: "White Butter + Gur" },
+        saturday: { main: "Amritsari Chole", dal: "Moong Dal Fry", breadRice: "4 Bhatura-style Rotis + Jeera Pulao", sides: "Pickled Onions + Fried Mirchi" },
+        sunday: { main: "Butter Paneer Masala", dal: "Langar Dal Special", breadRice: "4 Laccha Parathas + Matar Pulao", sides: "Kheer + Roasted Papad" }
+      },
+      comfort: {
+        monday: { main: "Lauki Chana Dal Mild", dal: "Moong Dal Tadka", breadRice: "3 Phulkas + Steamed Rice", sides: "Cucumber Salad + Chaas" },
+        tuesday: { main: "Tinda Masala Homestyle", dal: "Toor Dal Fry", breadRice: "3 Phulkas + Brown Rice", sides: "Fresh Curd + Jeera" },
+        wednesday: { main: "Gobi Matar Light Gravy", dal: "Masoor Dal", breadRice: "3 Multigrain Rotis + Steamed Rice", sides: "Green Salad + Lemon" },
+        thursday: { main: "Torai (Ridge Gourd) Sabzi", dal: "Yellow Moong Dal", breadRice: "3 Phulkas + Veg Khichdi", sides: "Carrot Beetroot Salad" },
+        friday: { main: "Malai Kofta in Tomato Gravy", dal: "Chana Dal", breadRice: "3 Phulkas + Jeera Rice", sides: "Mint Raita" },
+        saturday: { main: "Methi Aloo Low-Oil", dal: "Mixed Dal Tadka", breadRice: "3 Phulkas + Steamed Rice", sides: "Sprouts Salad" },
+        sunday: { main: "Paneer Bhurji Homestyle", dal: "Dal Tadka", breadRice: "3 Phulkas + Vegetable Pulao", sides: "Fruit Chaat" }
+      }
+    };
+
+    window.loadDashboardMenuPreset = function(pKey) {
+      if (DASH_PRESETS[pKey]) {
+        chefWeeklyMenu = JSON.parse(JSON.stringify(DASH_PRESETS[pKey]));
+        selectDashboardEditDay(activeEditDay);
+      }
+    };
+
+    window.saveWeeklyMenuSchedule = async function() {
+      saveInputsToCurrentDay();
+
+      let storedUser = null;
+      try {
+        const raw = localStorage.getItem('rasoise_user_profile');
+        if (raw) storedUser = JSON.parse(raw);
+      } catch(e) {}
+
+      let kitchenId = storedUser?.kitchenId || 1;
+      const saveBtn = document.getElementById('btnSaveWeeklyMenu');
+
+      if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = `<span>Saving...</span>`;
+      }
+
+      try {
+        const res = await fetch(`/api/kitchens/${kitchenId}/menu`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ kitchenId, weeklyMenu: chefWeeklyMenu })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          if (storedUser) {
+            storedUser.weeklyMenu = chefWeeklyMenu;
+            localStorage.setItem('rasoise_user_profile', JSON.stringify(storedUser));
+          }
+          renderDashboardWeeklyTable();
+          closeMenuEditModal();
+          showToast('✅ Weekly food items updated successfully!');
+        } else {
+          alert('Failed to save weekly menu: ' + (data.error || 'Server error'));
+        }
+      } catch (err) {
+        console.error('Error saving weekly menu:', err);
+        // Fallback local save
+        if (storedUser) {
+          storedUser.weeklyMenu = chefWeeklyMenu;
+          localStorage.setItem('rasoise_user_profile', JSON.stringify(storedUser));
+        }
+        renderDashboardWeeklyTable();
+        closeMenuEditModal();
+        showToast('✅ Weekly food items saved to session!');
+      } finally {
+        if (saveBtn) {
+          saveBtn.disabled = false;
+          saveBtn.innerHTML = `<span>Save Weekly Schedule</span><span>✓</span>`;
+        }
+      }
+    };
 
     function showToast(message) {
       const toast = document.getElementById('toastNotification');

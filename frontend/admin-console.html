@@ -95,15 +95,15 @@
           </div>
         </a>
 
-        <!-- Complaints Queue -->
-        <a href="#" onclick="alert('Complaints Queue: 8 pending consumer escalations under review.'); return false;" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-adminTextMuted hover:text-white hover:bg-adminCard transition">
+        <!-- Complaints Queue / Customer Reviews -->
+        <a href="#" onclick="openAdminReviewsModal(); return false;" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-adminTextMuted hover:text-white hover:bg-adminCard transition">
           <div class="flex items-center space-x-3">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
             </svg>
-            <span>Complaints Queue</span>
+            <span>Customer Reviews & Queue</span>
           </div>
-          <span class="bg-[#331C14] text-red-400 text-[10px] font-bold px-2 py-0.5 rounded-md">8</span>
+          <span class="bg-[#331C14] text-red-400 text-[10px] font-bold px-2 py-0.5 rounded-md" id="sidebarReviewsCount">Live</span>
         </a>
 
         <!-- Refund Register -->
@@ -306,6 +306,58 @@
 
       <div class="space-y-2.5 max-h-60 overflow-y-auto pr-1" id="auditFeedContainer">
         <!-- Live audit items -->
+      </div>
+    </div>
+
+    <!-- ADMIN CUSTOMER REVIEWS & HYGIENE ESCALATIONS MODAL -->
+    <div id="adminReviewsModal" class="fixed inset-0 bg-black/75 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden overflow-y-auto">
+      <div class="bg-adminSidebar border border-adminCardBorder max-w-2xl w-full rounded-3xl p-6 sm:p-7 shadow-2xl space-y-5 my-8">
+        
+        <!-- Header -->
+        <div class="flex items-start justify-between pb-3.5 border-b border-adminCardBorder">
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="text-amber-500">★</span>
+              <h3 class="text-lg font-bold text-white tracking-tight" id="adminReviewsModalTitle">Customer Hygiene & Quality Reviews</h3>
+            </div>
+            <p class="text-xs text-adminTextMuted mt-0.5">Live consumer feedback driving hygiene rating calculations & complaints queue.</p>
+          </div>
+          <button onclick="closeAdminReviewsModal()" class="w-8 h-8 rounded-full bg-[#1F1C1A] text-adminTextMuted hover:text-white flex items-center justify-center font-bold text-base transition cursor-pointer">
+            ✕
+          </button>
+        </div>
+
+        <!-- Filter & Summary Bar -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-adminCard p-3.5 rounded-2xl border border-adminCardBorder text-xs">
+          <div class="flex items-center space-x-2">
+            <span class="text-adminTextMuted">Filter Kitchen:</span>
+            <select id="adminReviewKitchenFilter" onchange="filterAdminReviewsList()" class="bg-[#241E1A] border border-[#3E2E22] text-amber-300 font-semibold rounded-xl px-3 py-1.5 focus:outline-none text-xs">
+              <option value="all">All Kitchens</option>
+              <!-- Options populated dynamically -->
+            </select>
+          </div>
+          <div class="flex items-center space-x-4 text-[11px] text-adminTextMuted">
+            <span>Total Reviews: <strong class="text-white" id="adminTotalReviewsCount">0</strong></span>
+            <span>Escalations (&le;2★): <strong class="text-red-400" id="adminEscalatedReviewsCount">0</strong></span>
+          </div>
+        </div>
+
+        <!-- Reviews List Container -->
+        <div id="adminReviewsListContainer" class="space-y-3 max-h-96 overflow-y-auto pr-1">
+          <!-- Populated dynamically via JS -->
+          <div class="py-8 text-center text-adminTextMuted text-xs">
+            Loading reviews from server...
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="pt-3 border-t border-adminCardBorder flex items-center justify-between">
+          <span class="text-[11px] text-adminTextMuted">Updated dynamically when customers write reviews</span>
+          <button onclick="closeAdminReviewsModal()" class="px-4 py-2 bg-adminCard hover:bg-[#2A2420] text-gray-300 rounded-xl text-xs font-semibold border border-adminCardBorder transition cursor-pointer">
+            Close
+          </button>
+        </div>
+
       </div>
     </div>
 

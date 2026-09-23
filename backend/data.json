@@ -18,7 +18,52 @@
       "photoUrl": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?w=600&auto=format&fit=crop&q=80",
       "distance": "450m away",
       "phone": "9876543210",
-      "email": "asha.annapurna@gmail.com"
+      "email": "asha.annapurna@gmail.com",
+      "statusCode": "active",
+      "weeklyMenu": {
+        "monday": {
+          "main": "Special Paneer Butter Masala",
+          "dal": "Dal Tadka Special",
+          "breadRice": "3 Phulka + Rice",
+          "sides": "Gulab Jamun"
+        },
+        "tuesday": {
+          "main": "Aloo Gobi Adraki",
+          "dal": "Panchmel Dal",
+          "breadRice": "3 Rotis",
+          "sides": "Raita"
+        },
+        "wednesday": {
+          "main": "Kadhi Pakora",
+          "dal": "Moong Dal Fry",
+          "breadRice": "Khichdi",
+          "sides": "Pickle & Papad"
+        },
+        "thursday": {
+          "main": "Chole Amritsari",
+          "dal": "Dal Fry",
+          "breadRice": "Bhature + Rice",
+          "sides": "Pickled Onion"
+        },
+        "friday": {
+          "main": "Dum Aloo",
+          "dal": "Dal Makhani",
+          "breadRice": "3 Parathas",
+          "sides": "Kheer"
+        },
+        "saturday": {
+          "main": "Veg Jalfrezi",
+          "dal": "Toor Dal",
+          "breadRice": "Jeera Rice",
+          "sides": "Salad"
+        },
+        "sunday": {
+          "main": "Navratan Korma",
+          "dal": "Rajma Rasila",
+          "breadRice": "Pulao + 2 Naan",
+          "sides": "Rasgulla"
+        }
+      }
     },
     {
       "id": 2,
@@ -37,7 +82,117 @@
       "photoUrl": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600&auto=format&fit=crop&q=80",
       "distance": "600m away",
       "phone": "9812345678",
-      "email": "harpreet.nanak@gmail.com"
+      "email": "harpreet.nanak@gmail.com",
+      "statusCode": "active",
+      "weeklyMenu": {
+        "monday": {
+          "main": "Shahi Paneer",
+          "dal": "Dal Makhani",
+          "breadRice": "4 Tawa Rotis + Jeera Rice",
+          "sides": "Mixed Raita + Green Salad"
+        },
+        "tuesday": {
+          "main": "Bhindi Do Pyaza",
+          "dal": "Yellow Dal Tadka",
+          "breadRice": "4 Butter Phulkas + Steamed Rice",
+          "sides": "Amritsari Achar + Papad"
+        },
+        "wednesday": {
+          "main": "Kadhi Pakora",
+          "dal": "Punjabi Rajma Masala",
+          "breadRice": "Steamed Rice + 2 Phulkas",
+          "sides": "Kachumber Salad + Chutney"
+        },
+        "thursday": {
+          "main": "Mutter Paneer",
+          "dal": "Kali Dal Langar Wali",
+          "breadRice": "4 Phulkas + Peas Pulao",
+          "sides": "Boondi Raita + Gulab Jamun"
+        },
+        "friday": {
+          "main": "Sarson Ka Saag (Seasonal)",
+          "dal": "Chana Dal Tadka",
+          "breadRice": "Makki / Wheat Rotis + Rice",
+          "sides": "White Butter + Gur"
+        },
+        "saturday": {
+          "main": "Amritsari Chole",
+          "dal": "Moong Dal Fry",
+          "breadRice": "4 Bhatura-style Rotis + Jeera Pulao",
+          "sides": "Pickled Onions + Fried Mirchi"
+        },
+        "sunday": {
+          "main": "Butter Paneer Masala",
+          "dal": "Langar Dal Special",
+          "breadRice": "4 Laccha Parathas + Matar Pulao",
+          "sides": "Kheer + Roasted Papad"
+        }
+      }
+    },
+    {
+      "id": 1790239466595,
+      "name": "Rohaan R's Rasoi",
+      "chef": "Rohaan R",
+      "email": "rohaan.b@somaiya.edu",
+      "phone": "9820695964",
+      "area": "Gurugram Central",
+      "sector": "Versova, Sector 6",
+      "serviceableSectors": [
+        "Lokhandwala",
+        "Sector 6",
+        "Sector 7"
+      ],
+      "price": 109,
+      "rating": 5,
+      "status": "Active",
+      "dish": "Special Homestyle Daily Thali",
+      "distance": "400m away",
+      "photoUrl": "/uploads/1790239466585-chicken_thali.jpg",
+      "weeklyMenu": {
+        "monday": {
+          "main": "Paneer Bhurji Homestyle",
+          "dal": "Dal Makhani (Maa di Dal)",
+          "breadRice": "4 Phulkas + Jeera Rice",
+          "sides": "Boondi Raita + Salad"
+        },
+        "tuesday": {
+          "main": "Aloo Gobi Adraki",
+          "dal": "Dal Tadka Tempered",
+          "breadRice": "4 Ghee Phulkas + Steamed Rice",
+          "sides": "Kachumber + Chutney"
+        },
+        "wednesday": {
+          "main": "Kadhai Paneer Special",
+          "dal": "Punjabi Rajma Masala",
+          "breadRice": "4 Phulkas + Basmati Rice",
+          "sides": "Mint Chutney + Onion"
+        },
+        "thursday": {
+          "main": "Smoked Baingan Bharta",
+          "dal": "Panchmel Dal",
+          "breadRice": "4 Multigrain Rotis + Matar Pulao",
+          "sides": "Hot Gulab Jamun (1 pc)"
+        },
+        "friday": {
+          "main": "Mix Veg Handi",
+          "dal": "Pindi Chole Masala",
+          "breadRice": "4 Phulkas + Jeera Pulao",
+          "sides": "Sirka Onions + Papad"
+        },
+        "saturday": {
+          "main": "Methi Matar Malai",
+          "dal": "Yellow Dal Fry",
+          "breadRice": "4 Phulkas + Steamed Rice",
+          "sides": "Roasted Papad + Pickle"
+        },
+        "sunday": {
+          "main": "Paneer Butter Masala",
+          "dal": "Shahi Dal Makhani",
+          "breadRice": "4 Pooris + Kashmiri Pulao",
+          "sides": "Shahi Moong Dal Halwa"
+        }
+      },
+      "registeredAt": "2026-09-24T08:44:26.595Z"
     }
   ],
   "flaggedKitchens": [
@@ -49,9 +204,10 @@
       "location": "Lokhandwala, Sector 4",
       "rating": 2.1,
       "complaints": 14,
-      "status": "Compliant",
-      "statusCode": "compliant",
-      "refundAmount": 1120
+      "status": "Banned & Refunds Issued",
+      "statusCode": "banned",
+      "refundAmount": 1120,
+      "bannedAt": "2026-09-24T08:45:43.374Z"
     },
     {
       "id": 102,
@@ -119,6 +275,20 @@
   "auditLogs": [
     {
       "action": "BAN_AND_REFUND",
+      "kitchen": "Mamma's Spices",
+      "bannedAt": "2026-09-24T08:45:43.375Z",
+      "timestamp": "2026-09-24T08:45:43.375Z",
+      "refundIssued": "₹1120",
+      "detail": "Emergency enforcement: Mamma's Spices banned. Automated customer wallet refunds of ₹1120 processed."
+    },
+    {
+      "action": "CHEF_REGISTER",
+      "kitchen": "Rohaan R's Rasoi",
+      "chef": "Rohaan R",
+      "timestamp": "2026-09-24T08:44:26.596Z"
+    },
+    {
+      "action": "BAN_AND_REFUND",
       "kitchen": "Desi Tadka Kitchen",
       "bannedAt": "2026-09-23T09:11:23.861Z",
       "timestamp": "2026-09-23T09:11:23.861Z",
@@ -140,6 +310,151 @@
       "timestamp": "2026-09-22T19:23:51.924Z",
       "refundIssued": "₹1,120",
       "detail": "Emergency enforcement: Mamma's Spices banned. Automated customer wallet refunds of ₹1,120 processed."
+    },
+    {
+      "action": "SYSTEM_INIT",
+      "detail": "RasoiSe directory initialized with 2 verified kitchens.",
+      "timestamp": "2026-09-23T00:00:00.000Z"
+    }
+  ],
+  "reviews": [
+    {
+      "id": 1,
+      "kitchenId": 1,
+      "kitchenName": "Annapurna Kitchen",
+      "customerName": "Pooja Varma",
+      "customerEmail": "pooja.v@gmail.com",
+      "rating": 5,
+      "hygieneRating": 5,
+      "tasteRating": 5,
+      "dish": "Gujarati Premium Thali",
+      "comment": "Asha ji's tiffins are an absolute blessing! The phulkas are soft, warm and puff up just like home. Minimal oil, pure desi ghee tadka on the dal, and the boondi raita was chilled and fresh. Highly recommended for daily office lunch!",
+      "tags": [
+        "100% Desi Ghee",
+        "Fresh & Piping Hot",
+        "Clean Packaging",
+        "Low Oil"
+      ],
+      "date": "2026-09-23",
+      "verified": true,
+      "planType": "Monthly Subscriber (5-Day)"
+    },
+    {
+      "id": 2,
+      "kitchenId": 1,
+      "kitchenName": "Annapurna Kitchen",
+      "customerName": "Devendra Mehta",
+      "customerEmail": "devendra.m@yahoo.com",
+      "rating": 5,
+      "hygieneRating": 5,
+      "tasteRating": 5,
+      "dish": "Gujarati Premium Thali",
+      "comment": "Authentic Gujarati kadhi with mild sweetness and mustard seed tempering. Hygienic heat-sealed containers, completely spill-proof. You can taste the purity of ingredients.",
+      "tags": [
+        "Mother's Touch Taste",
+        "Spill-Proof Packaging",
+        "On-Time Delivery"
+      ],
+      "date": "2026-09-22",
+      "verified": true,
+      "planType": "1-Day Tasting Trial"
+    },
+    {
+      "id": 3,
+      "kitchenId": 1,
+      "kitchenName": "Annapurna Kitchen",
+      "customerName": "Simran Ahuja",
+      "customerEmail": "simran.a@gmail.com",
+      "rating": 4,
+      "hygieneRating": 5,
+      "tasteRating": 4,
+      "dish": "Special Homestyle Daily Thali",
+      "comment": "Very good daily food that never causes acidity or bloating. Delivered right at 12:45 PM every day. Only suggestion is to occasionally include roasted papad on Mondays too!",
+      "tags": [
+        "Low Oil & Digestible",
+        "On-Time Delivery",
+        "Fresh & Piping Hot"
+      ],
+      "date": "2026-09-20",
+      "verified": true,
+      "planType": "Monthly Subscriber (7-Day)"
+    },
+    {
+      "id": 4,
+      "kitchenId": 2,
+      "kitchenName": "Nanak's Rasoi",
+      "customerName": "Gurpreet Singh",
+      "customerEmail": "gurpreet.s@rediffmail.com",
+      "rating": 5,
+      "hygieneRating": 5,
+      "tasteRating": 5,
+      "dish": "Punjabi Special Thali",
+      "comment": "Harpreet ji makes the most genuine maa di dal and shahi paneer. Generous portions, soft tawa rotis wrapped neatly in parchment foil. No excessive restaurant cream, pure homely love.",
+      "tags": [
+        "Generous Quantity",
+        "Mother's Touch Taste",
+        "Clean Packaging"
+      ],
+      "date": "2026-09-23",
+      "verified": true,
+      "planType": "Monthly Subscriber (5-Day)"
+    },
+    {
+      "id": 5,
+      "kitchenId": 2,
+      "kitchenName": "Nanak's Rasoi",
+      "customerName": "Kavita Rao",
+      "customerEmail": "kavita.rao@outlook.com",
+      "rating": 5,
+      "hygieneRating": 5,
+      "tasteRating": 5,
+      "dish": "Punjabi Special Thali",
+      "comment": "Punctual delivery and spotless packaging. The bhindi do pyaza was crisp and not greasy at all. Feels so comforting after a busy work morning.",
+      "tags": [
+        "On-Time Delivery",
+        "Low Oil & Digestible",
+        "Fresh & Piping Hot"
+      ],
+      "date": "2026-09-21",
+      "verified": true,
+      "planType": "1-Day Tasting Trial"
+    },
+    {
+      "id": 6,
+      "kitchenId": 101,
+      "kitchenName": "Mamma's Spices",
+      "customerName": "Aditya Roy",
+      "customerEmail": "aditya.roy@gmail.com",
+      "rating": 2,
+      "hygieneRating": 2,
+      "tasteRating": 2,
+      "dish": "North Indian Thali",
+      "comment": "Packaging had leaked inside the delivery bag and the dal was cold. Oil layer was too thick on the sabzi. Not meeting hygiene expectations.",
+      "tags": [
+        "Packaging Leak",
+        "Excess Oil"
+      ],
+      "date": "2026-09-22",
+      "verified": true,
+      "planType": "1-Day Tasting Trial"
+    },
+    {
+      "id": 7,
+      "kitchenId": 102,
+      "kitchenName": "Zaika Home Foods",
+      "customerName": "Vikram Sen",
+      "customerEmail": "vikram.sen@gmail.com",
+      "rating": 3,
+      "hygieneRating": 3,
+      "tasteRating": 3,
+      "dish": "Homestyle Dal Rice",
+      "comment": "Taste is ok but delivery was 45 minutes late today and rotis had become rubbery. Please improve dispatch punctuality.",
+      "tags": [
+        "Delayed Delivery"
+      ],
+      "date": "2026-09-21",
+      "verified": true,
+      "planType": "Monthly Subscriber"
     }
   ]
 }

@@ -257,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (linkEl) {
         if (user.role === 'Chef' || user.role === 'Seller') {
           linkEl.innerText = 'Open Chef Operations Hub →';
-          linkEl.href = 'shef-dashboard.html';
+          linkEl.href = 'chef-dashboard.html';
         } else {
           linkEl.innerText = 'View Meal Calendar →';
           linkEl.href = 'calendar.html';
@@ -378,7 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('rasoise_user_profile', JSON.stringify(userProfile));
     
     if (roleVal === 'Chef' || roleVal === 'Seller') {
-      window.location.href = 'shef-dashboard.html';
+      window.location.href = 'chef-dashboard.html';
     } else {
       window.location.reload();
     }
@@ -436,7 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
     alert(`✅ Profile created successfully!\n\nName: ${name}\nRole: ${roleInput}\nDelivery Location: ${address}, ${sector}, ${area}`);
     
     if (roleInput === 'Chef' || roleInput === 'Seller') {
-      window.location.href = 'shef-dashboard.html';
+      window.location.href = 'chef-dashboard.html';
     } else {
       window.location.reload();
     }
@@ -465,7 +465,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   // ==========================================
-  // MODULE 3: CALENDER.HTML - PAUSE/RESUME & WALLET
+  // MODULE 3: CALENDAR.HTML - PAUSE/RESUME & WALLET
   // ==========================================
   const walletDisplay = document.getElementById('walletBalanceDisplay');
   const btnTopUp = document.getElementById('btnTopUpModal');
@@ -729,22 +729,23 @@ document.addEventListener('DOMContentLoaded', () => {
         </td>
 
         <!-- Hygiene Rating -->
-        <td class="py-4 px-4">
+        <td class="py-4 px-4 cursor-pointer group/rate hover:bg-[#201B17] transition rounded-lg" onclick="openAdminReviewsModal('${safeEncodedName}')" title="Click to view customer reviews & hygiene ratings">
           <div class="flex items-center space-x-3">
-            <span class="font-bold text-white text-xs font-mono">${(Number(k.rating) || 5.0).toFixed(1)}</span>
+            <span class="font-bold text-white text-xs font-mono group-hover/rate:text-amber-400 transition">${(Number(k.rating) || 5.0).toFixed(1)}</span>
             <div class="w-16 h-1.5 bg-[#292522] rounded-full overflow-hidden">
               <div class="h-full ${barColor}" style="width: ${barWidth}%"></div>
             </div>
+            <span class="text-[10px] text-amber-500/80 group-hover/rate:text-amber-400 font-semibold underline">Reviews</span>
           </div>
         </td>
 
         <!-- Complaints -->
-        <td class="py-4 px-4">
+        <td class="py-4 px-4 cursor-pointer group/comp hover:bg-[#201B17] transition rounded-lg" onclick="openAdminReviewsModal('${safeEncodedName}')" title="Click to view customer feedback & escalation log">
           <div>
-            <p class="font-bold text-xs ${k.complaints > 4 ? 'text-[#F87171]' : 'text-gray-300'}">
+            <p class="font-bold text-xs ${k.complaints > 4 ? 'text-[#F87171]' : 'text-gray-300'} group-hover/comp:underline">
               ${k.complaints || 0} active
             </p>
-            <p class="text-[10px] text-adminTextMuted">last 7 days</p>
+            <p class="text-[10px] text-adminTextMuted">last 7 days • View</p>
           </div>
         </td>
 
@@ -867,6 +868,151 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error('Unban error:', err);
       alert('Network error while unbanning kitchen.');
     }
+  };
+
+  // ==========================================
+  // MODULE 5: ADMIN CUSTOMER REVIEWS INSPECTION
+  // ==========================================
+  let allAdminReviews = [];
+
+  window.openAdminReviewsModal = async function(preselectKitchenName) {
+    const modal = document.getElementById('adminReviewsModal');
+    if (!modal) return;
+
+    modal.classList.remove('hidden');
+    const container = document.getElementById('adminReviewsListContainer');
+    if (container) {
+      container.innerHTML = '<div class="py-8 text-center text-adminTextMuted text-xs">Loading verified customer reviews...</div>';
+    }
+
+    try {
+      const res = await fetch('/api/reviews');
+      const data = await res.json();
+      allAdminReviews = (data && data.reviews) || [];
+
+      // Populate filter dropdown
+      const filterSelect = document.getElementById('adminReviewKitchenFilter');
+      if (filterSelect) {
+        filterSelect.innerHTML = '<option value="all">All Kitchens</option>';
+        const kitchenNames = Array.from(new Set(allAdminReviews.map(r => r.kitchenName).filter(Boolean)));
+        
+        kitchenNames.forEach(kn => {
+          const opt = document.createElement('option');
+          opt.value = kn;
+          opt.innerText = kn;
+          filterSelect.appendChild(opt);
+        });
+
+        if (preselectKitchenName) {
+          const decoded = decodeURIComponent(preselectKitchenName);
+          const matched = kitchenNames.find(kn => kn.toLowerCase() === decoded.toLowerCase());
+          if (matched) {
+            filterSelect.value = matched;
+          }
+        }
+      }
+
+      window.filterAdminReviewsList();
+    } catch (err) {
+      console.error('Error fetching admin reviews:', err);
+      if (container) {
+        container.innerHTML = '<div class="py-8 text-center text-red-400 text-xs">Failed to load reviews from server.</div>';
+      }
+    }
+  };
+
+  window.closeAdminReviewsModal = function() {
+    const modal = document.getElementById('adminReviewsModal');
+    if (modal) modal.classList.add('hidden');
+  };
+
+  window.filterAdminReviewsList = function() {
+    const filterSelect = document.getElementById('adminReviewKitchenFilter');
+    const selected = filterSelect ? filterSelect.value : 'all';
+    const container = document.getElementById('adminReviewsListContainer');
+    const totalCountEl = document.getElementById('adminTotalReviewsCount');
+    const escalCountEl = document.getElementById('adminEscalatedReviewsCount');
+
+    let filtered = allAdminReviews;
+    if (selected && selected !== 'all') {
+      filtered = allAdminReviews.filter(r => (r.kitchenName || '').toLowerCase() === selected.toLowerCase());
+    }
+
+    const escalations = filtered.filter(r => (Number(r.rating) || 5) <= 2);
+    if (totalCountEl) totalCountEl.innerText = filtered.length;
+    if (escalCountEl) escalCountEl.innerText = escalations.length;
+
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (filtered.length === 0) {
+      container.innerHTML = `
+        <div class="p-8 text-center bg-adminCard rounded-2xl border border-adminCardBorder text-adminTextMuted text-xs">
+          No customer reviews recorded for this kitchen yet.
+        </div>
+      `;
+      return;
+    }
+
+    filtered.forEach(r => {
+      const isCritical = (Number(r.rating) || 5) <= 2;
+      const starNum = Math.max(1, Math.min(5, Math.round(Number(r.rating) || 5)));
+      const starsText = '★'.repeat(starNum) + '☆'.repeat(5 - starNum);
+
+      const div = document.createElement('div');
+      div.className = `p-4 rounded-2xl border transition space-y-2.5 ${
+        isCritical 
+          ? 'bg-[#291412] border-[#5E241E]' 
+          : 'bg-adminCard border-adminCardBorder hover:border-[#423A33]'
+      }`;
+
+      let tagsHtml = '';
+      if (r.tags && r.tags.length > 0) {
+        tagsHtml = `<div class="flex flex-wrap gap-1.5 pt-1">
+          ${r.tags.map(t => `<span class="bg-[#241A14] border border-[#4D3320] text-amber-300 text-[10px] font-semibold px-2 py-0.5 rounded-md">${escapeHtml(t)}</span>`).join('')}
+        </div>`;
+      }
+
+      div.innerHTML = `
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="text-xs font-bold text-white">${escapeHtml(r.kitchenName || 'Kitchen')}</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                isCritical 
+                  ? 'bg-red-950 text-red-400 border border-red-800' 
+                  : 'bg-emerald-950 text-emerald-400 border border-emerald-800'
+              }">
+                ${isCritical ? '⚠️ Escalation / Low Rating' : '✓ Verified Review'}
+              </span>
+            </div>
+            <p class="text-[11px] text-adminTextMuted mt-0.5">
+              By <strong class="text-gray-300">${escapeHtml(r.customerName || 'Customer')}</strong> • ${escapeHtml(r.date || 'Recent')}
+              ${r.dish ? ` • Dish: <span class="text-amber-200/90">${escapeHtml(r.dish)}</span>` : ''}
+            </p>
+          </div>
+
+          <div class="text-right flex-shrink-0">
+            <span class="text-amber-400 font-bold text-sm tracking-widest">${starsText}</span>
+            <p class="text-[10px] text-adminTextMuted">${starNum}.0 / 5.0</p>
+          </div>
+        </div>
+
+        <p class="text-xs text-gray-300 leading-relaxed font-sans">${escapeHtml(r.comment || '')}</p>
+
+        <div class="flex items-center justify-between pt-1 border-t border-[#332A24] text-[11px] text-adminTextMuted">
+          <div class="flex items-center space-x-3">
+            <span>Hygiene: <strong class="text-white">${r.hygieneRating || r.rating || 5}/5</strong></span>
+            <span>Taste: <strong class="text-white">${r.tasteRating || r.rating || 5}/5</strong></span>
+          </div>
+          <span>Plan: ${escapeHtml(r.planType || '1-Day Tasting Trial')}</span>
+        </div>
+
+        ${tagsHtml}
+      `;
+
+      container.appendChild(div);
+    });
   };
 
 });

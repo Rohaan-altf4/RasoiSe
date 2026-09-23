@@ -58,7 +58,7 @@
 
         <nav class="flex items-center space-x-4 text-xs font-medium">
           <a id="calKitchenNavLink" href="kitchen.html" class="text-gray-700 hover:text-brandAmber transition">Annapurna Kitchen</a>
-          <a href="shef-dashboard.html" class="flex items-center space-x-1.5 bg-brandDark text-white px-3.5 py-2 rounded-full hover:bg-[#4A200B] transition">
+          <a href="chef-dashboard.html" class="flex items-center space-x-1.5 bg-brandDark text-white px-3.5 py-2 rounded-full hover:bg-[#4A200B] transition">
             <span>👩‍🍳</span>
             <span>Chef Hub</span>
           </a>
@@ -88,6 +88,13 @@
           <p id="subChefDetails" class="text-xs text-[#6E4F39]">
             Assigned Chef: <strong>Asha Sharma</strong> • Sector 11 • Standard Meal Price: ₹80/meal
           </p>
+          <div class="pt-1.5 flex items-center space-x-3">
+            <a href="kitchen.html?openReview=true" id="rateKitchenBtn" class="inline-flex items-center space-x-1.5 bg-brandDark hover:bg-[#4A200B] text-white text-xs font-semibold px-3.5 py-1.5 rounded-full transition shadow-xs">
+              <span class="text-amber-400">★</span>
+              <span>Rate Chef & Write Review</span>
+            </a>
+            <span class="text-[11px] text-gray-600">Your review updates hygiene & safety score</span>
+          </div>
         </div>
 
         <!-- Flexi-Pause Callout -->
@@ -122,10 +129,10 @@
     </div>
 
     <!-- 7-DAY MEAL CALENDAR GRID (MON - SUN) -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5" id="calendarGridContainer">
       
       <!-- DAY 1: Monday -->
-      <div class="calendar-day-card bg-white rounded-2xl p-5 border border-brandBorder shadow-sm flex flex-col justify-between space-y-4" data-day="Monday, Sep 22" data-price="80" data-status="active">
+      <div class="calendar-day-card bg-white rounded-2xl p-5 border border-brandBorder shadow-sm flex flex-col justify-between space-y-4" data-day-key="monday" data-day="Monday, Sep 22" data-price="80" data-status="active">
         <div>
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-bold text-brandDark">Mon, Sep 22</span>
@@ -133,8 +140,8 @@
               ● Active (Scheduled)
             </span>
           </div>
-          <h3 class="text-sm font-bold text-brandDark">Paneer Bhurji & Dal Makhani</h3>
-          <p class="text-[11px] text-gray-500 mt-1">4 Phulkas + Jeera Rice + Boondi Raita</p>
+          <h3 class="text-sm font-bold text-brandDark day-dish-title">Paneer Bhurji & Dal Makhani</h3>
+          <p class="text-[11px] text-gray-500 mt-1 day-dish-desc">4 Phulkas + Jeera Rice + Boondi Raita</p>
           <div class="mt-3 flex items-center space-x-2 text-[10px] text-gray-500">
             <span>⏰ Slot: 12:30 - 1:30 PM</span>
             <span>•</span>
@@ -147,7 +154,7 @@
       </div>
 
       <!-- DAY 2: Tuesday -->
-      <div class="calendar-day-card bg-white rounded-2xl p-5 border border-brandBorder shadow-sm flex flex-col justify-between space-y-4" data-day="Tuesday, Sep 23" data-price="80" data-status="active">
+      <div class="calendar-day-card bg-white rounded-2xl p-5 border border-brandBorder shadow-sm flex flex-col justify-between space-y-4" data-day-key="tuesday" data-day="Tuesday, Sep 23" data-price="80" data-status="active">
         <div>
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-bold text-brandDark">Tue, Sep 23</span>
@@ -155,8 +162,8 @@
               ● Active (Scheduled)
             </span>
           </div>
-          <h3 class="text-sm font-bold text-brandDark">Sev Tameta Nu Shaak & Kadhi</h3>
-          <p class="text-[11px] text-gray-500 mt-1">4 Ghee Phulkas + Steamed Rice + Chhunda</p>
+          <h3 class="text-sm font-bold text-brandDark day-dish-title">Sev Tameta Nu Shaak & Kadhi</h3>
+          <p class="text-[11px] text-gray-500 mt-1 day-dish-desc">4 Ghee Phulkas + Steamed Rice + Chhunda</p>
           <div class="mt-3 flex items-center space-x-2 text-[10px] text-gray-500">
             <span>⏰ Slot: 12:30 - 1:30 PM</span>
             <span>•</span>
@@ -169,7 +176,7 @@
       </div>
 
       <!-- DAY 3: Wednesday (Paused Example) -->
-      <div class="calendar-day-card bg-gray-50/80 opacity-85 rounded-2xl p-5 border border-brandBorder shadow-sm flex flex-col justify-between space-y-4" data-day="Wednesday, Sep 24" data-price="80" data-status="paused">
+      <div class="calendar-day-card bg-gray-50/80 opacity-85 rounded-2xl p-5 border border-brandBorder shadow-sm flex flex-col justify-between space-y-4" data-day-key="wednesday" data-day="Wednesday, Sep 24" data-price="80" data-status="paused">
         <div>
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-bold text-brandDark">Wed, Sep 24</span>
@@ -177,8 +184,8 @@
               ⏸️ Paused (Refunded)
             </span>
           </div>
-          <h3 class="text-sm font-bold text-brandDark">Aloo Gobi & Rajma Masala</h3>
-          <p class="text-[11px] text-gray-500 mt-1">4 Phulkas + Basmati Rice + Salad</p>
+          <h3 class="text-sm font-bold text-brandDark day-dish-title">Aloo Gobi & Rajma Masala</h3>
+          <p class="text-[11px] text-gray-500 mt-1 day-dish-desc">4 Phulkas + Basmati Rice + Salad</p>
           <div class="mt-3 flex items-center space-x-2 text-[10px] text-gray-500">
             <span>⏰ Cutoff passed (8:00 AM)</span>
             <span>•</span>
@@ -191,7 +198,7 @@
       </div>
 
       <!-- DAY 4: Thursday -->
-      <div class="calendar-day-card bg-white rounded-2xl p-5 border border-brandBorder shadow-sm flex flex-col justify-between space-y-4" data-day="Thursday, Sep 25" data-price="80" data-status="active">
+      <div class="calendar-day-card bg-white rounded-2xl p-5 border border-brandBorder shadow-sm flex flex-col justify-between space-y-4" data-day-key="thursday" data-day="Thursday, Sep 25" data-price="80" data-status="active">
         <div>
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-bold text-brandDark">Thu, Sep 25</span>
@@ -199,8 +206,8 @@
               ● Active (Scheduled)
             </span>
           </div>
-          <h3 class="text-sm font-bold text-brandDark">Baingan Bharta & Panchmel Dal</h3>
-          <p class="text-[11px] text-gray-500 mt-1">4 Multigrain Rotis + Matar Pulao + Sweet</p>
+          <h3 class="text-sm font-bold text-brandDark day-dish-title">Baingan Bharta & Panchmel Dal</h3>
+          <p class="text-[11px] text-gray-500 mt-1 day-dish-desc">4 Multigrain Rotis + Matar Pulao + Sweet</p>
           <div class="mt-3 flex items-center space-x-2 text-[10px] text-gray-500">
             <span>⏰ Slot: 12:30 - 1:30 PM</span>
             <span>•</span>
@@ -213,7 +220,7 @@
       </div>
 
       <!-- DAY 5: Friday -->
-      <div class="calendar-day-card bg-white rounded-2xl p-5 border border-brandBorder shadow-sm flex flex-col justify-between space-y-4" data-day="Friday, Sep 26" data-price="80" data-status="active">
+      <div class="calendar-day-card bg-white rounded-2xl p-5 border border-brandBorder shadow-sm flex flex-col justify-between space-y-4" data-day-key="friday" data-day="Friday, Sep 26" data-price="80" data-status="active">
         <div>
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-bold text-brandDark">Fri, Sep 26</span>
@@ -221,8 +228,8 @@
               ● Active (Scheduled)
             </span>
           </div>
-          <h3 class="text-sm font-bold text-brandDark">Lauki Kofta & Pindi Chole</h3>
-          <p class="text-[11px] text-gray-500 mt-1">4 Phulkas + Jeera Pulao + Pickled Onions</p>
+          <h3 class="text-sm font-bold text-brandDark day-dish-title">Lauki Kofta & Pindi Chole</h3>
+          <p class="text-[11px] text-gray-500 mt-1 day-dish-desc">4 Phulkas + Jeera Pulao + Pickled Onions</p>
           <div class="mt-3 flex items-center space-x-2 text-[10px] text-gray-500">
             <span>⏰ Slot: 12:30 - 1:30 PM</span>
             <span>•</span>
@@ -235,7 +242,7 @@
       </div>
 
       <!-- DAY 6: Saturday (Off-Day on 5-Day Plan) -->
-      <div class="bg-brandCream/70 rounded-2xl p-5 border border-dashed border-[#DFCBB0] flex flex-col justify-between space-y-4">
+      <div class="calendar-day-card bg-brandCream/70 rounded-2xl p-5 border border-dashed border-[#DFCBB0] flex flex-col justify-between space-y-4" data-day-key="saturday" data-day="Saturday, Sep 27" data-price="80" data-status="off">
         <div>
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-bold text-gray-500">Sat, Sep 27</span>
@@ -243,8 +250,8 @@
               Weekend Off
             </span>
           </div>
-          <h3 class="text-sm font-semibold text-gray-600">No Subscription Scheduled</h3>
-          <p class="text-[11px] text-gray-400 mt-1">Your 5-Day plan runs Monday through Friday.</p>
+          <h3 class="text-sm font-semibold text-gray-600 day-dish-title">Methi Matar Malai & Dal Fry</h3>
+          <p class="text-[11px] text-gray-400 mt-1 day-dish-desc">4 Phulkas + Steamed Rice + Papad</p>
         </div>
         <a href="kitchen.html" class="w-full py-2 text-center bg-white border border-brandBorder text-brandAmber rounded-xl text-xs font-semibold hover:bg-brandAlmond transition">
           Order 1-Day Trial Weekend Meal →
@@ -252,16 +259,16 @@
       </div>
 
       <!-- DAY 7: Sunday (Off-Day on 5-Day Plan) -->
-      <div class="bg-brandCream/70 rounded-2xl p-5 border border-dashed border-[#DFCBB0] flex flex-col justify-between space-y-4">
+      <div class="calendar-day-card bg-brandCream/70 rounded-2xl p-5 border border-dashed border-[#DFCBB0] flex flex-col justify-between space-y-4" data-day-key="sunday" data-day="Sunday, Sep 28" data-price="80" data-status="off">
         <div>
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs font-bold text-gray-500">Sun, Sep 28</span>
             <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-200 text-gray-600">
-              Weekend Off
+              Sunday Feast
             </span>
           </div>
-          <h3 class="text-sm font-semibold text-gray-600">No Subscription Scheduled</h3>
-          <p class="text-[11px] text-gray-400 mt-1">Upgrade to 7-Day Plan to include Sundays.</p>
+          <h3 class="text-sm font-semibold text-gray-600 day-dish-title">Paneer Butter Masala & Pulao</h3>
+          <p class="text-[11px] text-gray-400 mt-1 day-dish-desc">4 Pooris + Shahi Halwa</p>
         </div>
         <a href="kitchen.html" class="w-full py-2 text-center bg-white border border-brandBorder text-brandAmber rounded-xl text-xs font-semibold hover:bg-brandAlmond transition">
           View Sunday Feast Menu →
@@ -327,7 +334,7 @@
       <div class="flex items-center space-x-6">
         <a href="index.html" class="hover:text-white transition">Marketplace</a>
         <a href="kitchen.html" class="hover:text-white transition">Kitchen Details</a>
-        <a href="shef-dashboard.html" class="hover:text-white transition">Chef Hub</a>
+        <a href="chef-dashboard.html" class="hover:text-white transition">Chef Hub</a>
         <a href="admin-console.html" class="hover:text-white transition">Admin Console</a>
       </div>
     </div>
@@ -336,29 +343,68 @@
   <!-- App Helper Scripts -->
   <script src="js/app.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
+      let activeSub = null;
       try {
         const rawSub = localStorage.getItem('rasoise_active_subscription');
         if (rawSub) {
-          const sub = JSON.parse(rawSub);
+          activeSub = JSON.parse(rawSub);
           const titleEl = document.getElementById('subKitchenTitle');
-          if (titleEl && sub.kitchenName) {
-            titleEl.innerText = `${sub.kitchenName} • ${sub.plan || 'Active Meal Plan'}`;
+          if (titleEl && activeSub.kitchenName) {
+            titleEl.innerText = `${activeSub.kitchenName} • ${activeSub.plan || 'Active Meal Plan'}`;
           }
           const chefEl = document.getElementById('subChefDetails');
-          if (chefEl && (sub.chef || sub.kitchenName)) {
-            chefEl.innerHTML = `Assigned Chef: <strong>${sub.chef || sub.kitchenName}</strong> • ${sub.sector || 'Hyperlocal Sector'} • Standard Meal Price: ₹${sub.price || 80}/meal`;
+          if (chefEl && (activeSub.chef || activeSub.kitchenName)) {
+            chefEl.innerHTML = `Assigned Chef: <strong>${activeSub.chef || activeSub.kitchenName}</strong> • ${activeSub.sector || 'Hyperlocal Sector'} • Standard Meal Price: ₹${activeSub.price || 80}/meal`;
           }
           const navLink = document.getElementById('calKitchenNavLink');
-          if (navLink && sub.kitchenName) {
-            navLink.innerText = sub.kitchenName;
-            if (sub.kitchenId) navLink.href = `kitchen.html?id=${sub.kitchenId}`;
+          if (navLink && activeSub.kitchenName) {
+            navLink.innerText = activeSub.kitchenName;
+            if (activeSub.kitchenId) navLink.href = `kitchen.html?id=${activeSub.kitchenId}`;
           }
         }
       } catch (err) {
         console.error('Error applying subscription details to calendar:', err);
       }
+
+      // Fetch kitchen weekly menu to display exact food items on calendar
+      try {
+        const kitchenId = activeSub?.kitchenId || 1;
+        const res = await fetch(`/api/kitchens/${kitchenId}`);
+        const data = await res.json();
+        const k = data.kitchen || (data.length ? data[0] : null);
+
+        if (k && k.weeklyMenu) {
+          applyWeeklyMenuToCalendar(k.weeklyMenu);
+        }
+      } catch (err) {
+        console.warn('Could not load weekly menu for calendar:', err);
+      }
     });
+
+    function applyWeeklyMenuToCalendar(weeklyMenu) {
+      if (!weeklyMenu) return;
+      const dayKeys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
+      dayKeys.forEach(dKey => {
+        const item = weeklyMenu[dKey];
+        if (!item) return;
+
+        const card = document.querySelector(`.calendar-day-card[data-day-key="${dKey}"]`);
+        if (card) {
+          const titleEl = card.querySelector('.day-dish-title');
+          const descEl = card.querySelector('.day-dish-desc');
+
+          if (titleEl && item.main) {
+            titleEl.innerText = item.dal ? `${item.main} & ${item.dal}` : item.main;
+          }
+          if (descEl && (item.breadRice || item.sides)) {
+            const parts = [item.breadRice, item.sides].filter(Boolean);
+            descEl.innerText = parts.join(' + ');
+          }
+        }
+      });
+    }
   </script>
 </body>
 </html>

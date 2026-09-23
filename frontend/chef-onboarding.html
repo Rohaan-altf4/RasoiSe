@@ -44,7 +44,7 @@
       <nav class="flex items-center space-x-6">
         <a href="index.html" class="text-xs font-medium text-gray-700 hover:text-brandAmber transition">Find Food</a>
         <a href="calendar.html" class="text-xs font-medium text-gray-700 hover:text-brandAmber transition">Meal Calendar</a>
-        <a href="shef-dashboard.html" class="flex items-center space-x-1.5 bg-brandDark hover:bg-[#4A200B] text-white text-xs font-semibold px-4 py-2 rounded-full transition shadow-sm">
+        <a href="chef-dashboard.html" class="flex items-center space-x-1.5 bg-brandDark hover:bg-[#4A200B] text-white text-xs font-semibold px-4 py-2 rounded-full transition shadow-sm">
           <span>👩‍🍳</span>
           <span>Chef Hub</span>
         </a>
@@ -286,6 +286,157 @@
 
         </div>
 
+        <!-- 7-DAY WEEKLY MENU PLANNER -->
+        <div class="pt-6 border-t border-[#F5E6D3] space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center space-x-2">
+                <span class="text-xl">📅</span>
+                <h3 class="text-base font-bold font-serif text-brandDark">Weekly Menu Planner (Monday - Sunday)</h3>
+                <span class="bg-amber-100 text-brandRust text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-300">
+                  Custom Food Items
+                </span>
+              </div>
+              <p class="text-xs text-gray-500 mt-0.5">
+                Add different rotating food items for each day of the week. Customers subscribe and see these exact dishes.
+              </p>
+            </div>
+
+            <!-- Quick-Fill Presets -->
+            <div class="flex flex-wrap items-center gap-1.5 text-xs">
+              <span class="text-[11px] font-bold text-gray-500 mr-1">Quick-Fill:</span>
+              <button type="button" onclick="loadMenuPreset('north_indian')" class="px-2.5 py-1 bg-brandCream hover:bg-brandAlmond border border-brandBorder text-brandDark rounded-lg font-semibold text-[11px] transition shadow-2xs">
+                🍛 North Indian
+              </button>
+              <button type="button" onclick="loadMenuPreset('gujarati')" class="px-2.5 py-1 bg-brandCream hover:bg-brandAlmond border border-brandBorder text-brandDark rounded-lg font-semibold text-[11px] transition shadow-2xs">
+                🫓 Gujarati
+              </button>
+              <button type="button" onclick="loadMenuPreset('punjabi')" class="px-2.5 py-1 bg-brandCream hover:bg-brandAlmond border border-brandBorder text-brandDark rounded-lg font-semibold text-[11px] transition shadow-2xs">
+                🌾 Punjabi
+              </button>
+              <button type="button" onclick="loadMenuPreset('comfort')" class="px-2.5 py-1 bg-brandCream hover:bg-brandAlmond border border-brandBorder text-brandDark rounded-lg font-semibold text-[11px] transition shadow-2xs">
+                🥗 Light Comfort
+              </button>
+            </div>
+          </div>
+
+          <!-- Day Selection Tabs -->
+          <div class="flex overflow-x-auto gap-1.5 p-1.5 bg-[#FAF3E8] rounded-2xl border border-brandBorder" id="dayTabsContainer">
+            <button type="button" onclick="selectDayTab('monday')" class="day-tab px-3.5 py-2 rounded-xl text-xs font-bold transition shadow-xs bg-brandAmber text-white" data-day="monday">
+              Mon
+            </button>
+            <button type="button" onclick="selectDayTab('tuesday')" class="day-tab px-3.5 py-2 rounded-xl text-xs font-semibold text-gray-700 hover:text-brandDark transition" data-day="tuesday">
+              Tue
+            </button>
+            <button type="button" onclick="selectDayTab('wednesday')" class="day-tab px-3.5 py-2 rounded-xl text-xs font-semibold text-gray-700 hover:text-brandDark transition" data-day="wednesday">
+              Wed
+            </button>
+            <button type="button" onclick="selectDayTab('thursday')" class="day-tab px-3.5 py-2 rounded-xl text-xs font-semibold text-gray-700 hover:text-brandDark transition" data-day="thursday">
+              Thu
+            </button>
+            <button type="button" onclick="selectDayTab('friday')" class="day-tab px-3.5 py-2 rounded-xl text-xs font-semibold text-gray-700 hover:text-brandDark transition" data-day="friday">
+              Fri
+            </button>
+            <button type="button" onclick="selectDayTab('saturday')" class="day-tab px-3.5 py-2 rounded-xl text-xs font-semibold text-gray-700 hover:text-brandDark transition" data-day="saturday">
+              Sat
+            </button>
+            <button type="button" onclick="selectDayTab('sunday')" class="day-tab px-3.5 py-2 rounded-xl text-xs font-semibold text-emerald-800 hover:text-emerald-950 transition" data-day="sunday">
+              Sun (Special)
+            </button>
+          </div>
+
+          <!-- Active Day Dish Editor Card -->
+          <div class="bg-[#FDF8F0] border border-brandBorder rounded-2xl p-5 shadow-xs">
+            <div class="flex items-center justify-between mb-3 border-b border-[#EEDBCA] pb-2">
+              <h4 id="activeDayHeading" class="text-xs font-bold text-brandDark uppercase tracking-wider flex items-center space-x-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-brandAmber"></span>
+                <span>Configuring Food Items for Monday</span>
+              </h4>
+              <span class="text-[10px] text-gray-500">Edit fields below to customize</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <!-- Main Sabzi -->
+              <div>
+                <label for="dayMainInput" class="block text-[11px] font-bold text-brandDark mb-1">
+                  Main Sabzi / Entree <span class="text-red-500">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  id="dayMainInput" 
+                  placeholder="e.g. Paneer Bhurji Homestyle" 
+                  class="w-full bg-white border border-[#DFCBB0] text-brandDark text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brandAmber" 
+                />
+              </div>
+
+              <!-- Dal / Curry -->
+              <div>
+                <label for="dayDalInput" class="block text-[11px] font-bold text-brandDark mb-1">
+                  Dal / Curry / Kadhi <span class="text-red-500">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  id="dayDalInput" 
+                  placeholder="e.g. Dal Makhani (Maa di Dal)" 
+                  class="w-full bg-white border border-[#DFCBB0] text-brandDark text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brandAmber" 
+                />
+              </div>
+
+              <!-- Breads & Rice -->
+              <div>
+                <label for="dayBreadRiceInput" class="block text-[11px] font-bold text-brandDark mb-1">
+                  Breads & Rice <span class="text-red-500">*</span>
+                </label>
+                <input 
+                  type="text" 
+                  id="dayBreadRiceInput" 
+                  placeholder="e.g. 4 Phulkas + Jeera Rice" 
+                  class="w-full bg-white border border-[#DFCBB0] text-brandDark text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brandAmber" 
+                />
+              </div>
+
+              <!-- Sides & Dessert -->
+              <div>
+                <label for="daySidesInput" class="block text-[11px] font-bold text-brandDark mb-1">
+                  Sweet / Sides / Salad
+                </label>
+                <input 
+                  type="text" 
+                  id="daySidesInput" 
+                  placeholder="e.g. Boondi Raita + Salad" 
+                  class="w-full bg-white border border-[#DFCBB0] text-brandDark text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brandAmber" 
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Weekly Menu Preview Table -->
+          <div class="mt-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-brandDark">Live Weekly Rotating Schedule Preview:</span>
+              <span class="text-[11px] text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                ✓ Auto-syncs to your public kitchen profile
+              </span>
+            </div>
+            <div class="overflow-x-auto rounded-2xl border border-brandBorder shadow-xs">
+              <table class="w-full text-left text-xs bg-white border-collapse" id="weeklyMenuPreviewTable">
+                <thead>
+                  <tr class="bg-[#F8E7C8]/70 text-brandDark border-b border-brandBorder font-bold uppercase tracking-wider text-[10px]">
+                    <th class="py-2.5 px-3">Day</th>
+                    <th class="py-2.5 px-3">Main Sabzi</th>
+                    <th class="py-2.5 px-3">Dal / Curry</th>
+                    <th class="py-2.5 px-3">Breads & Rice</th>
+                    <th class="py-2.5 px-3">Sweet / Sides</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-[#F3E5D4]" id="weeklyPreviewTableBody">
+                  <!-- Populated by JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
         <!-- Food Photo Upload with Real-Time Preview -->
         <div class="pt-2 border-t border-[#F5E6D3]">
           <label class="block text-xs font-bold text-brandDark mb-1.5">
@@ -388,7 +539,7 @@
         <a id="btnViewMyKitchen" href="kitchen.html" class="flex-1 py-3 bg-brandAmber hover:bg-brandAmberHover text-white rounded-xl text-xs font-bold text-center transition shadow-xs">
           View My Public Kitchen
         </a>
-        <a href="shef-dashboard.html" class="flex-1 py-3 bg-brandDark hover:bg-[#4A200B] text-white rounded-xl text-xs font-bold text-center transition shadow-xs">
+        <a href="chef-dashboard.html" class="flex-1 py-3 bg-brandDark hover:bg-[#4A200B] text-white rounded-xl text-xs font-bold text-center transition shadow-xs">
           Open Chef Dashboard
         </a>
       </div>
@@ -404,7 +555,7 @@
       <div class="flex items-center space-x-6">
         <a href="index.html" class="hover:text-white transition">Home</a>
         <a href="kitchen.html" class="hover:text-white transition">Sample Kitchen</a>
-        <a href="shef-dashboard.html" class="hover:text-white transition">Chef Hub</a>
+        <a href="chef-dashboard.html" class="hover:text-white transition">Chef Hub</a>
         <a href="admin-console.html" class="hover:text-white transition">Admin</a>
       </div>
       <p class="text-[11px] text-[#9E8574]">

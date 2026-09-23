@@ -49,7 +49,7 @@
           <span>📅</span>
           <span>My Meal Calendar</span>
         </a>
-        <a href="shef-dashboard.html" class="flex items-center space-x-1.5 bg-brandDark hover:bg-[#4A200B] text-white text-xs font-semibold px-4 py-2 rounded-full transition shadow-sm">
+        <a href="chef-dashboard.html" class="flex items-center space-x-1.5 bg-brandDark hover:bg-[#4A200B] text-white text-xs font-semibold px-4 py-2 rounded-full transition shadow-sm">
           <span>👩‍🍳</span>
           <span>Chef Hub</span>
         </a>
@@ -83,10 +83,15 @@
               Master Home Chef: <strong id="kitchenChefName" class="text-brandDark">Asha Sharma</strong> • <span id="kitchenCuisineSubtitle">Homestyle Gujarati & North Indian Comfort Food</span>
             </p>
             <div class="flex flex-wrap items-center gap-3 text-xs">
-              <span class="flex items-center space-x-1 bg-white px-2.5 py-1 rounded-full border border-brandBorder font-semibold text-brandDark shadow-xs">
+              <a href="#reviewsSection" class="flex items-center space-x-1.5 bg-white hover:bg-brandCream px-3 py-1 rounded-full border border-brandBorder font-semibold text-brandDark shadow-xs transition group cursor-pointer" title="View Verified Customer Reviews">
                 <span class="text-amber-500">★</span>
                 <span id="kitchenRatingReviews">4.9 (418 Reviews)</span>
-              </span>
+                <span class="text-[10px] text-brandAmber font-bold underline ml-0.5 group-hover:text-brandAmberHover">Read</span>
+              </a>
+              <button onclick="openReviewModal()" class="flex items-center space-x-1.5 bg-brandAmber hover:bg-brandAmberHover text-white px-3 py-1 rounded-full text-xs font-semibold shadow-xs transition cursor-pointer">
+                <span>✍️</span>
+                <span>Write a Review</span>
+              </button>
               <span class="flex items-center space-x-1 bg-white px-2.5 py-1 rounded-full border border-brandBorder text-gray-700 shadow-xs">
                 <span>📍</span>
                 <span id="kitchenLocationSector">Sector 11 (450m away)</span>
@@ -203,7 +208,7 @@
                   <th class="py-3 px-3 font-bold uppercase tracking-wider text-[11px]">Sweet / Sides</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-[#F3E5D4]">
+              <tbody class="divide-y divide-[#F3E5D4]" id="kitchenWeeklyMenuTbody">
                 <tr class="hover:bg-[#FDF8F0] transition">
                   <td class="py-3 px-3.5 font-bold text-brandDark flex items-center space-x-1.5">
                     <span class="w-2 h-2 rounded-full bg-brandAmber"></span>
@@ -276,6 +281,134 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+        </section>
+
+        <!-- CUSTOMER RATINGS & REVIEWS SECTION -->
+        <section id="reviewsSection" class="bg-white rounded-3xl border border-brandBorder p-6 lg:p-7 shadow-sm space-y-6 scroll-mt-24">
+          <!-- Section Header -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#F3E5D4]">
+            <div>
+              <div class="flex items-center space-x-2">
+                <span class="text-amber-500 text-lg">★</span>
+                <h2 class="text-xl font-bold font-serif text-brandDark">Customer Ratings & Reviews</h2>
+              </div>
+              <p class="text-xs text-gray-500 mt-0.5">Real verified feedback on hygiene, homestyle taste, and packing quality</p>
+            </div>
+            
+            <button onclick="openReviewModal()" class="inline-flex items-center justify-center space-x-2 bg-brandAmber hover:bg-brandAmberHover text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shadow-sm cursor-pointer whitespace-nowrap">
+              <span>✍️</span>
+              <span>Write a Review</span>
+            </button>
+          </div>
+
+          <!-- Rating Breakdown Dashboard Card -->
+          <div class="bg-gradient-to-br from-[#FFF9F0] via-white to-[#FDF5E6] rounded-2xl p-5 border border-brandBorder grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+            
+            <!-- Left: Big Score & Trust -->
+            <div class="md:col-span-4 text-center md:text-left md:border-r md:border-[#F0E2CA] md:pr-4">
+              <div class="flex items-baseline justify-center md:justify-start space-x-2">
+                <span id="reviewsAverageScore" class="text-4xl font-extrabold font-serif text-brandDark">4.9</span>
+                <span class="text-sm font-semibold text-gray-400">/ 5.0</span>
+              </div>
+              <div class="flex items-center justify-center md:justify-start space-x-1 text-amber-500 text-base my-1" id="reviewsStarVisual">
+                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+              </div>
+              <p id="reviewsCountSubtitle" class="text-xs text-gray-600 font-medium">Based on <span id="reviewsTotalCountNumber">3</span> verified customer reviews</p>
+              <div class="mt-3 inline-flex items-center space-x-1.5 bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-semibold px-2.5 py-1 rounded-full">
+                <span>🛡️</span>
+                <span>FSSAI Hygiene Verified</span>
+              </div>
+            </div>
+
+            <!-- Middle: Star Distribution Bars -->
+            <div class="md:col-span-5 space-y-1.5 text-xs text-gray-600 font-medium">
+              <!-- 5 Star -->
+              <div class="flex items-center space-x-2">
+                <span class="w-10 text-[11px] text-gray-500 font-bold">5 ★</span>
+                <div class="flex-1 h-2 bg-[#F0E2CA] rounded-full overflow-hidden">
+                  <div id="bar5Star" class="h-full bg-amber-500 rounded-full transition-all duration-500" style="width: 80%"></div>
+                </div>
+                <span id="count5Star" class="w-6 text-right text-[11px] font-mono text-gray-500">4</span>
+              </div>
+              <!-- 4 Star -->
+              <div class="flex items-center space-x-2">
+                <span class="w-10 text-[11px] text-gray-500 font-bold">4 ★</span>
+                <div class="flex-1 h-2 bg-[#F0E2CA] rounded-full overflow-hidden">
+                  <div id="bar4Star" class="h-full bg-amber-500 rounded-full transition-all duration-500" style="width: 20%"></div>
+                </div>
+                <span id="count4Star" class="w-6 text-right text-[11px] font-mono text-gray-500">1</span>
+              </div>
+              <!-- 3 Star -->
+              <div class="flex items-center space-x-2">
+                <span class="w-10 text-[11px] text-gray-500 font-bold">3 ★</span>
+                <div class="flex-1 h-2 bg-[#F0E2CA] rounded-full overflow-hidden">
+                  <div id="bar3Star" class="h-full bg-amber-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <span id="count3Star" class="w-6 text-right text-[11px] font-mono text-gray-500">0</span>
+              </div>
+              <!-- 2 Star -->
+              <div class="flex items-center space-x-2">
+                <span class="w-10 text-[11px] text-gray-500 font-bold">2 ★</span>
+                <div class="flex-1 h-2 bg-[#F0E2CA] rounded-full overflow-hidden">
+                  <div id="bar2Star" class="h-full bg-amber-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <span id="count2Star" class="w-6 text-right text-[11px] font-mono text-gray-500">0</span>
+              </div>
+              <!-- 1 Star -->
+              <div class="flex items-center space-x-2">
+                <span class="w-10 text-[11px] text-gray-500 font-bold">1 ★</span>
+                <div class="flex-1 h-2 bg-[#F0E2CA] rounded-full overflow-hidden">
+                  <div id="bar1Star" class="h-full bg-amber-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <span id="count1Star" class="w-6 text-right text-[11px] font-mono text-gray-500">0</span>
+              </div>
+            </div>
+
+            <!-- Right: Quality Highlights -->
+            <div class="md:col-span-3 bg-white p-3.5 rounded-xl border border-brandBorder text-xs space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-gray-500">🧼 Hygiene:</span>
+                <span id="hygieneScorePill" class="font-bold text-emerald-700 font-mono">4.9 / 5.0</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-gray-500">🍲 Freshness:</span>
+                <span class="font-bold text-brandAmber">99% Fresh</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-gray-500">⏱️ Delivery:</span>
+                <span class="font-bold text-emerald-700">On Time</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Review Filters & Counts -->
+          <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="filterReviewsTab('all')" id="tabReviewAll" class="px-3 py-1.5 rounded-xl text-xs font-bold transition bg-brandAmber text-white shadow-xs">
+                All Reviews (<span id="filterAllCount">0</span>)
+              </button>
+              <button onclick="filterReviewsTab('5star')" id="tabReview5" class="px-3 py-1.5 rounded-xl text-xs font-semibold transition text-gray-600 hover:text-brandDark bg-brandCream border border-brandBorder">
+                ★ 5 Stars (<span id="filter5Count">0</span>)
+              </button>
+              <button onclick="filterReviewsTab('4star')" id="tabReview4" class="px-3 py-1.5 rounded-xl text-xs font-semibold transition text-gray-600 hover:text-brandDark bg-brandCream border border-brandBorder">
+                ★ 4 Stars (<span id="filter4Count">0</span>)
+              </button>
+              <button onclick="filterReviewsTab('critical')" id="tabReviewCrit" class="px-3 py-1.5 rounded-xl text-xs font-semibold transition text-gray-600 hover:text-brandDark bg-brandCream border border-brandBorder">
+                Critical (1-3★) (<span id="filterCritCount">0</span>)
+              </button>
+            </div>
+
+            <span class="text-[11px] text-gray-400">Audited by Admin Trust & Safety Desk</span>
+          </div>
+
+          <!-- Dynamic Reviews Feed -->
+          <div id="reviewsListContainer" class="space-y-4 pt-1">
+            <!-- Populated dynamically via JS -->
+            <div class="p-8 text-center text-gray-400 text-xs">
+              Loading verified reviews...
+            </div>
           </div>
         </section>
       </div>
@@ -491,6 +624,144 @@
     </div>
   </div>
 
+  <!-- WRITE REVIEW MODAL -->
+  <div id="writeReviewModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden overflow-y-auto">
+    <div class="bg-white rounded-3xl border border-brandBorder max-w-lg w-full p-6 sm:p-7 shadow-2xl space-y-5 my-8">
+      
+      <!-- Modal Header -->
+      <div class="flex items-start justify-between pb-3 border-b border-[#F0E2CA]">
+        <div>
+          <span class="text-[10px] uppercase font-bold tracking-wider text-brandAmber">Customer Experience & Hygiene</span>
+          <h3 class="text-xl font-bold font-serif text-brandDark mt-0.5">Rate & Review <span id="reviewModalKitchenName">Kitchen</span></h3>
+          <p class="text-xs text-gray-500 mt-0.5">Your rating directly influences hygiene scores and safety monitoring.</p>
+        </div>
+        <button onclick="closeReviewModal()" class="w-8 h-8 rounded-full bg-brandCream text-gray-400 hover:text-brandDark flex items-center justify-center text-lg font-bold transition">
+          ✕
+        </button>
+      </div>
+
+      <!-- Review Form -->
+      <form id="customerReviewForm" onsubmit="submitCustomerReview(event)" class="space-y-4">
+        
+        <!-- 1. Star Rating Selector -->
+        <div>
+          <label class="block text-xs font-bold text-brandDark mb-1">Overall Rating <span class="text-red-500">*</span></label>
+          <div class="flex items-center space-x-1.5" id="starPickerContainer">
+            <button type="button" onclick="setStarRating(1)" onmouseenter="previewStars(1)" onmouseleave="resetStarPreview()" class="star-btn text-2xl text-amber-500 transition hover:scale-110 focus:outline-none cursor-pointer" data-value="1">★</button>
+            <button type="button" onclick="setStarRating(2)" onmouseenter="previewStars(2)" onmouseleave="resetStarPreview()" class="star-btn text-2xl text-amber-500 transition hover:scale-110 focus:outline-none cursor-pointer" data-value="2">★</button>
+            <button type="button" onclick="setStarRating(3)" onmouseenter="previewStars(3)" onmouseleave="resetStarPreview()" class="star-btn text-2xl text-amber-500 transition hover:scale-110 focus:outline-none cursor-pointer" data-value="3">★</button>
+            <button type="button" onclick="setStarRating(4)" onmouseenter="previewStars(4)" onmouseleave="resetStarPreview()" class="star-btn text-2xl text-amber-500 transition hover:scale-110 focus:outline-none cursor-pointer" data-value="4">★</button>
+            <button type="button" onclick="setStarRating(5)" onmouseenter="previewStars(5)" onmouseleave="resetStarPreview()" class="star-btn text-2xl text-amber-500 transition hover:scale-110 focus:outline-none cursor-pointer" data-value="5">★</button>
+          </div>
+          <p id="starRatingLabel" class="text-xs font-semibold text-brandAmber mt-1">⭐⭐⭐⭐⭐ 5 Stars - Superb! Fresh, hygienic, and authentic taste.</p>
+          <input type="hidden" id="selectedStarInput" value="5" />
+        </div>
+
+        <!-- 2. Dual Rating: Hygiene & Taste sliders / micro ratings -->
+        <div class="grid grid-cols-2 gap-3 p-3 bg-brandCream rounded-2xl border border-brandBorder text-xs">
+          <div>
+            <label class="block font-bold text-gray-700 mb-1">🧼 Hygiene & Cleanliness</label>
+            <select id="reviewHygieneRating" class="w-full bg-white border border-[#DFCBB0] text-brandDark text-xs font-semibold rounded-xl px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-brandAmber">
+              <option value="5" selected>5 - Spotless & Clean</option>
+              <option value="4">4 - Good Hygiene</option>
+              <option value="3">3 - Acceptable</option>
+              <option value="2">2 - Needs Improvement</option>
+              <option value="1">1 - Hygiene Concern</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-gray-700 mb-1">🍲 Taste & Freshness</label>
+            <select id="reviewTasteRating" class="w-full bg-white border border-[#DFCBB0] text-brandDark text-xs font-semibold rounded-xl px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-brandAmber">
+              <option value="5" selected>5 - Authentic Ghar Ka Swaad</option>
+              <option value="4">4 - Very Tasty</option>
+              <option value="3">3 - Decent / Average</option>
+              <option value="2">2 - Bland / Low Flavor</option>
+              <option value="1">1 - Poor Taste</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 3. Customer Info -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-brandDark mb-1">Your Name <span class="text-red-500">*</span></label>
+            <input type="text" id="reviewCustomerName" required placeholder="e.g. Pooja Sharma" class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brandAmber" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-brandDark mb-1">Dish Tasted</label>
+            <input type="text" id="reviewDishName" placeholder="e.g. Gujarati Deluxe Thali" class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brandAmber" />
+          </div>
+        </div>
+
+        <!-- 4. Quick Tag Chips -->
+        <div>
+          <label class="block text-xs font-bold text-brandDark mb-1.5">Highlight Key Positives or Feedback</label>
+          <div class="flex flex-wrap gap-1.5" id="reviewTagsContainer">
+            <button type="button" onclick="toggleReviewTag(this, '100% Desi Ghee')" class="review-tag-chip px-2.5 py-1 rounded-full text-[11px] font-semibold border border-brandBorder bg-white text-gray-700 hover:border-brandAmber transition cursor-pointer">
+              + 100% Desi Ghee
+            </button>
+            <button type="button" onclick="toggleReviewTag(this, 'Fresh & Piping Hot')" class="review-tag-chip px-2.5 py-1 rounded-full text-[11px] font-semibold border border-brandBorder bg-white text-gray-700 hover:border-brandAmber transition cursor-pointer">
+              + Fresh & Piping Hot
+            </button>
+            <button type="button" onclick="toggleReviewTag(this, 'Clean Packaging')" class="review-tag-chip px-2.5 py-1 rounded-full text-[11px] font-semibold border border-brandBorder bg-white text-gray-700 hover:border-brandAmber transition cursor-pointer">
+              + Clean Packaging
+            </button>
+            <button type="button" onclick="toggleReviewTag(this, 'Low Oil & Digestible')" class="review-tag-chip px-2.5 py-1 rounded-full text-[11px] font-semibold border border-brandBorder bg-white text-gray-700 hover:border-brandAmber transition cursor-pointer">
+              + Low Oil & Digestible
+            </button>
+            <button type="button" onclick="toggleReviewTag(this, 'Mother\'s Touch Taste')" class="review-tag-chip px-2.5 py-1 rounded-full text-[11px] font-semibold border border-brandBorder bg-white text-gray-700 hover:border-brandAmber transition cursor-pointer">
+              + Mother's Touch Taste
+            </button>
+            <button type="button" onclick="toggleReviewTag(this, 'On-Time Delivery')" class="review-tag-chip px-2.5 py-1 rounded-full text-[11px] font-semibold border border-brandBorder bg-white text-gray-700 hover:border-brandAmber transition cursor-pointer">
+              + On-Time Delivery
+            </button>
+            <button type="button" onclick="toggleReviewTag(this, 'Generous Quantity')" class="review-tag-chip px-2.5 py-1 rounded-full text-[11px] font-semibold border border-brandBorder bg-white text-gray-700 hover:border-brandAmber transition cursor-pointer">
+              + Generous Quantity
+            </button>
+            <button type="button" onclick="toggleReviewTag(this, 'Spill-Proof Box')" class="review-tag-chip px-2.5 py-1 rounded-full text-[11px] font-semibold border border-brandBorder bg-white text-gray-700 hover:border-brandAmber transition cursor-pointer">
+              + Spill-Proof Box
+            </button>
+          </div>
+        </div>
+
+        <!-- 5. Detailed Comments -->
+        <div>
+          <label class="block text-xs font-bold text-brandDark mb-1">Your Detailed Review <span class="text-red-500">*</span></label>
+          <textarea id="reviewCommentText" required rows="3" placeholder="Share your experience: How were the rotis, spice balance, hygiene of packaging, and delivery experience?" class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-brandAmber leading-relaxed"></textarea>
+        </div>
+
+        <!-- 6. Safety Guarantee Callout -->
+        <div class="flex items-start space-x-2 bg-amber-50/80 p-2.5 rounded-xl border border-amber-200/80 text-[11px] text-amber-900 leading-snug">
+          <span class="text-base text-brandAmber mt-0.5">🛡️</span>
+          <span><strong>RasoiSe Trust Guarantee:</strong> Reviews are publicly visible and monitored live by the Trust & Safety team. Critical ratings (<3★) alert the moderation console immediately.</span>
+        </div>
+
+        <!-- Form Buttons -->
+        <div class="flex items-center space-x-3 pt-2">
+          <button type="button" onclick="closeReviewModal()" class="w-1/3 py-2.5 border border-brandBorder text-gray-700 rounded-xl text-xs font-semibold hover:bg-gray-50 transition cursor-pointer">
+            Cancel
+          </button>
+          <button type="submit" id="btnSubmitReview" class="w-2/3 py-2.5 bg-brandAmber hover:bg-brandAmberHover text-white rounded-xl text-xs font-bold transition shadow-md flex items-center justify-center space-x-2 cursor-pointer">
+            <span>Submit Verified Review</span>
+            <span>→</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- SUCCESS TOAST NOTIFICATION -->
+  <div id="reviewSuccessToast" class="fixed bottom-6 right-6 bg-brandDark text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-brandAmber flex items-center space-x-3 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+      ✓
+    </div>
+    <div>
+      <p class="text-xs font-bold text-white" id="toastTitle">Review Published!</p>
+      <p class="text-[11px] text-amber-200/90" id="toastSubtitle">Thank you for rating. Your feedback helps our home chef!</p>
+    </div>
+  </div>
+
   <!-- FOOTER -->
   <footer class="w-full bg-brandFooter text-white pt-10 pb-8 px-8 border-t border-[#3A1E0D] mt-16">
     <div class="max-w-7xl mx-auto space-y-6">
@@ -507,7 +778,7 @@
           <a href="index.html" class="hover:text-white transition">Home</a>
           <a href="chef-onboarding.html" class="hover:text-white transition">Partner With Us</a>
           <a href="calendar.html" class="hover:text-white transition">Meal Calendar</a>
-          <a href="shef-dashboard.html" class="hover:text-white transition">Chef Hub</a>
+          <a href="chef-dashboard.html" class="hover:text-white transition">Chef Hub</a>
         </div>
         <p class="text-[11px] text-[#9E8574]">
           Home Chef Hygiene Certification: ISO-22000 Compliant
@@ -610,6 +881,11 @@
       }
 
       renderKitchenUI(currentKitchen);
+      fetchAndRenderKitchenReviews(currentKitchen.id, currentKitchen.name);
+
+      if (urlParams.get('openReview') === 'true' || window.location.hash === '#writeReviewModal') {
+        setTimeout(openReviewModal, 300);
+      }
     }
 
     function renderKitchenUI(k) {
@@ -697,6 +973,43 @@
 
       // Initial sub button text
       updateSubPlanUI(document.querySelector('input[name="subPlan"]:checked')?.value || '5day');
+
+      // Dynamic Weekly Rotating Menu Rendering
+      const menuTbody = document.getElementById('kitchenWeeklyMenuTbody');
+      if (menuTbody && k.weeklyMenu) {
+        menuTbody.innerHTML = '';
+        const dayKeys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+        const dayLabels = {
+          monday: 'Monday',
+          tuesday: 'Tuesday',
+          wednesday: 'Wednesday',
+          thursday: 'Thursday',
+          friday: 'Friday',
+          saturday: 'Saturday',
+          sunday: 'Sunday (Special)'
+        };
+
+        dayKeys.forEach((dKey, idx) => {
+          const item = k.weeklyMenu[dKey] || {};
+          const isSun = dKey === 'sunday';
+          const isEven = idx % 2 === 1;
+
+          const tr = document.createElement('tr');
+          tr.className = `hover:bg-[#FDF8F0] transition ${isEven ? 'bg-[#FDF8F0]/40' : ''}`;
+
+          tr.innerHTML = `
+            <td class="py-3 px-3.5 font-bold ${isSun ? 'text-emerald-700' : 'text-brandDark'} flex items-center space-x-1.5 whitespace-nowrap">
+              <span class="w-2 h-2 rounded-full ${isSun ? 'bg-emerald-600' : 'bg-brandAmber'}"></span>
+              <span>${dayLabels[dKey]}</span>
+            </td>
+            <td class="py-3 px-3 font-semibold ${isSun ? 'text-brandAmber' : 'text-gray-800'}">${item.main || 'Homestyle Special Sabzi'}</td>
+            <td class="py-3 px-3 text-gray-600">${item.dal || 'Dal Tadka'}</td>
+            <td class="py-3 px-3 text-gray-600">${item.breadRice || '4 Phulkas + Rice'}</td>
+            <td class="py-3 px-3 ${isSun ? 'text-emerald-700 font-bold' : 'text-brandRust font-medium'}">${item.sides || 'Fresh Salad & Chutney'}</td>
+          `;
+          menuTbody.appendChild(tr);
+        });
+      }
     }
 
     function changeGalleryImage(src, caption) {
@@ -844,6 +1157,386 @@
 
     function closeBookingModal() {
       document.getElementById('bookingModal').classList.add('hidden');
+    }
+
+    // ==========================================
+    // CUSTOMER REVIEWS & RATINGS MANAGEMENT
+    // ==========================================
+    let currentKitchenReviews = [];
+    let currentActiveReviewTab = 'all';
+    let selectedReviewTags = new Set();
+    let currentStarValue = 5;
+
+    const STAR_LABELS = {
+      5: "⭐⭐⭐⭐⭐ 5 Stars - Superb! Fresh, hygienic, and authentic home taste.",
+      4: "⭐⭐⭐⭐ 4 Stars - Very Good! Tasty food and neat, clean packaging.",
+      3: "⭐⭐⭐ 3 Stars - Average. Decent meal, but room for improvement.",
+      2: "⭐⭐ 2 Stars - Below Expectations. Issues with taste, spice or portion.",
+      1: "⭐ 1 Star - Poor / Hygiene Issue. Will be reported to Safety Desk."
+    };
+
+    function setStarRating(val) {
+      currentStarValue = val;
+      const input = document.getElementById('selectedStarInput');
+      if (input) input.value = val;
+
+      const label = document.getElementById('starRatingLabel');
+      if (label) {
+        label.innerText = STAR_LABELS[val] || `${val} Stars`;
+        if (val <= 2) {
+          label.className = "text-xs font-semibold text-red-600 mt-1";
+        } else if (val === 3) {
+          label.className = "text-xs font-semibold text-amber-700 mt-1";
+        } else {
+          label.className = "text-xs font-semibold text-emerald-700 mt-1";
+        }
+      }
+
+      // Sync hygiene and taste selectors
+      const hygSelect = document.getElementById('reviewHygieneRating');
+      if (hygSelect) hygSelect.value = String(val);
+
+      const tasteSelect = document.getElementById('reviewTasteRating');
+      if (tasteSelect) tasteSelect.value = String(val);
+
+      renderStarPicker(val);
+    }
+
+    function previewStars(val) {
+      renderStarPicker(val);
+    }
+
+    function resetStarPreview() {
+      renderStarPicker(currentStarValue);
+    }
+
+    function renderStarPicker(val) {
+      const btns = document.querySelectorAll('#starPickerContainer .star-btn');
+      btns.forEach(btn => {
+        const starNum = parseInt(btn.dataset.value, 10);
+        if (starNum <= val) {
+          btn.className = 'star-btn text-2xl text-amber-500 transition hover:scale-110 focus:outline-none cursor-pointer';
+          btn.innerText = '★';
+        } else {
+          btn.className = 'star-btn text-2xl text-gray-300 transition hover:scale-110 focus:outline-none cursor-pointer';
+          btn.innerText = '☆';
+        }
+      });
+    }
+
+    function toggleReviewTag(btn, tag) {
+      if (selectedReviewTags.has(tag)) {
+        selectedReviewTags.delete(tag);
+        btn.className = 'review-tag-chip px-2.5 py-1 rounded-full text-[11px] font-semibold border border-brandBorder bg-white text-gray-700 hover:border-brandAmber transition cursor-pointer';
+        btn.innerText = `+ ${tag}`;
+      } else {
+        selectedReviewTags.add(tag);
+        btn.className = 'review-tag-chip px-2.5 py-1 rounded-full text-[11px] font-semibold border border-brandAmber bg-brandPillBg text-brandDark transition shadow-xs cursor-pointer';
+        btn.innerText = `✓ ${tag}`;
+      }
+    }
+
+    function openReviewModal() {
+      const modal = document.getElementById('writeReviewModal');
+      const nameEl = document.getElementById('reviewModalKitchenName');
+      const dishInput = document.getElementById('reviewDishName');
+      const nameInput = document.getElementById('reviewCustomerName');
+
+      if (nameEl) nameEl.innerText = currentKitchen.name || 'Kitchen';
+      if (dishInput && !dishInput.value) dishInput.value = currentKitchen.dish || 'Special Daily Thali';
+
+      // Prefill customer name if logged in
+      try {
+        const raw = localStorage.getItem('rasoise_user_profile');
+        if (raw) {
+          const user = JSON.parse(raw);
+          if (user && user.name && nameInput && !nameInput.value) {
+            nameInput.value = user.name;
+          }
+        }
+      } catch(e) {}
+
+      setStarRating(5);
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeReviewModal() {
+      const modal = document.getElementById('writeReviewModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    async function fetchAndRenderKitchenReviews(kitchenId, kitchenName) {
+      try {
+        const idParam = kitchenId || (currentKitchen ? currentKitchen.id : 1);
+        const res = await fetch(`/api/kitchens/${idParam}/reviews`);
+        const data = await res.json();
+        if (data && data.success) {
+          currentKitchenReviews = data.reviews || [];
+          updateReviewsHeaderAndDashboard(data);
+          renderReviewsList(currentKitchenReviews);
+        }
+      } catch (err) {
+        console.error('Error fetching reviews:', err);
+      }
+    }
+
+    function updateReviewsHeaderAndDashboard(data) {
+      const avg = data.averageRating || 5.0;
+      const total = data.totalReviews || currentKitchenReviews.length;
+      const counts = data.ratingCounts || { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+      const hygiene = data.hygieneScore || avg;
+
+      // Update banner pill
+      const ratingPill = document.getElementById('kitchenRatingReviews');
+      if (ratingPill) {
+        ratingPill.innerText = `${avg.toFixed(1)} (${total} Reviews)`;
+      }
+
+      // Update reviews section header & average score
+      const avgScoreEl = document.getElementById('reviewsAverageScore');
+      if (avgScoreEl) avgScoreEl.innerText = avg.toFixed(1);
+
+      const countSubtitle = document.getElementById('reviewsTotalCountNumber');
+      if (countSubtitle) countSubtitle.innerText = total;
+
+      const hygienePill = document.getElementById('hygieneScorePill');
+      if (hygienePill) hygienePill.innerText = `${hygiene.toFixed(1)} / 5.0`;
+
+      // Update star bars
+      const pct = (cnt) => total > 0 ? Math.round((cnt / total) * 100) : 0;
+      for (let star = 1; star <= 5; star++) {
+        const bar = document.getElementById(`bar${star}Star`);
+        const countLabel = document.getElementById(`count${star}Star`);
+        const count = counts[star] || 0;
+        if (bar) bar.style.width = `${pct(count)}%`;
+        if (countLabel) countLabel.innerText = count;
+      }
+
+      // Update filter counts
+      const allCount = document.getElementById('filterAllCount');
+      if (allCount) allCount.innerText = total;
+
+      const count5 = document.getElementById('filter5Count');
+      if (count5) count5.innerText = counts[5] || 0;
+
+      const count4 = document.getElementById('filter4Count');
+      if (count4) count4.innerText = counts[4] || 0;
+
+      const countCrit = document.getElementById('filterCritCount');
+      if (countCrit) countCrit.innerText = (counts[1] || 0) + (counts[2] || 0) + (counts[3] || 0);
+    }
+
+    function filterReviewsTab(tab) {
+      currentActiveReviewTab = tab;
+      
+      const tabAll = document.getElementById('tabReviewAll');
+      const tab5 = document.getElementById('tabReview5');
+      const tab4 = document.getElementById('tabReview4');
+      const tabCrit = document.getElementById('tabReviewCrit');
+
+      const tabs = [
+        { id: 'all', el: tabAll },
+        { id: '5star', el: tab5 },
+        { id: '4star', el: tab4 },
+        { id: 'critical', el: tabCrit }
+      ];
+
+      tabs.forEach(t => {
+        if (!t.el) return;
+        if (t.id === tab) {
+          t.el.className = 'px-3 py-1.5 rounded-xl text-xs font-bold transition bg-brandAmber text-white shadow-xs';
+        } else {
+          t.el.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold transition text-gray-600 hover:text-brandDark bg-brandCream border border-brandBorder';
+        }
+      });
+
+      let filtered = currentKitchenReviews;
+      if (tab === '5star') {
+        filtered = currentKitchenReviews.filter(r => Math.round(Number(r.rating)) === 5);
+      } else if (tab === '4star') {
+        filtered = currentKitchenReviews.filter(r => Math.round(Number(r.rating)) === 4);
+      } else if (tab === 'critical') {
+        filtered = currentKitchenReviews.filter(r => Math.round(Number(r.rating)) <= 3);
+      }
+
+      renderReviewsList(filtered);
+    }
+
+    function renderReviewsList(reviews) {
+      const container = document.getElementById('reviewsListContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (!reviews || reviews.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center bg-[#FFFDF9] rounded-2xl border border-dashed border-[#EADBCC] space-y-2">
+            <span class="text-3xl">🍲</span>
+            <p class="text-xs font-bold text-brandDark">No reviews found under this filter</p>
+            <p class="text-[11px] text-gray-500">Be the first verified customer to share your thoughts!</p>
+            <button onclick="openReviewModal()" class="mt-2 text-xs font-bold text-brandAmber underline">Write a Review Now →</button>
+          </div>
+        `;
+        return;
+      }
+
+      reviews.forEach(r => {
+        const card = document.createElement('div');
+        card.className = 'bg-[#FFFDF9] rounded-2xl p-5 border border-brandBorder shadow-xs hover:border-[#D9BF9E] transition space-y-3';
+
+        const starNum = Math.max(1, Math.min(5, Math.round(Number(r.rating) || 5)));
+        const starsText = '★'.repeat(starNum) + '☆'.repeat(5 - starNum);
+        const nameInitial = r.customerName ? r.customerName.charAt(0).toUpperCase() : 'C';
+
+        let tagsHtml = '';
+        if (r.tags && r.tags.length > 0) {
+          tagsHtml = `<div class="flex flex-wrap gap-1.5 pt-1">
+            ${r.tags.map(t => `<span class="bg-[#FFF4E0] border border-[#ECD1A7] text-[#8C5311] text-[10px] font-semibold px-2 py-0.5 rounded-md">${t}</span>`).join('')}
+          </div>`;
+        }
+
+        const dateStr = r.date || 'Recent';
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex items-center space-x-3">
+              <div class="w-9 h-9 rounded-full bg-brandAlmond border border-brandBorder flex items-center justify-center font-bold text-brandDark text-xs shadow-xs flex-shrink-0">
+                ${nameInitial}
+              </div>
+              <div>
+                <div class="flex items-center space-x-2">
+                  <h4 class="text-xs font-bold text-brandDark leading-snug">${escapeHtml(r.customerName || 'Verified Customer')}</h4>
+                  <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.2 rounded-full border border-emerald-300">
+                    ✓ Verified Customer
+                  </span>
+                </div>
+                <p class="text-[10px] text-gray-400 mt-0.5">${r.planType || '1-Day Tasting Trial'} • ${dateStr}</p>
+              </div>
+            </div>
+
+            <!-- Stars & Score Pill -->
+            <div class="text-right flex-shrink-0">
+              <span class="text-amber-500 font-bold text-sm tracking-widest">${starsText}</span>
+              <p class="text-[10px] text-gray-400">${starNum}.0 / 5.0</p>
+            </div>
+          </div>
+
+          <!-- Dish Info -->
+          ${r.dish ? `<p class="text-[11px] text-gray-500 font-medium">Meal Reviewed: <strong class="text-gray-700 font-semibold">${escapeHtml(r.dish)}</strong></p>` : ''}
+
+          <!-- Review Comment -->
+          <p class="text-xs text-gray-700 leading-relaxed">${escapeHtml(r.comment || '')}</p>
+
+          <!-- Tags -->
+          ${tagsHtml}
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    async function submitCustomerReview(event) {
+      event.preventDefault();
+      const btn = document.getElementById('btnSubmitReview');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerText = 'Submitting Review...';
+      }
+
+      const ratingVal = parseInt(document.getElementById('selectedStarInput')?.value || '5', 10);
+      const hygieneVal = parseInt(document.getElementById('reviewHygieneRating')?.value || '5', 10);
+      const tasteVal = parseInt(document.getElementById('reviewTasteRating')?.value || '5', 10);
+      const nameVal = document.getElementById('reviewCustomerName')?.value || 'Neighbor';
+      const dishVal = document.getElementById('reviewDishName')?.value || (currentKitchen.dish || 'Homestyle Special Thali');
+      const commentVal = document.getElementById('reviewCommentText')?.value || '';
+
+      const tagsArray = Array.from(selectedReviewTags);
+
+      const payload = {
+        kitchenId: currentKitchen.id,
+        kitchenName: currentKitchen.name,
+        customerName: nameVal,
+        rating: ratingVal,
+        hygieneRating: hygieneVal,
+        tasteRating: tasteVal,
+        dish: dishVal,
+        tags: tagsArray,
+        comment: commentVal,
+        planType: 'Verified Customer Review'
+      };
+
+      try {
+        const res = await fetch('/api/reviews', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+
+        if (result && result.success) {
+          closeReviewModal();
+          showReviewToast(
+            'Review Submitted & Verified! ✓',
+            `Thank you ${nameVal}! Your ${ratingVal}★ rating has been published.`
+          );
+
+          // Reset form
+          document.getElementById('customerReviewForm').reset();
+          selectedReviewTags.clear();
+          document.querySelectorAll('.review-tag-chip').forEach(btn => {
+            const rawTag = btn.innerText.replace(/^[+✓]\s*/, '').trim();
+            btn.className = 'review-tag-chip px-2.5 py-1 rounded-full text-[11px] font-semibold border border-brandBorder bg-white text-gray-700 hover:border-brandAmber transition cursor-pointer';
+            btn.innerText = `+ ${rawTag}`;
+          });
+
+          // Refresh reviews
+          await fetchAndRenderKitchenReviews(currentKitchen.id, currentKitchen.name);
+
+          // Smooth scroll to reviews
+          const reviewsSection = document.getElementById('reviewsSection');
+          if (reviewsSection) {
+            reviewsSection.scrollIntoView({ behavior: 'smooth' });
+          }
+        } else {
+          alert(result.error || 'Failed to submit review.');
+        }
+      } catch (err) {
+        console.error('Error submitting review:', err);
+        alert('Could not submit review. Please try again.');
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerText = 'Submit Verified Review →';
+        }
+      }
+    }
+
+    function showReviewToast(title, subtitle) {
+      const toast = document.getElementById('reviewSuccessToast');
+      const titleEl = document.getElementById('toastTitle');
+      const subEl = document.getElementById('toastSubtitle');
+
+      if (titleEl) titleEl.innerText = title;
+      if (subEl) subEl.innerText = subtitle;
+
+      if (toast) {
+        toast.classList.remove('translate-y-24', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+
+        setTimeout(() => {
+          toast.classList.remove('translate-y-0', 'opacity-100');
+          toast.classList.add('translate-y-24', 'opacity-0');
+        }, 4000);
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
     }
   </script>
 </body>
