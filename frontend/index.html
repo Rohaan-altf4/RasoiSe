@@ -48,34 +48,7 @@
           <span>Rasoi</span><span class="text-brandAmber">Se</span>
         </a>
 
-        <!-- 1. Area Dropdown -->
-        <div class="relative">
-          <select id="areaSelect" class="appearance-none bg-white border border-[#DECDB3] text-brandDark text-xs font-semibold rounded-full pl-7 pr-7 py-1.5 focus:outline-none focus:ring-2 focus:ring-brandAmber cursor-pointer shadow-sm">
-            <option value="Gurugram Central" selected>Gurugram Central</option>
-            <option value="Golf Course Road">Golf Course Road</option>
-            <option value="Cyber City Belt">Cyber City Belt</option>
-            <option value="Sohna Road Corridor">Sohna Road Corridor</option>
-          </select>
-          <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-brandRust text-xs">🏙️</span>
-          <span class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 text-[10px] pointer-events-none">▼</span>
-        </div>
-
-        <!-- 2. Sector Dropdown (Cascading under Area) -->
-        <div class="relative">
-          <select id="sectorSelect" class="appearance-none bg-white border border-[#DECDB3] text-brandDark text-xs font-semibold rounded-full pl-7 pr-7 py-1.5 focus:outline-none focus:ring-2 focus:ring-brandAmber cursor-pointer shadow-sm">
-            <option value="Sector 11" selected>Sector 11</option>
-            <option value="Sector 14">Sector 14</option>
-            <option value="Sector 15">Sector 15</option>
-          </select>
-          <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-brandRust text-xs">📍</span>
-          <span class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 text-[10px] pointer-events-none">▼</span>
-        </div>
-
-        <!-- Within 1km Radius Pill -->
-        <button id="radiusToggle" class="hidden sm:flex items-center space-x-1.5 bg-brandPillBg border border-brandPillBorder text-brandRust text-xs font-medium rounded-full px-3.5 py-1.5 shadow-sm hover:bg-brandAlmond transition">
-          <span class="text-xs">🎯</span>
-          <span>Within 1 km radius</span>
-        </button>
+        
       </div>
 
       <!-- Right: Links & User Authentication CTA -->
@@ -84,11 +57,19 @@
         <a href="calendar.html" title="Cart / Active Plan" class="text-gray-700 hover:text-brandAmber transition text-sm">🛍️</a>
         
         <!-- User Session / Auth Profile Button (Controlled by app.js) -->
-        <div id="userNavContainer" class="relative">
+        <div id="userNavContainer" class="relative group">
           <button id="btnOpenAuthModal" class="flex items-center space-x-1.5 bg-brandDark hover:bg-[#4A200B] text-white text-xs font-semibold px-4 py-2 rounded-full transition shadow-sm">
             <span>👤</span>
             <span id="navAuthLabel">Sign In</span>
           </button>
+
+          <div id="loginDropdownMenu" class="absolute right-0 top-full pt-1 w-48 hidden group-hover:block z-50">
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden flex flex-col">
+              <button class="w-full text-left px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50" onclick="openLoginModal('Customer')">Login as Customer</button>
+              <button class="w-full text-left px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50" onclick="openLoginModal('Chef')">Login as Seller</button>
+              <a href="admin-console.html" class="block w-full text-left px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50">Login as Admin</a>
+            </div>
+          </div>
           
           <!-- User Profile Dropdown Menu (Hidden by default) -->
           <div id="userDropdownMenu" class="absolute right-0 mt-2 w-64 bg-white rounded-2xl border border-brandBorder shadow-xl p-4 text-xs space-y-3 hidden z-50">
@@ -127,7 +108,7 @@
           Ghar ka khaana, delivered straight from local home kitchens
         </h1>
         <p class="text-sm leading-relaxed text-[#6E4F39] max-w-2xl">
-          Wholesome, hygienic, and authentic tiffins crafted by culinary mothers and passionate home chefs in Gurugram Central. Enjoy local trials before subscribing.
+          Wholesome, hygienic, and authentic tiffins crafted by culinary mothers and passionate home chefs in Mumbai (Andheri West & Bandra). Enjoy local trials before subscribing.
         </p>
       </div>
 
@@ -177,14 +158,14 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 max-w-4xl" id="marketplaceKitchenGrid">
 
       <!-- CARD 1: Annapurna Kitchen -->
-      <div class="bg-white rounded-2xl p-4 border border-[#EEDBCA] shadow-sm hover:shadow-md transition flex flex-col justify-between kitchen-card" data-area="Gurugram Central" data-sector="Sector 11" data-distance="450">
+      <div class="bg-white rounded-2xl p-4 border border-[#EEDBCA] shadow-sm hover:shadow-md transition flex flex-col justify-between kitchen-card" data-area="Andheri West" data-sector="Lokhandwala" data-serviceable-sectors="Lokhandwala,Sector 10,Sector 12" data-distance="450">
         <div>
           <!-- Dish Image with Floating Distance Tag -->
           <div class="relative h-52 w-full rounded-xl overflow-hidden mb-3.5">
             <img src="https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?w=600&auto=format&fit=crop&q=80" alt="Gujarati Thali" class="w-full h-full object-cover" />
             <div class="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-sm border border-gray-200 text-gray-800 text-[11px] font-medium px-2.5 py-1 rounded-full flex items-center space-x-1 shadow-sm">
               <span class="text-[10px]">📍</span>
-              <span>450m away • Sector 11</span>
+              <span>450m away • Lokhandwala</span>
             </div>
           </div>
 
@@ -207,7 +188,7 @@
             <p class="text-[9px] uppercase font-semibold text-gray-400">Trial Price</p>
             <p class="text-base font-bold text-brandDark">₹80 <span class="text-[11px] font-normal text-gray-500">/ meal</span></p>
           </div>
-          <a href="kitchen.html?id=1" class="bg-brandAmber hover:bg-brandAmberHover text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center space-x-1 shadow-sm">
+          <a href="kitchen.html?id=1" onclick="if(!localStorage.getItem('rasoise_user_profile')) { event.preventDefault(); openLoginModal('Customer'); }" class="bg-brandAmber hover:bg-brandAmberHover text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center space-x-1 shadow-sm">
             <span>Book 1-Day Trial</span>
             <span>→</span>
           </a>
@@ -215,14 +196,14 @@
       </div>
 
       <!-- CARD 2: Nanak's Rasoi -->
-      <div class="bg-white rounded-2xl p-4 border border-[#EEDBCA] shadow-sm hover:shadow-md transition flex flex-col justify-between kitchen-card" data-area="Gurugram Central" data-sector="Sector 14" data-distance="600">
+      <div class="bg-white rounded-2xl p-4 border border-[#EEDBCA] shadow-sm hover:shadow-md transition flex flex-col justify-between kitchen-card" data-area="Andheri West" data-sector="Versova" data-serviceable-sectors="Versova,Sector 15,Sector 16" data-distance="600">
         <div>
           <!-- Dish Image with Floating Distance Tag -->
           <div class="relative h-52 w-full rounded-xl overflow-hidden mb-3.5">
             <img src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600&auto=format&fit=crop&q=80" alt="Punjabi Thali" class="w-full h-full object-cover" />
             <div class="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-sm border border-gray-200 text-gray-800 text-[11px] font-medium px-2.5 py-1 rounded-full flex items-center space-x-1 shadow-sm">
               <span class="text-[10px]">📍</span>
-              <span>600m away • Sector 14</span>
+              <span>600m away • Versova</span>
             </div>
           </div>
 
@@ -245,7 +226,7 @@
             <p class="text-[9px] uppercase font-semibold text-gray-400">Trial Price</p>
             <p class="text-base font-bold text-brandDark">₹80 <span class="text-[11px] font-normal text-gray-500">/ meal</span></p>
           </div>
-          <a href="kitchen.html?id=2" class="bg-brandAmber hover:bg-brandAmberHover text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center space-x-1 shadow-sm">
+          <a href="kitchen.html?id=2" onclick="if(!localStorage.getItem('rasoise_user_profile')) { event.preventDefault(); openLoginModal('Customer'); }" class="bg-brandAmber hover:bg-brandAmberHover text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center space-x-1 shadow-sm">
             <span>Book 1-Day Trial</span>
             <span>→</span>
           </a>
@@ -293,7 +274,7 @@
 
         <div>
           <label class="block text-xs font-bold text-brandDark mb-1">I am signing in as:</label>
-          <div class="grid grid-cols-2 gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <label class="flex items-center space-x-2 p-2.5 bg-[#FFF9F0] border border-brandAmber rounded-xl cursor-pointer text-xs font-semibold">
               <input type="radio" name="loginRole" value="Customer" checked class="text-brandAmber">
               <span>👤 Customer</span>
@@ -326,7 +307,7 @@
           />
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
             <label class="block text-xs font-bold text-brandDark mb-1">Email <span class="text-red-500">*</span></label>
             <input 
@@ -353,19 +334,35 @@
           <div>
             <label class="block text-xs font-bold text-brandDark mb-1">Area <span class="text-red-500">*</span></label>
             <select id="profileArea" onchange="updateProfileSectors()" class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs font-semibold rounded-xl px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-brandAmber">
-              <option value="Gurugram Central">Gurugram Central</option>
-              <option value="Golf Course Road">Golf Course Road</option>
-              <option value="Cyber City Belt">Cyber City Belt</option>
-              <option value="Sohna Road Corridor">Sohna Road Corridor</option>
+              <option value="Andheri West" selected>Andheri West</option>
+              <option value="Bandra West">Bandra West</option>
+              <option value="Powai">Powai</option>
+              <option value="South Mumbai">South Mumbai</option>
             </select>
           </div>
           <div>
-            <label class="block text-xs font-bold text-brandDark mb-1">Sector <span class="text-red-500">*</span></label>
-            <select id="profileSector" class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs font-semibold rounded-xl px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-brandAmber">
-              <option value="Sector 11">Sector 11</option>
-              <option value="Sector 14">Sector 14</option>
-              <option value="Sector 15">Sector 15</option>
-            </select>
+            <label class="block text-xs font-bold text-brandDark mb-1">Sector / Locality <span class="text-red-500">*</span></label>
+            <input 
+              type="text" 
+              id="profileSector" 
+              list="profileSectorSuggestions"
+              placeholder="Type your sector e.g. Sector 6, Lokhandwala" 
+              class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs font-semibold rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brandAmber"
+            />
+            <datalist id="profileSectorSuggestions">
+              <option value="Sector 6">
+              <option value="Sector 7">
+              <option value="Sector 8">
+              <option value="Sector 10">
+              <option value="Lokhandwala">
+              <option value="Versova">
+              <option value="Lokhandwala">
+              <option value="Versova">
+              <option value="Oshiwara">
+              <option value="Pali Hill">
+              <option value="Carter Road">
+              <option value="Hiranandani">
+            </datalist>
           </div>
         </div>
 
@@ -419,12 +416,7 @@
 
       <!-- Lower Footer Row -->
       <div class="flex flex-col md:flex-row items-center justify-between text-xs text-[#BBA594] gap-4">
-        <div class="flex items-center space-x-6">
-          <a href="#" class="hover:text-white transition">About Us</a>
-          <a href="#" class="hover:text-white transition">Privacy Policy</a>
-          <a href="#" class="hover:text-white transition">Terms of Service</a>
-          <a href="#" class="hover:text-white transition">Help Center</a>
-        </div>
+        
         <p class="text-[11px] text-[#9E8574]">
           Home Chef Hygiene Certification: ISO-22000 Compliant
         </p>

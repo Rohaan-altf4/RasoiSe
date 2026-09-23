@@ -19,15 +19,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const activeBadge = document.getElementById('activeKitchensBadge');
 
   const AREA_SECTOR_MAP = {
-    'Gurugram Central': ['Sector 11', 'Sector 14', 'Sector 15'],
-    'Golf Course Road': ['Sector 42', 'Sector 43', 'Sector 53', 'Sector 54'],
-    'Cyber City Belt': ['DLF Phase 2', 'DLF Phase 3', 'Sector 24', 'Sector 25'],
-    'Sohna Road Corridor': ['Sector 47', 'Sector 48', 'Sector 49', 'Sector 50']
+    'Andheri West': ['Lokhandwala', 'Versova', 'Oshiwara'],
+    'Bandra West': ['Pali Hill', 'Carter Road', 'Linking Road'],
+    'Powai': ['Hiranandani', 'Chandivali', 'Rambaug'],
+    'South Mumbai': ['Colaba', 'Malabar Hill', 'Cuffe Parade']
   };
 
   function populateSectorsForArea(selectedArea, targetSelect, preserveVal) {
     if (!targetSelect) return;
-    const sectors = AREA_SECTOR_MAP[selectedArea] || ['Sector 11', 'Sector 14', 'Sector 15'];
+    const sectors = AREA_SECTOR_MAP[selectedArea] || ['Lokhandwala', 'Versova', 'Oshiwara'];
     targetSelect.innerHTML = '';
     sectors.forEach((sec, idx) => {
       const opt = document.createElement('option');
@@ -42,29 +42,119 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  async function loadMarketplaceKitchens() {
+    if (!kitchenGrid) return;
+    try {
+      const res = await fetch('/api/kitchens');
+      const kitchens = await res.json();
+      if (Array.isArray(kitchens) && kitchens.length > 0) {
+        renderDynamicKitchenCards(kitchens);
+      }
+    } catch (err) {
+      console.warn('Could not fetch dynamic kitchens:', err);
+    }
+    filterMarketplaceCards();
+  }
+
+  function renderDynamicKitchenCards(kitchens) {
+    if (!kitchenGrid) return;
+    kitchenGrid.innerHTML = '';
+
+    kitchens.forEach(k => {
+      const isBanned = (k.status || '').toLowerCase().includes('banned');
+      if (isBanned) return;
+
+      const card = document.createElement('div');
+      card.className = 'bg-white rounded-2xl p-4 border border-[#EEDBCA] shadow-sm hover:shadow-md transition flex flex-col justify-between kitchen-card';
+      card.dataset.area = k.area || 'Andheri West';
+      card.dataset.sector = k.sector || 'Lokhandwala';
+      card.dataset.serviceableSectors = (k.serviceableSectors || [k.sector || 'Lokhandwala']).join(',');
+      card.dataset.distance = (k.distance ? parseInt(k.distance) : 450) || 450;
+      card.dataset.status = k.status || 'Active';
+
+      const photo = k.photoUrl || 'https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?w=600';
+      const dish = k.dish || 'Special Homestyle Daily Thali';
+      const desc = k.description || 'Wholesome, hygienic, and authentic home-cooked meals prepared with care.';
+      const price = k.price || 80;
+
+      card.innerHTML = `
+        <div>
+          <div class="relative h-52 w-full rounded-xl overflow-hidden mb-3.5">
+            <img src="${photo}" alt="${dish}" class="w-full h-full object-cover" />
+            <div class="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-sm border border-gray-200 text-gray-800 text-[11px] font-medium px-2.5 py-1 rounded-full flex items-center space-x-1 shadow-sm">
+              <span class="text-[10px]">📍</span>
+              <span>${k.distance || '400m away'} • ${k.sector || 'Sector'}</span>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between mb-1">
+            <p class="text-[10px] uppercase tracking-wider font-semibold text-gray-400">${k.name}</p>
+            <div class="flex items-center space-x-1 text-xs font-semibold text-gray-800">
+              <span class="text-amber-500">★</span>
+              <span>${(Number(k.rating) || 5.0).toFixed(1)}</span>
+            </div>
+          </div>
+
+          <h3 class="text-base font-bold text-brandDark mb-3">${dish}</h3>
+          <p class="text-xs text-gray-500 mb-3 leading-relaxed">${desc}</p>
+        </div>
+
+        <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+          <div>
+            <p class="text-[9px] uppercase font-semibold text-gray-400">Trial Price</p>
+            <p class="text-base font-bold text-brandDark">₹${price} <span class="text-[11px] font-normal text-gray-500">/ meal</span></p>
+          </div>
+          <a href="kitchen.html?id=${k.id}" onclick="if(!localStorage.getItem('rasoise_user_profile')) { event.preventDefault(); openLoginModal('Customer'); }" class="bg-brandAmber hover:bg-brandAmberHover text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition flex items-center space-x-1 shadow-sm">
+            <span>Book 1-Day Trial</span>
+            <span>→</span>
+          </a>
+        </div>
+      `;
+
+      kitchenGrid.appendChild(card);
+    });
+  }
+
   function filterMarketplaceCards() {
     if (!kitchenGrid) return;
-    const currentArea = areaSelect ? areaSelect.value.trim().toLowerCase() : '';
-    const currentSector = sectorSelect ? sectorSelect.value.trim().toLowerCase() : '';
+    const user = getStoredUser();
+    let currentArea = areaSelect ? areaSelect.value.trim().toLowerCase() : '';
+    let currentSector = sectorSelect ? sectorSelect.value.trim().toLowerCase() : '';
+    if (!currentArea && !currentSector && user) {
+      currentArea = (user.area || '').trim().toLowerCase();
+      currentSector = (user.sector || '').trim().toLowerCase();
+    }
     const isRadiusOnly = radiusToggle && radiusToggle.dataset.active === 'true';
 
     const cards = kitchenGrid.querySelectorAll('.kitchen-card');
     let visibleCount = 0;
 
     cards.forEach(card => {
-      const cardArea = (card.dataset.area || 'Gurugram Central').toLowerCase();
-      const cardSector = (card.dataset.sector || 'Sector 11').toLowerCase();
+      const isBanned = (card.dataset.status || '').toLowerCase().includes('banned');
+      if (isBanned) {
+        card.style.display = 'none';
+        return;
+      }
+
+      const cardArea = (card.dataset.area || 'Andheri West').toLowerCase();
+      const cardSector = (card.dataset.sector || 'Lokhandwala').toLowerCase();
+      
+      const serviceableRaw = card.dataset.serviceableSectors || '';
+      const serviceableSectors = serviceableRaw ? serviceableRaw.split(',').map(s => s.trim().toLowerCase()) : [cardSector];
+      
       const cardDist = parseInt(card.dataset.distance || '500', 10);
 
       const matchesArea = !currentArea || cardArea === currentArea;
-      const matchesSector = !currentSector || cardSector === currentSector || matchesArea; // relaxed so nearby area shows
+      
+      let matchesSector = true;
+      if (currentSector) {
+        matchesSector = serviceableSectors.includes(currentSector) || cardSector === currentSector;
+      }
+
       const matchesRadius = !isRadiusOnly || cardDist <= 1000;
 
-      // Keep at most 2 cards shown
-      if (matchesArea && matchesRadius && visibleCount < 2) {
-        card.style.display = '';
-        visibleCount++;
-      } else if (matchesArea && !currentSector && visibleCount < 2) {
+      // Show matching active kitchens (up to 4)
+      if (matchesArea && matchesSector && matchesRadius && visibleCount < 4) {
         card.style.display = '';
         visibleCount++;
       } else {
@@ -75,6 +165,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (activeBadge) {
       activeBadge.innerText = `${visibleCount} Active Today`;
     }
+  }
+
+  if (kitchenGrid) {
+    loadMarketplaceKitchens();
   }
 
   if (areaSelect) {
@@ -124,6 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeAuthBtn = document.getElementById('closeAuthModal');
   const navAuthLabel = document.getElementById('navAuthLabel');
   const userDropdown = document.getElementById('userDropdownMenu');
+  const loginDropdown = document.getElementById('loginDropdownMenu');
 
   const RFC_EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
   const INDIAN_PHONE_REGEX = /^[6-9]\d{9}$/;
@@ -144,7 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
         navAuthLabel.innerText = `${user.name.split(' ')[0]} (${user.role || 'User'})`;
       }
       if (btnOpenAuth) {
-        btnOpenAuth.className = 'flex items-center space-x-1.5 bg-[#4A200B] hover:bg-[#331507] text-white text-xs font-semibold px-4 py-2 rounded-full transition shadow-sm border border-brandAmber';
+        btnOpenAuth.className = 'flex items-center space-x-1.5 bg-[#4A200B] hover:bg-[#331507] text-white text-xs font-semibold px-4 py-2 rounded-full transition shadow-sm border border-brandAmber cursor-pointer';
       }
 
       // Populate Dropdown
@@ -155,35 +250,52 @@ document.addEventListener('DOMContentLoaded', () => {
       const walletEl = document.getElementById('dropdownUserWallet');
 
       if (nameEl) nameEl.innerText = user.name;
-      if (roleEl) roleEl.innerText = user.role === 'Chef' ? '👩‍🍳 Verified Home Chef' : '👤 Registered Customer';
-      if (addrEl) addrEl.innerText = `${user.address || 'Sector 11'}, ${user.sector || ''}`;
+      if (roleEl) roleEl.innerText = (user.role === 'Chef' || user.role === 'Seller') ? '👩‍🍳 Verified Home Chef' : '👤 Registered Customer';
+      if (addrEl) addrEl.innerText = `${user.address || 'Lokhandwala'}, ${user.sector || ''}`;
       if (walletEl) walletEl.innerText = `₹${localStorage.getItem('rasoise_wallet') || '720'}`;
 
       if (linkEl) {
-        if (user.role === 'Chef') {
+        if (user.role === 'Chef' || user.role === 'Seller') {
           linkEl.innerText = 'Open Chef Operations Hub →';
-          linkEl.href = 'chef-dashboard.html';
+          linkEl.href = 'shef-dashboard.html';
         } else {
           linkEl.innerText = 'View Meal Calendar →';
           linkEl.href = 'calendar.html';
         }
       }
+      if (loginDropdown) loginDropdown.classList.add('!hidden');
     } else {
       if (navAuthLabel) navAuthLabel.innerText = 'Sign In';
       if (btnOpenAuth) {
-        btnOpenAuth.className = 'flex items-center space-x-1.5 bg-brandDark hover:bg-[#4A200B] text-white text-xs font-semibold px-4 py-2 rounded-full transition shadow-sm';
+        btnOpenAuth.className = 'flex items-center space-x-1.5 bg-brandDark hover:bg-[#4A200B] text-white text-xs font-semibold px-4 py-2 rounded-full transition shadow-sm cursor-pointer';
       }
+      if (loginDropdown) loginDropdown.classList.remove('!hidden');
     }
   }
+
+  window.openLoginModal = function(role) {
+    const modal = document.getElementById('authProfileModal') || document.getElementById('authModal');
+    if (modal) {
+      modal.classList.remove('hidden');
+      const roleToSelect = (role === 'Chef' || role === 'Seller') ? 'Chef' : 'Customer';
+      document.querySelectorAll('input[name="loginRole"]').forEach(input => {
+        input.checked = (input.value === roleToSelect);
+      });
+      document.querySelectorAll('input[name="profileRole"]').forEach(input => {
+        input.checked = (input.value === roleToSelect);
+      });
+      window.switchAuthTab('signin');
+    }
+  };
 
   if (btnOpenAuth) {
     btnOpenAuth.addEventListener('click', (e) => {
       e.stopPropagation();
       const user = getStoredUser();
-      if (user && user.name && userDropdown) {
-        userDropdown.classList.toggle('hidden');
-      } else if (authModal) {
-        authModal.classList.remove('hidden');
+      if (user && user.name) {
+        if (userDropdown) userDropdown.classList.toggle('hidden');
+      } else {
+        window.openLoginModal('Customer');
       }
     });
   }
@@ -208,16 +320,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const cSignUp = document.getElementById('tabSignUpContent');
 
     if (tab === 'signin') {
-      tSignIn.className = 'py-2.5 px-3 rounded-xl transition shadow-xs bg-brandAmber text-white';
-      tSignUp.className = 'py-2.5 px-3 rounded-xl transition text-gray-600 hover:text-brandDark';
-      cSignIn.classList.remove('hidden');
-      cSignUp.classList.add('hidden');
+      if (tSignIn) tSignIn.className = 'py-2.5 px-3 rounded-xl transition shadow-xs bg-brandAmber text-white';
+      if (tSignUp) tSignUp.className = 'py-2.5 px-3 rounded-xl transition text-gray-600 hover:text-brandDark';
+      if (cSignIn) cSignIn.classList.remove('hidden');
+      if (cSignUp) cSignUp.classList.add('hidden');
     } else {
-      tSignUp.className = 'py-2.5 px-3 rounded-xl transition shadow-xs bg-brandAmber text-white';
-      tSignIn.className = 'py-2.5 px-3 rounded-xl transition text-gray-600 hover:text-brandDark';
-      cSignUp.classList.remove('hidden');
-      cSignIn.classList.add('hidden');
-      window.updateProfileSectors();
+      if (tSignUp) tSignUp.className = 'py-2.5 px-3 rounded-xl transition shadow-xs bg-brandAmber text-white';
+      if (tSignIn) tSignIn.className = 'py-2.5 px-3 rounded-xl transition text-gray-600 hover:text-brandDark';
+      if (cSignUp) cSignUp.classList.remove('hidden');
+      if (cSignIn) cSignIn.classList.add('hidden');
+      if (window.updateProfileSectors) window.updateProfileSectors();
     }
   };
 
@@ -241,7 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!isEmail && !isPhone) {
       if (errEl) {
-        errEl.innerText = 'Invalid format. Enter a valid email or 10-digit Indian phone.';
+        errEl.innerText = 'Please enter a valid email or 10-digit mobile number.';
         errEl.classList.remove('hidden');
       }
       return;
@@ -257,17 +369,19 @@ document.addEventListener('DOMContentLoaded', () => {
       name: displayName.charAt(0).toUpperCase() + displayName.slice(1),
       identifier: val,
       role: roleVal,
-      area: existing?.area || 'Gurugram Central',
-      sector: existing?.sector || 'Sector 11',
+      area: existing?.area || 'Andheri West',
+      sector: existing?.sector || 'Lokhandwala',
       address: existing?.address || 'Flat 402, Silver Oaks Society',
       signedInAt: new Date().toISOString()
     };
 
     localStorage.setItem('rasoise_user_profile', JSON.stringify(userProfile));
-    updateNavAuthState();
-
-    if (authModal) authModal.classList.add('hidden');
-    alert(`🎉 Welcome back, ${userProfile.name}! Signed in as ${roleVal}.`);
+    
+    if (roleVal === 'Chef' || roleVal === 'Seller') {
+      window.location.href = 'shef-dashboard.html';
+    } else {
+      window.location.reload();
+    }
   };
 
   // 2. Handle Make My Profile Action
@@ -284,8 +398,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const name = (nameInput ? nameInput.value : '').trim();
     const email = (emailInput ? emailInput.value : '').trim();
     const phone = (phoneInput ? phoneInput.value : '').trim().replace(/[\s-]/g, '');
-    const area = areaInput ? areaInput.value : 'Gurugram Central';
-    const sector = sectorInput ? sectorInput.value : 'Sector 11';
+    const area = areaInput ? areaInput.value : 'Andheri West';
+    const sector = sectorInput ? sectorInput.value : 'Lokhandwala';
     const address = (addrInput ? addrInput.value : '').trim();
 
     if (!name || name.length < 2) {
@@ -319,10 +433,13 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     localStorage.setItem('rasoise_user_profile', JSON.stringify(newProfile));
-    updateNavAuthState();
-
-    if (authModal) authModal.classList.add('hidden');
     alert(`✅ Profile created successfully!\n\nName: ${name}\nRole: ${roleInput}\nDelivery Location: ${address}, ${sector}, ${area}`);
+    
+    if (roleInput === 'Chef' || roleInput === 'Seller') {
+      window.location.href = 'shef-dashboard.html';
+    } else {
+      window.location.reload();
+    }
   };
 
   function showProfileError(msg) {
@@ -335,9 +452,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.signOutUser = function() {
     localStorage.removeItem('rasoise_user_profile');
+    localStorage.removeItem('rasoise_active_subscription');
+    localStorage.removeItem('rasoise_latest_trial');
+    localStorage.removeItem('rasoise_wallet');
     if (userDropdown) userDropdown.classList.add('hidden');
     updateNavAuthState();
-    alert('You have been signed out.');
+    window.location.reload();
   };
 
   // Initialize Auth Nav
@@ -465,28 +585,32 @@ document.addEventListener('DOMContentLoaded', () => {
   const filterKitchensInput = document.getElementById('filterKitchensInput');
   const auditFeedContainer = document.getElementById('auditFeedContainer');
 
+  let allModerationKitchens = [];
+  let currentFilterTab = 'all';
+
   if (flaggedTableBody) {
     loadModerationDashboard();
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m]);
   }
 
   async function loadModerationDashboard() {
     try {
       const res = await fetch('/api/admin/flagged-kitchens');
       const data = await res.json();
-      const flagged = data.flaggedKitchens || [];
+      allModerationKitchens = data.flaggedKitchens || [];
       const auditLogs = data.auditLogs || [];
 
-      renderFlaggedTable(flagged);
+      updateAdminMetricCards(allModerationKitchens, auditLogs);
+      filterAndRenderModerationTable();
       renderAuditLogs(auditLogs);
 
       if (filterKitchensInput) {
         filterKitchensInput.addEventListener('input', () => {
-          const q = filterKitchensInput.value.toLowerCase().trim();
-          const rows = flaggedTableBody.querySelectorAll('tr.flagged-row');
-          rows.forEach(r => {
-            const text = r.innerText.toLowerCase();
-            r.style.display = text.includes(q) ? '' : 'none';
-          });
+          filterAndRenderModerationTable();
         });
       }
     } catch (err) {
@@ -494,21 +618,70 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  window.setModerationTab = function(tab) {
+    currentFilterTab = tab;
+    document.querySelectorAll('.admin-filter-tab').forEach(btn => {
+      if (btn.dataset.tab === tab) {
+        btn.className = 'admin-filter-tab px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-[#3D2513] text-[#F39C12] border border-[#523319]';
+      } else {
+        btn.className = 'admin-filter-tab px-3.5 py-1.5 rounded-xl text-xs font-semibold transition text-adminTextMuted hover:text-white hover:bg-adminCard border border-transparent';
+      }
+    });
+    filterAndRenderModerationTable();
+  };
+
+  function updateAdminMetricCards(kitchens, auditLogs) {
+    const activeEl = document.getElementById('statActiveKitchens');
+    const compEl = document.getElementById('statComplaints');
+    const pendEl = document.getElementById('statPendingReview');
+    const badge = document.getElementById('urgentActionsBadge');
+
+    const activeCount = kitchens.filter(k => (k.status || '').toLowerCase().includes('active') || (k.status || '').toLowerCase().includes('compliant')).length;
+    const complaintsCount = kitchens.reduce((sum, k) => sum + (k.complaints || 0), 0);
+    const bannedCount = kitchens.filter(k => (k.status || '').toLowerCase().includes('banned')).length;
+    const urgentCount = kitchens.filter(k => !k.status.toLowerCase().includes('banned') && ((k.complaints || 0) > 4 || k.rating < 3.5)).length;
+
+    if (activeEl) activeEl.innerText = activeCount;
+    if (compEl) compEl.innerText = complaintsCount;
+    if (pendEl) pendEl.innerText = urgentCount;
+    if (badge) badge.innerText = `${urgentCount} Urgent Actions`;
+  }
+
+  function filterAndRenderModerationTable() {
+    const q = (filterKitchensInput ? filterKitchensInput.value : '').toLowerCase().trim();
+    
+    let filtered = allModerationKitchens.filter(k => {
+      const matchText = (k.name + ' ' + (k.chef || '') + ' ' + (k.location || '')).toLowerCase();
+      if (q && !matchText.includes(q)) return false;
+
+      const isBanned = (k.status || '').toLowerCase().includes('banned');
+      if (currentFilterTab === 'banned') return isBanned;
+      if (currentFilterTab === 'urgent') return !isBanned && ((k.complaints || 0) > 4 || k.rating < 3.5);
+      if (currentFilterTab === 'active') return (k.status || '').toLowerCase().includes('active') || (k.status || '').toLowerCase().includes('compliant');
+      return true; // 'all'
+    });
+
+    renderFlaggedTable(filtered);
+  }
+
   function getRatingBarColor(rating) {
-    if (rating < 3.0) return 'bg-[#E53E3E]'; // red
-    if (rating < 4.0) return 'bg-[#ED8936]'; // orange
-    return 'bg-[#ECC94B]'; // yellow/gold
+    if (rating < 3.0) return 'bg-[#E53E3E]';
+    if (rating < 4.0) return 'bg-[#ED8936]';
+    return 'bg-[#ECC94B]';
   }
 
   function getStatusBadge(status) {
     const s = (status || '').toLowerCase();
+    if (s.includes('banned')) {
+      return `<span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-semibold bg-[#2B1410] text-[#F87171] border border-[#5C231B]">Banned & Refunds Issued</span>`;
+    }
     if (s.includes('critical') || s.includes('hygiene')) {
       return `<span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-semibold bg-[#2B1410] text-[#F87171] border border-[#5C231B]">${status}</span>`;
     }
     if (s.includes('review')) {
       return `<span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-semibold bg-[#2B1F11] text-[#FBBF24] border border-[#5C3E1B]">${status}</span>`;
     }
-    if (s.includes('compliant')) {
+    if (s.includes('compliant') || s.includes('active')) {
       return `<span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-semibold bg-[#16271A] text-[#4ADE80] border border-[#214A29]">${status}</span>`;
     }
     return `<span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-semibold bg-[#2D1612] text-[#F87171] border border-[#52241E]">${status}</span>`;
@@ -518,27 +691,39 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!flaggedTableBody) return;
     flaggedTableBody.innerHTML = '';
 
+    if (kitchens.length === 0) {
+      flaggedTableBody.innerHTML = `
+        <tr>
+          <td colspan="5" class="py-8 text-center text-adminTextMuted text-xs">
+            No kitchens matching the selected filter.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
     kitchens.forEach(k => {
       const row = document.createElement('tr');
       row.className = 'hover:bg-adminCardHover transition flagged-row border-b border-adminCardBorder';
       row.dataset.name = k.name;
-      row.dataset.chef = k.chef;
       row.dataset.id = k.id;
 
       const isBanned = (k.status || '').toLowerCase().includes('banned');
       const barColor = getRatingBarColor(k.rating);
-      const barWidth = Math.min(100, Math.round((k.rating / 5) * 100));
+      const barWidth = Math.min(100, Math.round(((k.rating || 5) / 5) * 100));
+
+      const safeEncodedName = encodeURIComponent(k.name).replace(/'/g, '%27');
 
       row.innerHTML = `
         <!-- Kitchen Identity -->
         <td class="py-4 px-5">
           <div class="flex items-center space-x-3.5">
             <div class="w-9 h-9 rounded-xl bg-[#2E241B] border border-[#4D3622] flex items-center justify-center font-bold text-amber-300 text-sm shadow-xs flex-shrink-0">
-              ${k.avatar || k.name.charAt(0)}
+              ${escapeHtml(k.avatar || k.name.charAt(0).toUpperCase())}
             </div>
             <div>
-              <p class="font-bold text-white text-xs leading-snug">${k.name}</p>
-              <p class="text-[11px] text-adminTextMuted mt-0.5">${k.chef} • ${k.location}</p>
+              <p class="font-bold text-white text-xs leading-snug">${escapeHtml(k.name)}</p>
+              <p class="text-[11px] text-adminTextMuted mt-0.5">${escapeHtml(k.chef || 'Home Chef')} • ${escapeHtml(k.location || 'Mumbai')}</p>
             </div>
           </div>
         </td>
@@ -546,7 +731,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <!-- Hygiene Rating -->
         <td class="py-4 px-4">
           <div class="flex items-center space-x-3">
-            <span class="font-bold text-white text-xs font-mono">${k.rating.toFixed(1)}</span>
+            <span class="font-bold text-white text-xs font-mono">${(Number(k.rating) || 5.0).toFixed(1)}</span>
             <div class="w-16 h-1.5 bg-[#292522] rounded-full overflow-hidden">
               <div class="h-full ${barColor}" style="width: ${barWidth}%"></div>
             </div>
@@ -556,8 +741,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <!-- Complaints -->
         <td class="py-4 px-4">
           <div>
-            <p class="font-bold text-xs ${k.complaints > 5 ? 'text-[#F87171]' : 'text-gray-300'}">
-              ${k.complaints} active
+            <p class="font-bold text-xs ${k.complaints > 4 ? 'text-[#F87171]' : 'text-gray-300'}">
+              ${k.complaints || 0} active
             </p>
             <p class="text-[10px] text-adminTextMuted">last 7 days</p>
           </div>
@@ -572,8 +757,11 @@ document.addEventListener('DOMContentLoaded', () => {
         <td class="py-4 px-5 text-right action-cell">
           ${
             isBanned 
-              ? `<button disabled class="bg-[#1C1816] text-gray-500 border border-adminCardBorder text-xs font-semibold px-4 py-2 rounded-xl cursor-not-allowed">Refunds Issued ✓</button>`
-              : `<button onclick="banAndRefundKitchen(this, '${encodeURIComponent(k.name)}', ${k.refundAmount || 880})" class="bg-[#301614] hover:bg-[#471C19] border border-[#6B2822] text-[#F87171] hover:text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-xs whitespace-nowrap">Ban Kitchen & Issue Refunds</button>`
+              ? `<div class="flex items-center justify-end space-x-2">
+                   <span class="bg-[#1C1816] text-gray-400 border border-adminCardBorder text-[11px] font-semibold px-2.5 py-1.5 rounded-lg">Banned ✓</span>
+                   <button onclick="unbanKitchen('${k.id}', '${safeEncodedName}')" class="bg-[#1E291E] hover:bg-[#2B3B2B] border border-[#2D5A27] text-emerald-400 hover:text-white text-xs font-bold px-3 py-1.5 rounded-xl transition shadow-xs whitespace-nowrap cursor-pointer">Reinstate / Unban</button>
+                 </div>`
+              : `<button onclick="banAndRefundKitchen(this, '${k.id}', '${safeEncodedName}', ${k.refundAmount || 880})" class="bg-[#301614] hover:bg-[#471C19] border border-[#6B2822] text-[#F87171] hover:text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-xs whitespace-nowrap cursor-pointer">Ban Kitchen & Issue Refunds</button>`
           }
         </td>
       `;
@@ -584,23 +772,23 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderAuditLogs(logs) {
     if (!auditFeedContainer) return;
     auditFeedContainer.innerHTML = '';
-    logs.slice(0, 8).forEach(l => {
+    logs.slice(0, 10).forEach(l => {
       const item = document.createElement('div');
       item.className = 'p-3 bg-[#141211] rounded-xl border border-adminCardBorder text-xs space-y-1';
       const time = new Date(l.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       item.innerHTML = `
         <div class="flex items-center justify-between font-bold">
-          <span class="${l.action.includes('BAN') ? 'text-red-400' : 'text-emerald-400'}">${l.action}</span>
+          <span class="${l.action.includes('BAN') ? 'text-red-400' : 'text-emerald-400'}">${escapeHtml(l.action)}</span>
           <span class="text-adminTextMuted font-mono text-[10px]">${time}</span>
         </div>
-        <p class="text-gray-300 text-[11px] leading-relaxed">${l.detail || l.kitchen}</p>
+        <p class="text-gray-300 text-[11px] leading-relaxed">${escapeHtml(l.detail || l.kitchen)}</p>
       `;
       auditFeedContainer.appendChild(item);
     });
   }
 
   // Global Ban & Refund Action
-  window.banAndRefundKitchen = async function(btn, encodedName, refundVal) {
+  window.banAndRefundKitchen = async function(btn, kitchenId, encodedName, refundVal) {
     const kitchenName = decodeURIComponent(encodedName);
     const confirmed = confirm(
       `🚨 EMERGENCY ENFORCEMENT PROTOCOL:\n\n` +
@@ -616,25 +804,13 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.innerText = 'Processing Refunds...';
 
     try {
-      const res = await fetch(`/api/admin/ban/${encodedName}`, {
+      const res = await fetch(`/api/admin/ban/${kitchenId || encodedName}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       });
       const data = await res.json();
 
       if (res.ok && data.success) {
-        // Update Table Row
-        const row = btn.closest('tr');
-        const statusCell = row.querySelector('.status-cell');
-        if (statusCell) {
-          statusCell.innerHTML = `<span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-semibold bg-[#2B1410] text-[#F87171] border border-[#5C231B]">Banned & Refunds Issued</span>`;
-        }
-
-        const actionCell = row.querySelector('.action-cell');
-        if (actionCell) {
-          actionCell.innerHTML = `<button disabled class="bg-[#1C1816] text-gray-500 border border-adminCardBorder text-xs font-semibold px-4 py-2 rounded-xl cursor-not-allowed">Refunds Issued ✓</button>`;
-        }
-
         // Show Toast
         const toast = document.getElementById('adminToast');
         const toastMsg = document.getElementById('toastMessage');
@@ -644,27 +820,8 @@ document.addEventListener('DOMContentLoaded', () => {
           setTimeout(() => toast.classList.add('hidden'), 4000);
         }
 
-        // Prepend to audit feed
-        if (auditFeedContainer) {
-          const item = document.createElement('div');
-          item.className = 'p-3 bg-[#261412] rounded-xl border border-[#5C231B] text-xs space-y-1';
-          const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-          item.innerHTML = `
-            <div class="flex items-center justify-between font-bold">
-              <span class="text-red-400">BAN_AND_REFUND</span>
-              <span class="text-adminTextMuted font-mono text-[10px]">${time}</span>
-            </div>
-            <p class="text-gray-300 text-[11px]">Emergency enforcement: ${kitchenName} banned. Automated customer wallet refunds of ₹${refundVal} processed.</p>
-          `;
-          auditFeedContainer.prepend(item);
-        }
-
-        // Decrement Urgent Actions count
-        const badge = document.getElementById('urgentActionsBadge');
-        if (badge) {
-          const current = parseInt(badge.innerText) || 6;
-          badge.innerText = `${Math.max(0, current - 1)} Urgent Actions`;
-        }
+        // Reload dashboard data
+        loadModerationDashboard();
 
       } else {
         alert(`Failed to execute enforcement: ${data.error || 'Server error'}`);
@@ -679,4 +836,47 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  // Global Unban / Reinstate Action
+  window.unbanKitchen = async function(kitchenId, encodedName) {
+    const kitchenName = decodeURIComponent(encodedName);
+    if (!confirm(`Are you sure you want to lift the ban and REINSTATE "${kitchenName}" back to the active directory?`)) return;
+
+    try {
+      const res = await fetch(`/api/admin/unban/${kitchenId || encodedName}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        const toast = document.getElementById('adminToast');
+        const toastMsg = document.getElementById('toastMessage');
+        const toastTitle = document.getElementById('toastTitle');
+        if (toast && toastMsg) {
+          if (toastTitle) toastTitle.innerText = 'Kitchen Reinstated';
+          toastMsg.innerText = `Kitchen "${kitchenName}" has been restored to active status.`;
+          toast.classList.remove('hidden');
+          setTimeout(() => toast.classList.add('hidden'), 4000);
+        }
+
+        loadModerationDashboard();
+      } else {
+        alert(`Failed to reinstate kitchen: ${data.error || 'Server error'}`);
+      }
+    } catch (err) {
+      console.error('Unban error:', err);
+      alert('Network error while unbanning kitchen.');
+    }
+  };
+
+});
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('loginRequired') === 'true') {
+    setTimeout(() => {
+       if (window.openLoginModal) window.openLoginModal('Customer');
+    }, 500);
+  }
 });

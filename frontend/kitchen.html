@@ -40,15 +40,7 @@
   <header class="w-full bg-white border-b border-[#F0E2CA] py-3.5 px-8 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       <!-- Left: Logo & Back Link -->
-      <div class="flex items-center space-x-6">
-        <a href="index.html" class="flex items-center space-x-1 text-2xl font-serif font-bold tracking-tight text-brandDark">
-          <span>Rasoi</span><span class="text-brandAmber">Se</span>
-        </a>
-        <a href="index.html" class="flex items-center space-x-1.5 text-xs font-medium text-gray-600 hover:text-brandAmber transition">
-          <span>←</span>
-          <span>Back to Kitchens</span>
-        </a>
-      </div>
+      
 
       <!-- Right Navigation Links -->
       <nav class="flex items-center space-x-6">
@@ -73,7 +65,7 @@
       <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         <div class="flex items-start md:items-center space-x-5">
           <div class="relative">
-            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&auto=format&fit=crop&q=80" alt="Chef Asha Sharma" class="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover border-4 border-white shadow-md" />
+            <img id="kitchenChefAvatar" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&auto=format&fit=crop&q=80" alt="Chef Avatar" class="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover border-4 border-white shadow-md" />
             <span class="absolute -bottom-1 -right-1 bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full border-2 border-white shadow-sm flex items-center space-x-0.5">
               <span>✓</span>
               <span>FSSAI</span>
@@ -81,25 +73,25 @@
           </div>
           <div>
             <div class="flex flex-wrap items-center gap-2 mb-1.5">
-              <h1 class="text-2xl lg:text-3xl font-serif font-bold text-brandDark">Annapurna Kitchen</h1>
+              <h1 id="kitchenNameTitle" class="text-2xl lg:text-3xl font-serif font-bold text-brandDark">Annapurna Kitchen</h1>
               <span class="bg-emerald-100 text-emerald-800 text-[11px] font-semibold px-2.5 py-0.5 rounded-full flex items-center space-x-1 border border-emerald-300">
                 <span>🛡️</span>
-                <span>FSSAI Verified #20822003001889</span>
+                <span id="kitchenFssaiVerified">FSSAI Verified #20822003001889</span>
               </span>
             </div>
-            <p class="text-xs text-[#6B4B35] font-medium mb-2.5">
-              Master Home Chef: <strong class="text-brandDark">Asha Sharma</strong> • Homestyle Gujarati & North Indian Comfort Food
+            <p id="kitchenChefSubtitle" class="text-xs text-[#6B4B35] font-medium mb-2.5">
+              Master Home Chef: <strong id="kitchenChefName" class="text-brandDark">Asha Sharma</strong> • <span id="kitchenCuisineSubtitle">Homestyle Gujarati & North Indian Comfort Food</span>
             </p>
             <div class="flex flex-wrap items-center gap-3 text-xs">
               <span class="flex items-center space-x-1 bg-white px-2.5 py-1 rounded-full border border-brandBorder font-semibold text-brandDark shadow-xs">
                 <span class="text-amber-500">★</span>
-                <span>4.9 (418 Reviews)</span>
+                <span id="kitchenRatingReviews">4.9 (418 Reviews)</span>
               </span>
               <span class="flex items-center space-x-1 bg-white px-2.5 py-1 rounded-full border border-brandBorder text-gray-700 shadow-xs">
                 <span>📍</span>
-                <span>Sector 11 (450m away)</span>
+                <span id="kitchenLocationSector">Sector 11 (450m away)</span>
               </span>
-              <span class="flex items-center space-x-1 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 text-emerald-800 font-medium shadow-xs">
+              <span id="kitchenDietBadge" class="flex items-center space-x-1 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 text-emerald-800 font-medium shadow-xs">
                 <span>🌱</span>
                 <span>100% Pure Vegetarian Kitchen</span>
               </span>
@@ -134,8 +126,8 @@
         <section class="bg-white rounded-3xl border border-brandBorder p-6 shadow-sm">
           <div class="flex items-center justify-between mb-4">
             <div>
-              <h2 class="text-xl font-bold font-serif text-brandDark">Signature Gujarati Deluxe Thali</h2>
-              <p class="text-xs text-gray-500">Cooked freshly every morning with cold-pressed oils, desi ghee, and zero soda.</p>
+              <h2 id="kitchenSignatureDish" class="text-xl font-bold font-serif text-brandDark">Signature Gujarati Deluxe Thali</h2>
+              <p id="kitchenDishDesc" class="text-xs text-gray-500">Cooked freshly every morning with cold-pressed oils, desi ghee, and zero soda.</p>
             </div>
             <span class="bg-[#FFF2D6] text-brandRust border border-[#E6C587] text-xs font-semibold px-3 py-1 rounded-full">
               Chef's Special
@@ -144,7 +136,7 @@
 
           <!-- Main Feature Photo -->
           <div class="relative h-72 md:h-80 w-full rounded-2xl overflow-hidden mb-4 shadow-sm group">
-            <img id="mainGalleryImage" src="https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?w=1000&auto=format&fit=crop&q=80" alt="Gujarati Deluxe Thali" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            <img id="mainGalleryImage" src="https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?w=1000&auto=format&fit=crop&q=80" alt="Special Thali" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
             <div class="absolute bottom-3 left-3 bg-brandDark/85 backdrop-blur-md text-white px-3.5 py-1.5 rounded-full text-xs flex items-center space-x-2">
               <span>🍽️</span>
               <span id="galleryCaption">Complete Thali: 4 Soft Phulkas, Gujarati Kadhi, Sev Tameta, Basmati Rice, Salad & Sweet</span>
@@ -296,10 +288,10 @@
           <div class="flex items-center justify-between pb-4 border-b border-[#F0E2CA] mb-5">
             <div>
               <p class="text-xs uppercase font-bold text-gray-400">Order from Kitchen</p>
-              <h3 class="text-xl font-bold font-serif text-brandDark">Annapurna Kitchen</h3>
+              <h3 id="orderKitchenTitle" class="text-xl font-bold font-serif text-brandDark">Annapurna Kitchen</h3>
             </div>
             <div class="text-right">
-              <span class="text-2xl font-bold text-brandDark">₹80</span>
+              <span id="orderTrialRate" class="text-2xl font-bold text-brandDark">₹80</span>
               <span class="text-xs text-gray-500">/ trial meal</span>
             </div>
           </div>
@@ -351,18 +343,18 @@
 
             <!-- Delivery Address / Sector -->
             <div>
-              <label class="block text-xs font-bold text-brandDark mb-1.5">Delivery Address (Within Sector 11)</label>
-              <input type="text" id="trialAddress" placeholder="e.g. Flat 402, Tower B, Silver Oaks" value="Flat 402, Silver Oaks Society, Sector 11" class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brandAmber" />
+              <label id="trialDeliveryLabel" class="block text-xs font-bold text-brandDark mb-1.5">Delivery Address (Within Neighborhood)</label>
+              <input type="text" id="trialAddress" placeholder="e.g. Flat 402, Tower B, Silver Oaks" value="" class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brandAmber" />
             </div>
 
             <!-- Cost Breakdown -->
             <div class="p-3.5 bg-brandCream rounded-xl border border-brandBorder space-y-2 text-xs">
               <div class="flex justify-between text-gray-600">
-                <span>1x Gujarati Deluxe Thali Trial</span>
-                <span>₹80.00</span>
+                <span id="summaryDishTitle">1x Homestyle Thali Trial</span>
+                <span id="summaryDishPrice">₹80.00</span>
               </div>
               <div class="flex justify-between text-emerald-700">
-                <span>Local Hyperlocal Delivery (450m)</span>
+                <span>Local Hyperlocal Delivery</span>
                 <span class="font-semibold">FREE</span>
               </div>
               <div class="flex justify-between text-emerald-700">
@@ -371,14 +363,14 @@
               </div>
               <div class="pt-2 border-t border-[#EEDBCA] flex justify-between font-bold text-brandDark text-sm">
                 <span>To Pay Now</span>
-                <span class="text-brandAmber">₹80.00</span>
+                <span id="summaryTotalPay" class="text-brandAmber">₹80.00</span>
               </div>
             </div>
 
             <!-- Checkout Button -->
             <button id="btnTrialCheckout" onclick="processTrialCheckout()" class="w-full bg-brandAmber hover:bg-brandAmberHover text-white text-sm font-bold py-3 px-4 rounded-xl transition shadow-md flex items-center justify-center space-x-2">
               <span>💳</span>
-              <span>Pay ₹80 & Book Tasting Trial</span>
+              <span id="trialBtnLabel">Pay ₹80 & Book Tasting Trial</span>
             </button>
             <p class="text-[11px] text-center text-gray-500 flex items-center justify-center space-x-1">
               <span>🔒</span>
@@ -400,7 +392,7 @@
                     <span class="text-brandAmber text-sm">●</span>
                   </span>
                   <span class="text-[10px] text-gray-600 mt-1 font-semibold">Mon to Fri (22 meals)</span>
-                  <span class="text-[11px] text-brandAmber font-bold mt-1.5">₹1,760 / month</span>
+                  <span id="subPlan5Price" class="text-[11px] text-brandAmber font-bold mt-1.5">₹1,760 / month</span>
                 </label>
                 <label class="relative flex flex-col p-3 border-2 border-[#EEDBCA] bg-white rounded-xl cursor-pointer hover:border-brandAmber transition" id="plan7Label">
                   <input type="radio" name="subPlan" value="7day" class="sr-only" onchange="updateSubPlanUI('7day')">
@@ -409,7 +401,7 @@
                     <span class="text-gray-300 text-sm">○</span>
                   </span>
                   <span class="text-[10px] text-gray-600 mt-1 font-semibold">Mon to Sun (30 meals)</span>
-                  <span class="text-[11px] text-brandAmber font-bold mt-1.5">₹2,380 / month</span>
+                  <span id="subPlan7Price" class="text-[11px] text-brandAmber font-bold mt-1.5">₹2,380 / month</span>
                 </label>
               </div>
             </div>
@@ -436,8 +428,8 @@
                 <span class="text-base text-brandAmber mt-0.5">🛡️</span>
                 <div>
                   <h4 class="font-bold text-brandDark text-xs">100% Flexi-Pause Guarantee</h4>
-                  <p class="text-[11px] text-gray-600 leading-relaxed mt-1">
-                    Going out of town or dining out? Pause any individual meal day before <strong>8:00 AM</strong> right from your interactive calendar. Your credit of ₹80 per paused meal is never lost and remains credited to your wallet balance.
+                  <p id="pauseNoticePrice" class="text-[11px] text-gray-600 leading-relaxed mt-1">
+                    Going out of town or dining out? Pause any individual meal day before <strong>8:00 AM</strong> right from your interactive calendar. Your credit per paused meal is never lost and remains credited to your wallet balance.
                   </p>
                 </div>
               </div>
@@ -472,7 +464,7 @@
       <div id="modalDetails" class="bg-brandCream p-4 rounded-2xl border border-brandBorder text-xs space-y-1.5 text-gray-700">
         <div class="flex justify-between">
           <span class="text-gray-500">Meal:</span>
-          <span class="font-bold">Gujarati Deluxe Thali</span>
+          <span id="modalMealName" class="font-bold">Gujarati Deluxe Thali</span>
         </div>
         <div class="flex justify-between">
           <span class="text-gray-500">Scheduled:</span>
@@ -484,7 +476,7 @@
         </div>
         <div class="flex justify-between text-emerald-700 font-bold pt-1.5 border-t border-brandBorder">
           <span>Amount Paid:</span>
-          <span>₹80.00</span>
+          <span id="modalAmountPaid">₹80.00</span>
         </div>
       </div>
 
@@ -526,7 +518,20 @@
 
   <!-- Page Interactivity Scripts -->
   <script>
-    // Set default dates
+    let currentKitchen = {
+      id: 1,
+      name: "Annapurna Kitchen",
+      chef: "Asha Sharma",
+      area: "Andheri West",
+      sector: "Lokhandwala",
+      price: 80,
+      rating: 4.9,
+      dish: "Gujarati Deluxe Thali",
+      photoUrl: "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?w=1000&auto=format&fit=crop&q=80",
+      distance: "450m away"
+    };
+
+    // Set default dates and load kitchen details
     document.addEventListener('DOMContentLoaded', () => {
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
@@ -543,7 +548,156 @@
         subStartDateInput.value = tomorrowStr;
         subStartDateInput.min = tomorrowStr;
       }
+
+      initKitchenPage();
     });
+
+    async function initKitchenPage() {
+      const urlParams = new URLSearchParams(window.location.search);
+      let kitchenId = urlParams.get('id');
+
+      let storedUser = null;
+      try {
+        const raw = localStorage.getItem('rasoise_user_profile');
+        if (raw) storedUser = JSON.parse(raw);
+      } catch(e) {}
+
+      // Pre-fill delivery address from user profile
+      const addrInput = document.getElementById('trialAddress');
+      if (addrInput && storedUser) {
+        if (storedUser.address) {
+          addrInput.value = storedUser.address;
+        } else if (storedUser.sector) {
+          addrInput.value = `Flat 204, Society View, ${storedUser.sector}`;
+        }
+      }
+
+      try {
+        const res = await fetch('/api/kitchens');
+        const kitchens = await res.json();
+        if (Array.isArray(kitchens) && kitchens.length > 0) {
+          let matched = null;
+          if (kitchenId) {
+            matched = kitchens.find(k => String(k.id) === String(kitchenId) || (k.name && k.name.toLowerCase() === kitchenId.toLowerCase()));
+          }
+          
+          // If no query param matched or no param given, check if logged in user is a Chef
+          if (!matched && storedUser) {
+            if (storedUser.role === 'Chef') {
+              if (storedUser.kitchenId) {
+                matched = kitchens.find(k => String(k.id) === String(storedUser.kitchenId));
+              }
+              if (!matched && storedUser.kitchenName) {
+                matched = kitchens.find(k => k.name && k.name.toLowerCase() === storedUser.kitchenName.toLowerCase());
+              }
+              if (!matched && storedUser.name) {
+                matched = kitchens.find(k => k.chef && k.chef.toLowerCase() === storedUser.name.toLowerCase());
+              }
+              if (!matched && storedUser.email) {
+                matched = kitchens.find(k => k.email && k.email.toLowerCase() === storedUser.email.toLowerCase());
+              }
+            }
+          }
+
+          if (matched) {
+            currentKitchen = matched;
+          } else if (kitchens.length > 0) {
+            currentKitchen = kitchens[0];
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching kitchen details:', err);
+      }
+
+      renderKitchenUI(currentKitchen);
+    }
+
+    function renderKitchenUI(k) {
+      const price = Number(k.price) || 80;
+      const plan5Total = price * 22;
+      const plan7Total = price * 30;
+
+      document.title = `${k.name} - RasoiSe Tiffin Subscription`;
+
+      // Header Banner
+      const titleEl = document.getElementById('kitchenNameTitle');
+      if (titleEl) titleEl.innerText = k.name;
+
+      const chefNameEl = document.getElementById('kitchenChefName');
+      if (chefNameEl) chefNameEl.innerText = k.chef || 'Master Chef';
+
+      const cuisineEl = document.getElementById('kitchenCuisineSubtitle');
+      if (cuisineEl) cuisineEl.innerText = k.dish ? `Homestyle ${k.dish}` : 'Homestyle Pure Regional Comfort Food';
+
+      const avatarEl = document.getElementById('kitchenChefAvatar');
+      if (avatarEl && k.photoUrl) {
+        avatarEl.src = k.photoUrl;
+        avatarEl.alt = k.chef || k.name;
+      }
+
+      const ratingEl = document.getElementById('kitchenRatingReviews');
+      if (ratingEl) ratingEl.innerText = `${(Number(k.rating) || 5.0).toFixed(1)} (${k.reviewsCount || '150+'} Reviews)`;
+
+      const locEl = document.getElementById('kitchenLocationSector');
+      if (locEl) locEl.innerText = `${k.sector || 'Lokhandwala'} (${k.distance || 'Hyperlocal 450m'})`;
+
+      // Gallery & Dish
+      const dishTitle = document.getElementById('kitchenSignatureDish');
+      if (dishTitle) dishTitle.innerText = `Signature ${k.dish || k.name + ' Deluxe Thali'}`;
+
+      const dishDesc = document.getElementById('kitchenDishDesc');
+      if (dishDesc) dishDesc.innerText = `Cooked freshly every morning by Chef ${k.chef || k.name} with cold-pressed oils, desi ghee, and zero preservatives.`;
+
+      const mainImg = document.getElementById('mainGalleryImage');
+      if (mainImg && k.photoUrl) {
+        mainImg.src = k.photoUrl;
+      }
+
+      const captionEl = document.getElementById('galleryCaption');
+      if (captionEl) captionEl.innerText = `Complete Thali: Freshly hand-prepared by Chef ${k.chef || k.name} for wholesome daily nutrition.`;
+
+      // Order Card
+      const orderTitle = document.getElementById('orderKitchenTitle');
+      if (orderTitle) orderTitle.innerText = k.name;
+
+      const orderTrialRate = document.getElementById('orderTrialRate');
+      if (orderTrialRate) orderTrialRate.innerText = `₹${price}`;
+
+      const delivLabel = document.getElementById('trialDeliveryLabel');
+      if (delivLabel) delivLabel.innerText = `Delivery Address (Within ${k.sector || 'Operating Perimeter'})`;
+
+      const addrInput = document.getElementById('trialAddress');
+      if (addrInput && !addrInput.value) {
+        addrInput.value = `Flat 101, Society View, ${k.sector || 'Lokhandwala'}`;
+      }
+
+      const summaryTitle = document.getElementById('summaryDishTitle');
+      if (summaryTitle) summaryTitle.innerText = `1x ${k.dish || 'Homestyle Special Thali'} Trial`;
+
+      const summaryPrice = document.getElementById('summaryDishPrice');
+      if (summaryPrice) summaryPrice.innerText = `₹${price}.00`;
+
+      const summaryTotal = document.getElementById('summaryTotalPay');
+      if (summaryTotal) summaryTotal.innerText = `₹${price}.00`;
+
+      const trialBtnLabel = document.getElementById('trialBtnLabel');
+      if (trialBtnLabel) trialBtnLabel.innerText = `Pay ₹${price} & Book Tasting Trial`;
+
+      // Subscription tab
+      const p5 = document.getElementById('subPlan5Price');
+      if (p5) p5.innerText = `₹${plan5Total.toLocaleString()} / month`;
+
+      const p7 = document.getElementById('subPlan7Price');
+      if (p7) p7.innerText = `₹${plan7Total.toLocaleString()} / month`;
+
+      const pauseNotice = document.getElementById('pauseNoticePrice');
+      if (pauseNotice) {
+        pauseNotice.innerHTML = `Going out of town or dining out? Pause any individual meal day before <strong>8:00 AM</strong> right from your interactive calendar. Your credit of <strong>₹${price}</strong> per paused meal is never lost and remains credited to your wallet balance.`;
+      }
+
+      // Initial sub button text
+      updateSubPlanUI(document.querySelector('input[name="subPlan"]:checked')?.value || '5day');
+    }
 
     function changeGalleryImage(src, caption) {
       const mainImg = document.getElementById('mainGalleryImage');
@@ -593,51 +747,97 @@
       const label5 = document.getElementById('plan5Label');
       const label7 = document.getElementById('plan7Label');
       const btnText = document.getElementById('subBtnText');
+      const price = Number(currentKitchen.price) || 80;
 
       if (plan === '5day') {
-        label5.className = 'relative flex flex-col p-3 border-2 border-brandAmber bg-[#FFF9F0] rounded-xl cursor-pointer';
-        label5.querySelector('span > span:last-child').className = 'text-brandAmber text-sm';
-        label5.querySelector('span > span:last-child').innerText = '●';
-
-        label7.className = 'relative flex flex-col p-3 border-2 border-[#EEDBCA] bg-white rounded-xl cursor-pointer hover:border-brandAmber transition';
-        label7.querySelector('span > span:last-child').className = 'text-gray-300 text-sm';
-        label7.querySelector('span > span:last-child').innerText = '○';
-
-        btnText.innerText = 'Start 5-Day Plan (₹1,760)';
+        if (label5) {
+          label5.className = 'relative flex flex-col p-3 border-2 border-brandAmber bg-[#FFF9F0] rounded-xl cursor-pointer';
+          const ind = label5.querySelector('span > span:last-child');
+          if (ind) { ind.className = 'text-brandAmber text-sm'; ind.innerText = '●'; }
+        }
+        if (label7) {
+          label7.className = 'relative flex flex-col p-3 border-2 border-[#EEDBCA] bg-white rounded-xl cursor-pointer hover:border-brandAmber transition';
+          const ind = label7.querySelector('span > span:last-child');
+          if (ind) { ind.className = 'text-gray-300 text-sm'; ind.innerText = '○'; }
+        }
+        if (btnText) btnText.innerText = `Start 5-Day Plan (₹${(price * 22).toLocaleString()})`;
       } else {
-        label7.className = 'relative flex flex-col p-3 border-2 border-brandAmber bg-[#FFF9F0] rounded-xl cursor-pointer';
-        label7.querySelector('span > span:last-child').className = 'text-brandAmber text-sm';
-        label7.querySelector('span > span:last-child').innerText = '●';
-
-        label5.className = 'relative flex flex-col p-3 border-2 border-[#EEDBCA] bg-white rounded-xl cursor-pointer hover:border-brandAmber transition';
-        label5.querySelector('span > span:last-child').className = 'text-gray-300 text-sm';
-        label5.querySelector('span > span:last-child').innerText = '○';
-
-        btnText.innerText = 'Start 7-Day Plan (₹2,380)';
+        if (label7) {
+          label7.className = 'relative flex flex-col p-3 border-2 border-brandAmber bg-[#FFF9F0] rounded-xl cursor-pointer';
+          const ind = label7.querySelector('span > span:last-child');
+          if (ind) { ind.className = 'text-brandAmber text-sm'; ind.innerText = '●'; }
+        }
+        if (label5) {
+          label5.className = 'relative flex flex-col p-3 border-2 border-[#EEDBCA] bg-white rounded-xl cursor-pointer hover:border-brandAmber transition';
+          const ind = label5.querySelector('span > span:last-child');
+          if (ind) { ind.className = 'text-gray-300 text-sm'; ind.innerText = '○'; }
+        }
+        if (btnText) btnText.innerText = `Start 7-Day Plan (₹${(price * 30).toLocaleString()})`;
       }
     }
 
     function processTrialCheckout() {
+      if (!localStorage.getItem('rasoise_user_profile')) {
+         window.location.href = 'index.html?loginRequired=true';
+         return;
+      }
       const dateVal = document.getElementById('trialDate').value || 'Tomorrow';
       const slotVal = document.querySelector('input[name="trialMealSlot"]:checked')?.value || 'Lunch';
-      const addrVal = document.getElementById('trialAddress').value || 'Flat 402, Silver Oaks';
+      const addrVal = document.getElementById('trialAddress').value || `Flat 101, ${currentKitchen.sector || 'Local Area'}`;
+      const price = Number(currentKitchen.price) || 80;
 
       document.getElementById('modalTitle').innerText = 'Tasting Trial Confirmed!';
-      document.getElementById('modalDesc').innerText = 'Your ₹80 trial order has been confirmed with Chef Asha Sharma.';
+      document.getElementById('modalDesc').innerText = `Your ₹${price} trial order has been confirmed with Chef ${currentKitchen.chef || currentKitchen.name} at ${currentKitchen.name}.`;
+      document.getElementById('modalMealName').innerText = currentKitchen.dish || `${currentKitchen.name} Homestyle Thali`;
       document.getElementById('modalScheduledDate').innerText = `${dateVal}, ${slotVal}`;
       document.getElementById('modalAddress').innerText = addrVal;
+      document.getElementById('modalAmountPaid').innerText = `₹${price}.00`;
+
+      // Save for calendar view
+      localStorage.setItem('rasoise_active_subscription', JSON.stringify({
+        kitchenId: currentKitchen.id,
+        kitchenName: currentKitchen.name,
+        chef: currentKitchen.chef || currentKitchen.name,
+        sector: currentKitchen.sector || 'Lokhandwala',
+        price: price,
+        plan: `1-Day Tasting Trial (${slotVal})`,
+        startDate: dateVal,
+        address: addrVal
+      }));
 
       document.getElementById('bookingModal').classList.remove('hidden');
     }
 
     function processSubscription() {
-      const plan = document.querySelector('input[name="subPlan"]:checked')?.value === '7day' ? '7-Day Monthly Plan (₹2,380)' : '5-Day Monthly Plan (₹1,760)';
+      if (!localStorage.getItem('rasoise_user_profile')) {
+         window.location.href = 'index.html?loginRequired=true';
+         return;
+      }
+      const price = Number(currentKitchen.price) || 80;
+      const is7day = document.querySelector('input[name="subPlan"]:checked')?.value === '7day';
+      const planRate = is7day ? price * 30 : price * 22;
+      const planName = is7day ? `7-Day Monthly Plan (₹${planRate.toLocaleString()})` : `5-Day Monthly Plan (₹${planRate.toLocaleString()})`;
       const startDate = document.getElementById('subStartDate').value || 'Tomorrow';
+      const addrVal = document.getElementById('trialAddress').value || `Saved Delivery Address, ${currentKitchen.sector || 'Local Area'}`;
 
       document.getElementById('modalTitle').innerText = 'Subscription Activated!';
-      document.getElementById('modalDesc').innerText = `You are now subscribed to ${plan}. You can pause days any time.`;
+      document.getElementById('modalDesc').innerText = `You are now subscribed to ${planName} with Chef ${currentKitchen.chef || currentKitchen.name} at ${currentKitchen.name}. You can pause days any time.`;
+      document.getElementById('modalMealName').innerText = `${currentKitchen.name} Monthly Tiffin Plan`;
       document.getElementById('modalScheduledDate').innerText = `Starting: ${startDate}`;
-      document.getElementById('modalAddress').innerText = 'Sector 11 Address (Saved)';
+      document.getElementById('modalAddress').innerText = addrVal;
+      document.getElementById('modalAmountPaid').innerText = `₹${planRate.toLocaleString()}.00`;
+
+      // Save active subscription so calendar shows the right kitchen
+      localStorage.setItem('rasoise_active_subscription', JSON.stringify({
+        kitchenId: currentKitchen.id,
+        kitchenName: currentKitchen.name,
+        chef: currentKitchen.chef || currentKitchen.name,
+        sector: currentKitchen.sector || 'Lokhandwala',
+        price: price,
+        plan: planName,
+        startDate: startDate,
+        address: addrVal
+      }));
 
       document.getElementById('bookingModal').classList.remove('hidden');
     }

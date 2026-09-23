@@ -470,6 +470,37 @@
     function requestInstantPayout() {
       alert(`Instant UPI Settlement of ₹2,720 requested.\nSent to VPA: asha.sharma@okaxis\nStatus: Transaction Successful (Ref #UPI/2026/0923/8812)`);
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      try {
+        const raw = localStorage.getItem('rasoise_user_profile');
+        if (raw) {
+          const user = JSON.parse(raw);
+          if (user.role === 'Chef') {
+            const kHeading = document.querySelector('header h1.text-brandDark');
+            if (kHeading && (user.kitchenName || user.name)) {
+              kHeading.innerText = user.kitchenName || `${user.name}'s Rasoi`;
+            }
+            const cBadge = document.querySelector('header span.text-brandRust');
+            if (cBadge && user.name) {
+              cBadge.innerText = `Chef ${user.name}`;
+            }
+            const subP = document.querySelector('header p.text-gray-500');
+            if (subP) {
+              const sec = user.sector || 'Lokhandwala';
+              const kid = user.kitchenId ? String(user.kitchenId).slice(-4) : 'K-1104';
+              subP.innerText = `${sec} Micro-Hub • Verified Kitchen ID #${kid}`;
+            }
+            const storeLink = document.querySelector('header a[href^="kitchen.html"]');
+            if (storeLink && user.kitchenId) {
+              storeLink.href = `kitchen.html?id=${user.kitchenId}`;
+            }
+          }
+        }
+      } catch (e) {
+        console.error('Error applying user profile to dashboard:', e);
+      }
+    });
   </script>
 </body>
 </html>

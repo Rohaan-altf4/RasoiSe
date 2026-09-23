@@ -45,17 +45,7 @@
     <div class="max-w-7xl mx-auto flex items-center justify-between">
 
       <!-- Brand & Links -->
-      <div class="flex items-center space-x-6">
-        <a href="index.html"
-          class="flex items-center space-x-1 text-2xl font-serif font-bold tracking-tight text-brandDark">
-          <span>Rasoi</span><span class="text-brandAmber">Se</span>
-        </a>
-        <a href="index.html"
-          class="flex items-center space-x-1.5 text-xs font-medium text-gray-600 hover:text-brandAmber transition">
-          <span>←</span>
-          <span>Explore Kitchens</span>
-        </a>
-      </div>
+      
 
       <!-- Right: Wallet Widget & Navigation -->
       <div class="flex items-center space-x-5">
@@ -73,7 +63,7 @@
         </div>
 
         <nav class="flex items-center space-x-4 text-xs font-medium">
-          <a href="kitchen.html" class="text-gray-700 hover:text-brandAmber transition">Annapurna Kitchen</a>
+          <a id="calKitchenNavLink" href="kitchen.html" class="text-gray-700 hover:text-brandAmber transition">Annapurna Kitchen</a>
           <a href="shef-dashboard.html"
             class="flex items-center space-x-1.5 bg-brandDark text-white px-3.5 py-2 rounded-full hover:bg-[#4A200B] transition">
             <span>👩‍🍳</span>
@@ -101,10 +91,10 @@
             </span>
             <span class="text-xs font-bold text-gray-500">Plan #SUB-9021</span>
           </div>
-          <h1 class="text-2xl lg:text-3xl font-serif font-bold text-brandDark">
+          <h1 id="subKitchenTitle" class="text-2xl lg:text-3xl font-serif font-bold text-brandDark">
             Annapurna Kitchen • 5-Day Mon-Fri Lunch Plan
           </h1>
-          <p class="text-xs text-[#6E4F39]">
+          <p id="subChefDetails" class="text-xs text-[#6E4F39]">
             Assigned Chef: <strong>Asha Sharma</strong> • Sector 11 • Standard Meal Price: ₹80/meal
           </p>
         </div>
@@ -384,6 +374,31 @@
 
   <!-- App Helper Scripts -->
   <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      try {
+        const rawSub = localStorage.getItem('rasoise_active_subscription');
+        if (rawSub) {
+          const sub = JSON.parse(rawSub);
+          const titleEl = document.getElementById('subKitchenTitle');
+          if (titleEl && sub.kitchenName) {
+            titleEl.innerText = `${sub.kitchenName} • ${sub.plan || 'Active Meal Plan'}`;
+          }
+          const chefEl = document.getElementById('subChefDetails');
+          if (chefEl && (sub.chef || sub.kitchenName)) {
+            chefEl.innerHTML = `Assigned Chef: <strong>${sub.chef || sub.kitchenName}</strong> • ${sub.sector || 'Hyperlocal Sector'} • Standard Meal Price: ₹${sub.price || 80}/meal`;
+          }
+          const navLink = document.getElementById('calKitchenNavLink');
+          if (navLink && sub.kitchenName) {
+            navLink.innerText = sub.kitchenName;
+            if (sub.kitchenId) navLink.href = `kitchen.html?id=${sub.kitchenId}`;
+          }
+        }
+      } catch (err) {
+        console.error('Error applying subscription details to calendar:', err);
+      }
+    });
+  </script>
 </body>
 
 </html>

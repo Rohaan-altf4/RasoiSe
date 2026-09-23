@@ -4,8 +4,13 @@
       "id": 1,
       "name": "Annapurna Kitchen",
       "chef": "Asha Sharma",
-      "area": "Gurugram Central",
-      "sector": "Sector 11",
+      "area": "Andheri West",
+      "sector": "Lokhandwala",
+      "serviceableSectors": [
+        "Lokhandwala",
+        "Versova",
+        "Oshiwara"
+      ],
       "price": 80,
       "rating": 4.9,
       "status": "Active",
@@ -19,8 +24,12 @@
       "id": 2,
       "name": "Nanak's Rasoi",
       "chef": "Harpreet Kaur",
-      "area": "Gurugram Central",
-      "sector": "Sector 14",
+      "area": "Andheri West",
+      "sector": "Versova",
+      "serviceableSectors": [
+        "Versova",
+        "Lokhandwala"
+      ],
       "price": 80,
       "rating": 4.9,
       "status": "Active",
@@ -29,22 +38,6 @@
       "distance": "600m away",
       "phone": "9812345678",
       "email": "harpreet.nanak@gmail.com"
-    },
-    {
-      "id": 1790155364464,
-      "name": "Rohaan Rajendra Bhagat's Rasoi",
-      "chef": "Rohaan Rajendra Bhagat",
-      "email": "rohaan.b@somaiya.edu",
-      "phone": "9820695964",
-      "area": "Gurugram Central",
-      "sector": "Sector 11",
-      "price": 80,
-      "rating": 5,
-      "status": "Active",
-      "dish": "Special Homestyle Daily Thali",
-      "distance": "400m away",
-      "photoUrl": "/uploads/1790155364444-Screenshot_2026-09-22_223738.png",
-      "registeredAt": "2026-09-23T09:22:44.464Z"
     }
   ],
   "flaggedKitchens": [
@@ -53,20 +46,19 @@
       "avatar": "M",
       "name": "Mamma's Spices",
       "chef": "Preeti Sharma",
-      "location": "Indiranagar, Block B",
+      "location": "Lokhandwala, Sector 4",
       "rating": 2.1,
       "complaints": 14,
-      "status": "Banned & Refunds Issued",
-      "statusCode": "banned",
-      "refundAmount": 1120,
-      "bannedAt": "2026-09-22T19:23:51.924Z"
+      "status": "Compliant",
+      "statusCode": "compliant",
+      "refundAmount": 1120
     },
     {
       "id": 102,
       "avatar": "Z",
       "name": "Zaika Home Foods",
       "chef": "Arjun Kapoor",
-      "location": "HSR Layout, Sector 4",
+      "location": "Versova, Sector 7",
       "rating": 3.4,
       "complaints": 9,
       "status": "Banned & Refunds Issued",
@@ -79,7 +71,7 @@
       "avatar": "G",
       "name": "Grandma's Biryani",
       "chef": "K. R. Rao",
-      "location": "Koramangala, Sector 5",
+      "location": "Oshiwara, Link Rd",
       "rating": 4.8,
       "complaints": 2,
       "status": "Compliant",
@@ -91,11 +83,11 @@
       "avatar": "U",
       "name": "Uncle's Kebabs",
       "chef": "Sanjay Dutt",
-      "location": "Jayanagar, Phase 3",
+      "location": "Pali Hill, Bandra West",
       "rating": 2.8,
       "complaints": 11,
-      "status": "Hygiene Failure",
-      "statusCode": "hygiene",
+      "status": "Compliant",
+      "statusCode": "compliant",
       "refundAmount": 880
     },
     {
@@ -103,7 +95,7 @@
       "avatar": "P",
       "name": "Priya's Healthy Bowls",
       "chef": "Priya Nair",
-      "location": "Whitefield, Inner Circle",
+      "location": "Carter Road, Bandra West",
       "rating": 3.2,
       "complaints": 8,
       "status": "Under Heavy Review",
@@ -115,7 +107,7 @@
       "avatar": "D",
       "name": "Desi Tadka Kitchen",
       "chef": "Rakesh Yadav",
-      "location": "Marathahalli, Main Rd",
+      "location": "Hiranandani, Powai",
       "rating": 4.5,
       "complaints": 1,
       "status": "Banned & Refunds Issued",
@@ -125,12 +117,6 @@
     }
   ],
   "auditLogs": [
-    {
-      "action": "CHEF_REGISTER",
-      "kitchen": "Rohaan Rajendra Bhagat's Rasoi",
-      "chef": "Rohaan Rajendra Bhagat",
-      "timestamp": "2026-09-23T09:22:44.464Z"
-    },
     {
       "action": "BAN_AND_REFUND",
       "kitchen": "Desi Tadka Kitchen",
@@ -152,13 +138,8 @@
       "kitchen": "Mamma's Spices",
       "bannedAt": "2026-09-22T19:23:51.924Z",
       "timestamp": "2026-09-22T19:23:51.924Z",
-      "refundIssued": "₹1120",
-      "detail": "Emergency enforcement: Mamma's Spices banned. Automated customer wallet refunds of ₹1120 processed."
-    },
-    {
-      "action": "SYSTEM_INIT",
-      "detail": "RasoiSe directory initialized with 2 verified kitchens.",
-      "timestamp": "2026-09-23T00:00:00.000Z"
+      "refundIssued": "₹1,120",
+      "detail": "Emergency enforcement: Mamma's Spices banned. Automated customer wallet refunds of ₹1,120 processed."
     }
   ]
 }

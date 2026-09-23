@@ -39,15 +39,7 @@
   <!-- TOP NAVIGATION BAR -->
   <header class="w-full bg-white border-b border-[#F0E2CA] py-3.5 px-6 lg:px-8 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
-      <div class="flex items-center space-x-6">
-        <a href="index.html" class="flex items-center space-x-1 text-2xl font-serif font-bold tracking-tight text-brandDark">
-          <span>Rasoi</span><span class="text-brandAmber">Se</span>
-        </a>
-        <a href="index.html" class="flex items-center space-x-1.5 text-xs font-medium text-gray-600 hover:text-brandAmber transition">
-          <span>←</span>
-          <span>Back to Marketplace</span>
-        </a>
-      </div>
+      
 
       <nav class="flex items-center space-x-6">
         <a href="index.html" class="text-xs font-medium text-gray-700 hover:text-brandAmber transition">Find Food</a>
@@ -169,30 +161,93 @@
             <p id="phoneError" class="text-[11px] text-red-600 mt-1 hidden font-semibold"></p>
           </div>
 
-          <!-- Operating Sector -->
+          <!-- Operating Sector (Typeable with Suggestions) -->
           <div>
             <label for="chefSector" class="block text-xs font-bold text-brandDark mb-1.5">
               Operating Sector / Neighborhood <span class="text-red-500">*</span>
             </label>
-            <select 
-              id="chefSector" 
-              name="sector" 
-              class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs font-semibold rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brandAmber cursor-pointer transition" 
-              required
-            >
-              <option value="">Select your delivery sector...</option>
-              <option value="Sector 11" selected>Sector 11 (High Demand Zone)</option>
-              <option value="Sector 10">Sector 10</option>
-              <option value="Sector 12">Sector 12</option>
-              <option value="Sector 15">Sector 15</option>
-            </select>
+            <div class="relative">
+              <input 
+                type="text" 
+                id="chefSector" 
+                name="sector" 
+                list="popularSectorsList"
+                placeholder="Type your sector e.g. Sector 6, Lokhandwala, Sector 10" 
+                class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs font-semibold rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brandAmber transition" 
+                required 
+              />
+              <datalist id="popularSectorsList">
+                <option value="Sector 6">
+                <option value="Sector 7">
+                <option value="Sector 8">
+                <option value="Sector 10">
+                <option value="Sector 11">
+                <option value="Sector 12">
+                <option value="Sector 14">
+                <option value="Sector 15">
+                <option value="Sector 20">
+                <option value="Lokhandwala">
+                <option value="Versova">
+                <option value="Oshiwara">
+                <option value="Pali Hill">
+                <option value="Carter Road">
+                <option value="Hiranandani">
+                <option value="Seven Bungalows">
+              </datalist>
+            </div>
+            <p class="text-[10px] text-gray-500 mt-1">Type your exact residential sector, node, or township perimeter.</p>
             <p id="sectorError" class="text-[11px] text-red-600 mt-1 hidden font-semibold"></p>
           </div>
 
         </div>
 
+        <!-- Serviceable Delivery Sectors -->
+        <div class="pt-4 border-t border-[#F5E6D3]">
+          <label class="block text-xs font-bold text-brandDark mb-1.5">
+            Serviceable Delivery Boundaries <span class="text-red-500">*</span>
+          </label>
+          <p class="text-[11px] text-gray-500 mb-3">Select the sectors where you can comfortably deliver hot meals within a short radius.</p>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3" id="serviceableSectorsGroup">
+            <label class="flex items-center space-x-2 text-xs font-medium cursor-pointer bg-white p-2 rounded-lg border border-[#DFCBB0] hover:border-brandAmber transition">
+              <input type="checkbox" name="serviceableSector" value="Lokhandwala" checked class="text-brandAmber rounded focus:ring-brandAmber h-4 w-4">
+              <span>Lokhandwala</span>
+            </label>
+            <label class="flex items-center space-x-2 text-xs font-medium cursor-pointer bg-white p-2 rounded-lg border border-[#DFCBB0] hover:border-brandAmber transition">
+              <input type="checkbox" name="serviceableSector" value="Versova" checked class="text-brandAmber rounded focus:ring-brandAmber h-4 w-4">
+              <span>Versova</span>
+            </label>
+            <label class="flex items-center space-x-2 text-xs font-medium cursor-pointer bg-white p-2 rounded-lg border border-[#DFCBB0] hover:border-brandAmber transition">
+              <input type="checkbox" name="serviceableSector" value="Oshiwara" checked class="text-brandAmber rounded focus:ring-brandAmber h-4 w-4">
+              <span>Oshiwara</span>
+            </label>
+            <label class="flex items-center space-x-2 text-xs font-medium cursor-pointer bg-white p-2 rounded-lg border border-[#DFCBB0] hover:border-brandAmber transition">
+              <input type="checkbox" name="serviceableSector" value="Pali Hill" class="text-brandAmber rounded focus:ring-brandAmber h-4 w-4">
+              <span>Pali Hill</span>
+            </label>
+            <label class="flex items-center space-x-2 text-xs font-medium cursor-pointer bg-white p-2 rounded-lg border border-[#DFCBB0] hover:border-brandAmber transition">
+              <input type="checkbox" name="serviceableSector" value="Carter Road" class="text-brandAmber rounded focus:ring-brandAmber h-4 w-4">
+              <span>Carter Road</span>
+            </label>
+            <label class="flex items-center space-x-2 text-xs font-medium cursor-pointer bg-white p-2 rounded-lg border border-[#DFCBB0] hover:border-brandAmber transition">
+              <input type="checkbox" name="serviceableSector" value="Hiranandani" class="text-brandAmber rounded focus:ring-brandAmber h-4 w-4">
+              <span>Hiranandani</span>
+            </label>
+          </div>
+          <div class="mt-3">
+            <label class="block text-[11px] font-bold text-brandDark mb-1">Or type custom serviceable boundaries (comma-separated):</label>
+            <input 
+              type="text" 
+              id="customServiceableSectors" 
+              placeholder="e.g. Sector 6, Sector 7, Sector 8, Sector 10" 
+              class="w-full bg-[#FDF8F0] border border-[#DFCBB0] text-brandDark text-xs rounded-xl px-3.5 py-2 focus:outline-none focus:ring-2 focus:ring-brandAmber"
+            />
+            <p class="text-[10px] text-gray-500 mt-0.5">Specify walking/cycling perimeters where your home meals remain hot and fresh.</p>
+          </div>
+          <p id="serviceableError" class="text-[11px] text-red-600 mt-2 hidden font-semibold"></p>
+        </div>
+
         <!-- Tiffin Meal Price & Description -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 border-t border-[#F5E6D3]">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 mt-4 border-t border-[#F5E6D3]">
           
           <div>
             <label for="chefPrice" class="block text-xs font-bold text-brandDark mb-1.5">
@@ -330,8 +385,8 @@
       </div>
 
       <div class="flex flex-col sm:flex-row gap-3 pt-2">
-        <a href="index.html" class="flex-1 py-3 bg-brandAmber hover:bg-brandAmberHover text-white rounded-xl text-xs font-bold text-center transition shadow-xs">
-          View in Marketplace
+        <a id="btnViewMyKitchen" href="kitchen.html" class="flex-1 py-3 bg-brandAmber hover:bg-brandAmberHover text-white rounded-xl text-xs font-bold text-center transition shadow-xs">
+          View My Public Kitchen
         </a>
         <a href="shef-dashboard.html" class="flex-1 py-3 bg-brandDark hover:bg-[#4A200B] text-white rounded-xl text-xs font-bold text-center transition shadow-xs">
           Open Chef Dashboard

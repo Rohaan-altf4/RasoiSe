@@ -53,8 +53,9 @@ function getDB() {
             id: 1,
             name: "Annapurna Kitchen",
             chef: "Asha Sharma",
-            area: "Gurugram Central",
-            sector: "Sector 11",
+            area: "Andheri West",
+            sector: "Lokhandwala",
+            serviceableSectors: ["Lokhandwala", "Versova", "Oshiwara"],
             price: 80,
             rating: 4.9,
             status: "Active",
@@ -68,8 +69,9 @@ function getDB() {
             id: 2,
             name: "Nanak's Rasoi",
             chef: "Harpreet Kaur",
-            area: "Gurugram Central",
-            sector: "Sector 14",
+            area: "Andheri West",
+            sector: "Versova",
+            serviceableSectors: ["Versova", "Lokhandwala"],
             price: 80,
             rating: 4.9,
             status: "Active",
@@ -105,10 +107,19 @@ function saveDB(data) {
 // 1. Chef Registration
 app.post('/api/chef/register', upload.single('foodPhoto'), (req, res) => {
   try {
-    const { name, email, phone, sector, area, price } = req.body;
+    const { name, email, phone, sector, area, price, serviceableSectors } = req.body;
 
     if (!name || !email || !phone || !sector) {
       return res.status(400).json({ success: false, error: 'All fields (name, email, phone, sector) are required.' });
+    }
+
+    let parsedSectors = [sector.trim()];
+    if (serviceableSectors) {
+      try {
+        parsedSectors = JSON.parse(serviceableSectors);
+      } catch (e) {
+        parsedSectors = serviceableSectors.split(',').map(s => s.trim());
+      }
     }
 
     const db = getDB();
@@ -124,6 +135,7 @@ app.post('/api/chef/register', upload.single('foodPhoto'), (req, res) => {
       phone: phone.trim(),
       area: area ? area.trim() : 'Gurugram Central',
       sector: sector.trim(),
+      serviceableSectors: parsedSectors,
       price: Number(price) > 0 ? Number(price) : 80,
       rating: 5.0,
       status: "Active",
@@ -176,61 +188,110 @@ app.get('/api/kitchens', (req, res) => {
   }
 });
 
-// 3. Fetch Flagged Moderation Kitchens
+// 2b. Fetch Single Kitchen by ID or Name
+app.get('/api/kitchens/:id', (req, res) => {
+  try {
+    const db = getDB();
+    const id = req.params.id;
+    const allKitchens = db.kitchens || [];
+    const kitchen = allKitchens.find(k => 
+      String(k.id) === String(id) || 
+      (k.name && k.name.toLowerCase() === id.toLowerCase())
+    );
+    if (!kitchen) {
+      return res.status(404).json({ success: false, error: 'Kitchen not found' });
+    }
+    return res.json({ success: true, kitchen });
+  } catch (err) {
+    console.error('Error fetching kitchen by id:', err);
+    return res.status(500).json({ success: false, error: 'Failed to fetch kitchen' });
+  }
+});
+
+// 3. Fetch Moderation Kitchens (All registered sellers + flagged kitchens)
 app.get('/api/admin/flagged-kitchens', (req, res) => {
   try {
     const db = getDB();
+    const registeredKitchens = db.kitchens || [];
+    const flagged = db.flaggedKitchens || [];
+
+    // Combine both lists, avoiding duplicate IDs/names
+    const combinedKitchens = [...flagged];
+
+    registeredKitchens.forEach(rk => {
+      const exists = combinedKitchens.some(k => 
+        String(k.id) === String(rk.id) || 
+        k.name.toLowerCase() === rk.name.toLowerCase()
+      );
+      if (!exists) {
+        const isBanned = (rk.status || '').toLowerCase().includes('banned');
+        combinedKitchens.push({
+          id: rk.id,
+          avatar: rk.name ? rk.name.charAt(0).toUpperCase() : 'K',
+          name: rk.name,
+          chef: rk.chef,
+          location: `${rk.sector || 'Lokhandwala'}, ${rk.area || 'Andheri West'}`,
+          rating: rk.rating || 5.0,
+          complaints: isBanned ? 8 : 0,
+          status: rk.status || 'Active',
+          statusCode: isBanned ? 'banned' : 'active',
+          refundAmount: 880,
+          isRegisteredSeller: true
+        });
+      }
+    });
+
     return res.json({
       success: true,
-      flaggedKitchens: db.flaggedKitchens || [],
+      flaggedKitchens: combinedKitchens,
       auditLogs: db.auditLogs || []
     });
   } catch (err) {
-    console.error('Error fetching flagged kitchens:', err);
-    return res.status(500).json({ error: 'Failed to fetch flagged kitchens' });
+    console.error('Error fetching moderation kitchens:', err);
+    return res.status(500).json({ error: 'Failed to fetch kitchens' });
   }
 });
 
 // 4. Admin Ban Kitchen & Issue Refunds
-app.post('/api/admin/ban/:name', (req, res) => {
+app.post('/api/admin/ban/:idOrName', (req, res) => {
   try {
-    const kitchenName = decodeURIComponent(req.params.name).trim();
+    const param = decodeURIComponent(req.params.idOrName).trim();
     const db = getDB();
     const kitchens = db.kitchens || [];
     const flagged = db.flaggedKitchens || [];
 
     let targetKitchen = null;
-    let isFlagged = false;
     let refundedAmount = 880;
 
-    // Check in flagged kitchens
-    const flaggedIdx = flagged.findIndex(
-      k => k.name.toLowerCase() === kitchenName.toLowerCase() ||
-           k.chef.toLowerCase() === kitchenName.toLowerCase()
+    const flaggedTarget = flagged.find(k => 
+      String(k.id) === param || 
+      k.name.toLowerCase() === param.toLowerCase() || 
+      (k.chef && k.chef.toLowerCase() === param.toLowerCase())
     );
 
-    if (flaggedIdx !== -1) {
-      targetKitchen = flagged[flaggedIdx];
-      targetKitchen.status = 'Banned & Refunds Issued';
-      targetKitchen.statusCode = 'banned';
-      targetKitchen.bannedAt = new Date().toISOString();
-      refundedAmount = targetKitchen.refundAmount || 880;
-      isFlagged = true;
-    } else {
-      const targetIndex = kitchens.findIndex(
-        k => k.name.toLowerCase() === kitchenName.toLowerCase() ||
-             k.chef.toLowerCase() === kitchenName.toLowerCase()
-      );
+    const kitchenTarget = kitchens.find(k => 
+      String(k.id) === param || 
+      k.name.toLowerCase() === param.toLowerCase() || 
+      (k.chef && k.chef.toLowerCase() === param.toLowerCase())
+    );
 
-      if (targetIndex !== -1) {
-        targetKitchen = kitchens[targetIndex];
-        targetKitchen.status = 'Banned';
-        targetKitchen.bannedAt = new Date().toISOString();
-      }
+    if (flaggedTarget) {
+      flaggedTarget.status = 'Banned & Refunds Issued';
+      flaggedTarget.statusCode = 'banned';
+      flaggedTarget.bannedAt = new Date().toISOString();
+      refundedAmount = flaggedTarget.refundAmount || 880;
+      targetKitchen = flaggedTarget;
+    }
+
+    if (kitchenTarget) {
+      kitchenTarget.status = 'Banned & Refunds Issued';
+      kitchenTarget.statusCode = 'banned';
+      kitchenTarget.bannedAt = new Date().toISOString();
+      if (!targetKitchen) targetKitchen = kitchenTarget;
     }
 
     if (!targetKitchen) {
-      return res.status(404).json({ success: false, error: `Kitchen "${kitchenName}" not found.` });
+      return res.status(404).json({ success: false, error: `Kitchen "${param}" not found.` });
     }
 
     if (!db.auditLogs) db.auditLogs = [];
@@ -260,6 +321,73 @@ app.post('/api/admin/ban/:name', (req, res) => {
   } catch (err) {
     console.error('Error banning kitchen:', err);
     return res.status(500).json({ success: false, error: 'Internal server error while banning kitchen.' });
+  }
+});
+
+// 5. Admin Unban / Reinstate Kitchen
+app.post('/api/admin/unban/:idOrName', (req, res) => {
+  try {
+    const param = decodeURIComponent(req.params.idOrName).trim();
+    const db = getDB();
+    const kitchens = db.kitchens || [];
+    const flagged = db.flaggedKitchens || [];
+
+    let targetKitchen = null;
+
+    const flaggedTarget = flagged.find(k => 
+      String(k.id) === param || 
+      k.name.toLowerCase() === param.toLowerCase() || 
+      (k.chef && k.chef.toLowerCase() === param.toLowerCase())
+    );
+
+    const kitchenTarget = kitchens.find(k => 
+      String(k.id) === param || 
+      k.name.toLowerCase() === param.toLowerCase() || 
+      (k.chef && k.chef.toLowerCase() === param.toLowerCase())
+    );
+
+    if (flaggedTarget) {
+      flaggedTarget.status = 'Compliant';
+      flaggedTarget.statusCode = 'compliant';
+      delete flaggedTarget.bannedAt;
+      targetKitchen = flaggedTarget;
+    }
+
+    if (kitchenTarget) {
+      kitchenTarget.status = 'Active';
+      kitchenTarget.statusCode = 'active';
+      delete kitchenTarget.bannedAt;
+      if (!targetKitchen) targetKitchen = kitchenTarget;
+    }
+
+    if (!targetKitchen) {
+      return res.status(404).json({ success: false, error: `Kitchen "${param}" not found.` });
+    }
+
+    if (!db.auditLogs) db.auditLogs = [];
+    const timestamp = new Date().toISOString();
+
+    const unbanLog = {
+      action: 'REINSTATE_KITCHEN',
+      kitchen: targetKitchen.name,
+      timestamp,
+      detail: `Administrative reinstatement: Ban lifted for ${targetKitchen.name}. Restored to active directory.`
+    };
+    db.auditLogs.unshift(unbanLog);
+
+    saveDB(db);
+
+    console.log(`[ADMIN AUDIT] ${unbanLog.detail} at ${timestamp}`);
+
+    return res.json({
+      success: true,
+      message: `Kitchen "${targetKitchen.name}" has been reinstated.`,
+      kitchen: targetKitchen,
+      timestamp
+    });
+  } catch (err) {
+    console.error('Error unbanning kitchen:', err);
+    return res.status(500).json({ success: false, error: 'Internal server error while unbanning kitchen.' });
   }
 });
 

@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const sectorError = document.getElementById('sectorError');
   const priceError = document.getElementById('priceError');
   const photoError = document.getElementById('photoError');
+  const serviceableError = document.getElementById('serviceableError');
 
   // Regex Patterns
   // RFC 5322 compliant email regex
@@ -104,11 +105,31 @@ document.addEventListener('DOMContentLoaded', () => {
   function validateSector() {
     if (!sectorInput) return true;
     const val = sectorInput.value.trim();
-    if (!val) {
-      setError(sectorInput, sectorError, 'Please select your operating sector.');
+    if (!val || val.length < 2) {
+      setError(sectorInput, sectorError, 'Please type your operating sector (e.g. Sector 6, Lokhandwala).');
       return false;
     }
     setError(sectorInput, sectorError, '');
+    return true;
+  }
+
+  function validateServiceableSectors() {
+    const checkboxes = document.querySelectorAll('input[name="serviceableSector"]:checked');
+    const customInput = document.getElementById('customServiceableSectors');
+    const customVal = customInput ? customInput.value.trim() : '';
+    const sectorVal = sectorInput ? sectorInput.value.trim() : '';
+
+    if (checkboxes.length === 0 && !customVal && !sectorVal) {
+      if (serviceableError) {
+        serviceableError.innerText = 'Please select or type at least one serviceable delivery sector.';
+        serviceableError.classList.remove('hidden');
+      }
+      return false;
+    }
+    if (serviceableError) {
+      serviceableError.innerText = '';
+      serviceableError.classList.add('hidden');
+    }
     return true;
   }
 
@@ -196,13 +217,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (sectorInput) {
-    sectorInput.addEventListener('change', validateSector);
+    sectorInput.addEventListener('input', validateSector);
+    sectorInput.addEventListener('blur', validateSector);
   }
 
   if (priceInput) {
     priceInput.addEventListener('blur', validatePrice);
     priceInput.addEventListener('input', () => { if (priceError && !priceError.classList.contains('hidden')) validatePrice(); });
   }
+
+  const serviceableCheckboxes = document.querySelectorAll('input[name="serviceableSector"]');
+  serviceableCheckboxes.forEach(cb => {
+    cb.addEventListener('change', () => {
+      if (serviceableError && !serviceableError.classList.contains('hidden')) validateServiceableSectors();
+    });
+  });
 
   // 4. Form Submission using Fetch & FormData
   if (form) {
@@ -216,8 +245,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const isSectorValid = validateSector();
       const isPriceValid = validatePrice();
       const isPhotoValid = validatePhoto();
+      const isServiceableValid = validateServiceableSectors();
 
-      if (!isNameValid || !isEmailValid || !isPhoneValid || !isSectorValid || !isPriceValid || !isPhotoValid) {
+      if (!isNameValid || !isEmailValid || !isPhoneValid || !isSectorValid || !isPriceValid || !isPhotoValid || !isServiceableValid) {
         if (formFeedback) {
           formFeedback.innerHTML = `
             <div class="p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-xs font-semibold flex items-center space-x-2">
@@ -237,6 +267,19 @@ document.addEventListener('DOMContentLoaded', () => {
       formData.append('phone', phoneInput.value.trim().replace(/[\s-]/g, ''));
       formData.append('sector', sectorInput.value.trim());
       formData.append('price', priceInput.value.trim() || '80');
+
+      const checkedSectors = Array.from(document.querySelectorAll('input[name="serviceableSector"]:checked')).map(cb => cb.value.trim());
+      const customInput = document.getElementById('customServiceableSectors');
+      if (customInput && customInput.value.trim()) {
+        const customList = customInput.value.split(',').map(s => s.trim()).filter(Boolean);
+        customList.forEach(s => {
+          if (!checkedSectors.includes(s)) checkedSectors.push(s);
+        });
+      }
+      if (checkedSectors.length === 0 && sectorInput && sectorInput.value.trim()) {
+        checkedSectors.push(sectorInput.value.trim());
+      }
+      formData.append('serviceableSectors', JSON.stringify(checkedSectors));
 
       if (photoInput && photoInput.files && photoInput.files[0]) {
         formData.append('foodPhoto', photoInput.files[0]);
@@ -267,6 +310,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await response.json();
 
         if (response.ok && data.success) {
+          // Save Chef profile in session
+          localStorage.setItem('rasoise_user_profile', JSON.stringify({
+            name: data.kitchen.chef || data.kitchen.name,
+            kitchenName: data.kitchen.name,
+            kitchenId: data.kitchen.id,
+            email: data.kitchen.email,
+            phone: data.kitchen.phone,
+            area: data.kitchen.area || 'Andheri West',
+            sector: data.kitchen.sector || 'Lokhandwala',
+            price: data.kitchen.price || 80,
+            dish: data.kitchen.dish || 'Special Homestyle Daily Thali',
+            role: 'Chef',
+            signedInAt: new Date().toISOString()
+          }));
           // Show Success Modal or Banner
           const successModal = document.getElementById('registrationSuccessModal');
           if (successModal) {
@@ -276,6 +333,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (registeredName) registeredName.innerText = data.kitchen.name;
             if (registeredSector) registeredSector.innerText = data.kitchen.sector;
             if (registeredPrice) registeredPrice.innerText = `₹${data.kitchen.price}/meal`;
+
+            const btnStorefront = document.getElementById('btnViewMyKitchen');
+            if (btnStorefront) {
+              btnStorefront.href = `kitchen.html?id=${data.kitchen.id}`;
+            }
 
             successModal.classList.remove('hidden');
           } else {
