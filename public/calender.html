@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RasoiSe - My Subscription & Meal Calendar</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandCream: '#FDF8F0',
+            brandAlmond: '#F8E7C8',
+            brandAmber: '#E68A00',
+            brandAmberHover: '#CF7B00',
+            brandDark: '#331507',
+            walletDark: '#2B170B',
+            walletCardBg: '#3E2415',
+            activeMint: '#D1F5EA',
+            activeMintBorder: '#A3E8D5',
+            pausedGray: '#EDE8E4',
+            pausedBorder: '#D8D1CC'
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #FDF8F0;
+      color: #331507;
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+  <!-- TOP NAVBAR -->
+  <header class="w-full bg-white border-b border-[#F0E2CA] py-3.5 px-8 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <!-- Brand Logo -->
+      <a href="index.html" class="flex items-center space-x-2 text-2xl font-serif font-bold tracking-tight text-brandDark">
+        <span class="w-7 h-7 rounded-full bg-brandAmber text-white flex items-center justify-center text-sm">🍲</span>
+        <span>Rasoi<span class="text-brandAmber">Se</span></span>
+      </a>
+
+      <!-- Main Navigation -->
+      <nav class="flex items-center space-x-8 text-xs font-semibold">
+        <a href="calendar.html" class="text-brandAmber pb-1 border-b-2 border-brandAmber">My Subscription</a>
+        <a href="index.html" class="text-gray-600 hover:text-brandAmber transition">Explore Menu</a>
+        <a href="#" class="text-gray-600 hover:text-brandAmber transition">Order History</a>
+        <a href="#" class="text-gray-600 hover:text-brandAmber transition">Support</a>
+      </nav>
+
+      <!-- Customer Profile -->
+      <div class="flex items-center space-x-3">
+        <div class="text-right">
+          <p class="text-xs font-bold text-brandDark">Aarav Sharma</p>
+          <p class="text-[10px] text-gray-500">Active Plan: Daily Lunch</p>
+        </div>
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="User avatar" class="w-9 h-9 rounded-full object-cover border border-amber-300" />
+      </div>
+    </div>
+  </header>
+
+  <!-- CUT-OFF WARNING BANNER -->
+  <div class="w-full bg-[#FFF4D9] border-b border-[#F5E2B3] px-8 py-2.5">
+    <div class="max-w-7xl mx-auto flex items-center justify-between text-xs text-[#8A5800]">
+      <div class="flex items-center space-x-2">
+        <span>⏰</span>
+        <span class="font-medium"><strong>Cut-off warning:</strong> Pausing tomorrow's meal locks strictly at 8:00 AM</span>
+      </div>
+      <a href="#" class="font-bold flex items-center space-x-1 hover:underline text-brandAmber">
+        <span>RULES</span>
+        <span>→</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- MAIN TWO-COLUMN DASHBOARD -->
+  <main class="max-w-7xl mx-auto px-8 py-8 w-full flex-1">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+      <!-- LEFT COLUMN: INTERACTIVE CALENDAR -->
+      <div class="lg:col-span-8 bg-white border border-[#EEDBCA] rounded-3xl p-7 shadow-sm">
+        
+        <!-- Calendar Header -->
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h1 class="text-2xl font-serif font-bold text-brandDark">October 2025</h1>
+            <p class="text-xs text-gray-500 mt-0.5">Managing: Lunch Box Plan (5 Days/Week)</p>
+          </div>
+          <div class="flex items-center space-x-1">
+            <button class="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center text-xs hover:bg-gray-50">‹</button>
+            <button class="px-3 h-8 rounded-lg border border-gray-200 text-xs font-semibold hover:bg-gray-50">Today</button>
+            <button class="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center text-xs hover:bg-gray-50">›</button>
+          </div>
+        </div>
+
+        <!-- Days of Week Header -->
+        <div class="grid grid-cols-7 gap-3 text-center text-xs font-semibold text-gray-500 mb-3">
+          <div>Mon</div>
+          <div>Tue</div>
+          <div>Wed</div>
+          <div>Thu</div>
+          <div>Fri</div>
+          <div>Sat</div>
+          <div>Sun</div>
+        </div>
+
+        <!-- Monthly Grid (Oct 2025 Layout) -->
+        <div class="grid grid-cols-7 gap-3 text-xs" id="calendarGrid">
+          <!-- Row 1: Empty slots for Mon & Tue -->
+          <div class="h-20 rounded-xl"></div>
+          <div class="h-20 rounded-xl"></div>
+          
+          <!-- Oct 1 -->
+          <div onclick="toggleMeal(this, 1)" class="meal-day active-meal h-20 bg-[#E3F7EE] border border-[#A7E7CB] rounded-xl p-2.5 flex flex-col justify-between cursor-pointer hover:shadow-sm transition">
+            <span class="font-bold text-gray-800">1</span>
+            <span class="self-end text-emerald-600 text-xs">🟢</span>
+          </div>
+          <!-- Oct 2 -->
+          <div onclick="toggleMeal(this, 2)" class="meal-day active-meal h-20 bg-[#E3F7EE] border border-[#A7E7CB] rounded-xl p-2.5 flex flex-col justify-between cursor-pointer hover:shadow-sm transition">
+            <span class="font-bold text-gray-800">2</span>
+            <span class="self-end text-emerald-600 text-xs">🟢</span>
+          </div>
+          <!-- Oct 3 -->
+          <div onclick="toggleMeal(this, 3)" class="meal-day active-meal h-20 bg-[#E3F7EE] border border-[#A7E7CB] rounded-xl p-2.5 flex flex-col justify-between cursor-pointer hover:shadow-sm transition">
+            <span class="font-bold text-gray-800">3</span>
+            <span class="self-end text-emerald-600 text-xs">🟢</span>
+          </div>
+          <!-- Weekend (Sat 4 & Sun 5) -->
+          <div class="h-20 border border-gray-100 rounded-xl p-2 text-gray-300 font-semibold">4</div>
+          <div class="h-20 border border-gray-100 rounded-xl p-2 text-gray-300 font-semibold">5</div>
+
+          <!-- Row 2: Oct 6 to 10 (Active Weekdays) -->
+          <div onclick="toggleMeal(this, 6)" class="meal-day active-meal h-20 bg-[#E3F7EE] border border-[#A7E7CB] rounded-xl p-2.5 flex flex-col justify-between cursor-pointer hover:shadow-sm transition">
+            <span class="font-bold text-gray-800">6</span>
+            <span class="self-end text-emerald-600 text-xs">🟢</span>
+          </div>
+          <div onclick="toggleMeal(this, 7)" class="meal-day active-meal h-20 bg-[#E3F7EE] border border-[#A7E7CB] rounded-xl p-2.5 flex flex-col justify-between cursor-pointer hover:shadow-sm transition">
+            <span class="font-bold text-gray-800">7</span>
+            <span class="self-end text-emerald-600 text-xs">🟢</span>
+          </div>
+          <div onclick="toggleMeal(this, 8)" class="meal-day active-meal h-20 bg-[#E3F7EE] border border-[#A7E7CB] rounded-xl p-2.5 flex flex-col justify-between cursor-pointer hover:shadow-sm transition">
+            <span class="font-bold text-gray-800">8</span>
+            <span class="self-end text-emerald-600 text-xs">🟢</span>
+          </div>
+          <div onclick="toggleMeal(this, 9)" class="meal-day active-meal h-20 bg-[#E3F7EE] border border-[#A7E7CB] rounded-xl p-2.5 flex flex-col justify-between cursor-pointer hover:shadow-sm transition">
+            <span class="font-bold text-gray-800">9</span>
+            <span class="self-end text-emerald-600 text-xs">🟢</span>
+          </div>
+          <div onclick="toggleMeal(this, 10)" class="meal-day active-meal h-20 bg-[#E3F7EE] border border-[#A7E7CB] rounded-xl p-2.5 flex flex-col justify-between cursor-pointer hover:shadow-sm transition">
+            <span class="font-bold text-gray-800">10</span>
+            <span class="self-end text-emerald-600 text-xs">🟢</span>
+          </div>
+          <div class="h-20 border border-gray-100 rounded-xl p-2 text-gray-300 font-semibold">11</div>
+          <div class="h-20 border border-gray-100 rounded-xl p-2 text-gray-300 font-semibold">12</div>
+
+          <!-- Row 3: Oct 13 to 17 (With Paused day on 15 and Today marked on 16) -->
+          <div onclick="toggleMeal(this, 13)" class="meal-day active-meal h-20 bg-[#E3F7EE] border border-[#A7E7CB] rounded-xl p-2.5 flex flex-col justify-between cursor-pointer hover:shadow-sm transition">
+            <span class="font-bold text-gray-800">13</span>
+            <span class="self-end text-emerald-600 text-xs">🟢</span>
+          </div>
+          <div onclick="toggleMeal(this, 14)" class="meal-day active-meal h-20 bg-[#E3F7EE] border border-[#A7E7CB] rounded-xl p-2.5 flex flex-col justify-between cursor-pointer hover:shadow-sm transition">
+            <span class="font-bold text-gray-800">14</span>
+            <span class="self-end text-emerald-600 text-xs">🟢</span>
+          </div>
+          <!-- Paused Date (15) -->
+          <div onclick="toggleMeal(this, 15)" class="meal-day paused-meal h-20 bg-[#F0EBE7] border border-[#D9D1CB] rounded-xl p-2.5 flex flex-col justify-between cursor-pointer hover:shadow-sm transition">
+            <span class="font-bold text-gray-500">15</span>
+            <span class="self-end text-gray-400 text-xs">⏸️</span>
+          </div>
+          <!-- Today Date (16 - Orange border highlight) -->
+          <div onclick="toggleMeal(this, 16)" class="meal-day active-meal h-20 bg-[#E3F7EE] border-2 border-brandAmber rounded-xl p-2.5 flex flex-col justify-between cursor-pointer hover:shadow-sm transition">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-gray-800">16</span>
+              <span class="w-1.5 h-1.5 rounded-full bg-brandAmber"></span>
+            </div>
+            <span class="self-end text-emerald-600 text-xs">🟢</span>
+          </div>
+          <div onclick="toggleMeal(this, 17)" class="meal-day active-meal h-20 bg-[#E3F7EE] border border-[#A7E7CB] rounded-xl p-2.5 flex flex-col justify-between cursor-pointer hover:shadow-sm transition">
+            <span class="font-bold text-gray-800">17</span>
+            <span class="self-end text-emerald-600 text-xs">🟢</span>
+          </div>
+          <div class="h-20 border border-gray-100 rounded-xl p-2 text-gray-300 font-semibold">18</div>
+          <div class="h-20 border border-gray-100 rounded-xl p-2 text-gray-300 font-semibold">19</div>
+
+          <!-- Row 4: Oct 20 to 24 -->
+          <div onclick="toggleMeal(this, 20)" class="meal-day active-meal h-20 bg-[#E3F7EE] border border-[#A7E7CB] rounded-xl p-2.5 flex flex-col justify-between cursor-pointer hover:shadow-sm transition">
+            <span class="font-bold text-gray-800">20</span>
+            <span class="self-end text-emerald-600 text-xs">🟢</span>
+          </div>
+          <div onclick="toggleMeal(this, 21)" class="meal-day active-meal h-20 bg-[#E3F7EE] border border-[#A7E7CB] rounded-xl p-2.5 flex flex-col justify-between cursor-pointer hover:shadow-sm transition">
+            <span class="font-bold text-gray-800">21</span>
+            <span class="self-end text-emerald-600 text-xs">🟢</span>
+          </div>
+          <div onclick="toggleMeal(this, 22)" class="meal-day paused-meal h-20 bg-[#F0EBE7] border border-[#D9D1CB] rounded-xl p-2.5 flex flex-col justify-between cursor-pointer hover:shadow-sm transition">
+            <span class="font-bold text-gray-500">22</span>
+            <span class="self-end text-gray-400 text-xs">⏸️</span>
+          </div>
+          <div onclick="toggleMeal(this, 23)" class="meal-day active-meal h-20 bg-[#E3F7EE] border border-[#A7E7CB] rounded-xl p-2.5 flex flex-col justify-between cursor-pointer hover:shadow-sm transition">
+            <span class="font-bold text-gray-800">23</span>
+            <span class="self-end text-emerald-600 text-xs">🟢</span>
+          </div>
+          <div onclick="toggleMeal(this, 24)" class="meal-day active-meal h-20 bg-[#E3F7EE] border border-[#A7E7CB] rounded-xl p-2.5 flex flex-col justify-between cursor-pointer hover:shadow-sm transition">
+            <span class="font-bold text-gray-800">24</span>
+            <span class="self-end text-emerald-600 text-xs">🟢</span>
+          </div>
+          <div class="h-20 border border-gray-100 rounded-xl p-2 text-gray-300 font-semibold">25</div>
+          <div class="h-20 border border-gray-100 rounded-xl p-2 text-gray-300 font-semibold">26</div>
+
+          <!-- Row 5: Oct 27 to 31 -->
+          <div onclick="toggleMeal(this, 27)" class="meal-day active-meal h-20 bg-[#E3F7EE] border border-[#A7E7CB] rounded-xl p-2.5 flex flex-col justify-between cursor-pointer hover:shadow-sm transition">
+            <span class="font-bold text-gray-800">27</span>
+            <span class="self-end text-emerald-600 text-xs">🟢</span>
+          </div>
+          <div onclick="toggleMeal(this, 28)" class="meal-day active-meal h-20 bg-[#E3F7EE] border border-[#A7E7CB] rounded-xl p-2.5 flex flex-col justify-between cursor-pointer hover:shadow-sm transition">
+            <span class="font-bold text-gray-800">28</span>
+            <span class="self-end text-emerald-600 text-xs">🟢</span>
+          </div>
+          <div onclick="toggleMeal(this, 29)" class="meal-day active-meal h-20 bg-[#E3F7EE] border border-[#A7E7CB] rounded-xl p-2.5 flex flex-col justify-between cursor-pointer hover:shadow-sm transition">
+            <span class="font-bold text-gray-800">29</span>
+            <span class="self-end text-emerald-600 text-xs">🟢</span>
+          </div>
+          <div onclick="toggleMeal(this, 30)" class="meal-day active-meal h-20 bg-[#E3F7EE] border border-[#A7E7CB] rounded-xl p-2.5 flex flex-col justify-between cursor-pointer hover:shadow-sm transition">
+            <span class="font-bold text-gray-800">30</span>
+            <span class="self-end text-emerald-600 text-xs">🟢</span>
+          </div>
+          <div onclick="toggleMeal(this, 31)" class="meal-day active-meal h-20 bg-[#E3F7EE] border border-[#A7E7CB] rounded-xl p-2.5 flex flex-col justify-between cursor-pointer hover:shadow-sm transition">
+            <span class="font-bold text-gray-800">31</span>
+            <span class="self-end text-emerald-600 text-xs">🟢</span>
+          </div>
+        </div>
+
+        <!-- Legend / Footer -->
+        <div class="mt-8 pt-5 border-t border-[#F0E2CA] flex flex-wrap items-center justify-between text-xs text-gray-600 gap-4">
+          <div class="flex items-center space-x-6">
+            <div class="flex items-center space-x-2">
+              <span class="w-3.5 h-3.5 rounded bg-[#E3F7EE] border border-[#A7E7CB]"></span>
+              <span><strong>Active Meals</strong> — Scheduled for delivery</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="w-3.5 h-3.5 rounded bg-[#F0EBE7] border border-[#D9D1CB]"></span>
+              <span><strong>Paused Days</strong> — Credits saved to wallet</span>
+            </div>
+          </div>
+          <div class="flex items-center space-x-1 text-brandAmber text-[11px] font-semibold">
+            <span>ℹ️</span>
+            <span>Tap any upcoming day to Pause or Resume</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN: WALLET & DEDUCTION KHATA -->
+      <div class="lg:col-span-4 space-y-6">
+
+        <!-- PREPAID WALLET CARD -->
+        <div class="bg-walletDark text-white rounded-3xl p-6 shadow-md border border-[#4A2E1C]">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-2 text-xs font-semibold uppercase tracking-wider text-stone-300">
+              <span>💳</span>
+              <span>Prepaid Wallet</span>
+            </div>
+            <span class="bg-emerald-950/80 border border-emerald-500/40 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full">
+              AUTO-ON
+            </span>
+          </div>
+
+          <p class="text-[11px] text-stone-400">Available Balance</p>
+          <p class="text-3xl font-bold tracking-tight my-1" id="walletBalance">Balance: ₹1,200</p>
+          <p class="text-[11px] text-stone-400 mb-5">Enough for approx. 15 upcoming meals</p>
+
+          <!-- Fast Recharge Pills -->
+          <div class="grid grid-cols-3 gap-2 mb-4">
+            <button onclick="topUp(500)" class="bg-walletCardBg hover:bg-[#4E301E] border border-white/10 rounded-xl py-2 text-xs font-semibold transition">+₹500</button>
+            <button onclick="topUp(1000)" class="bg-walletCardBg hover:bg-[#4E301E] border border-white/10 rounded-xl py-2 text-xs font-semibold transition">+₹1000</button>
+            <button onclick="topUp(2000)" class="bg-walletCardBg hover:bg-[#4E301E] border border-white/10 rounded-xl py-2 text-xs font-semibold transition">+₹2000</button>
+          </div>
+
+          <!-- Top-Up CTA -->
+          <button onclick="topUp(500)" class="w-full bg-brandAmber hover:bg-brandAmberHover text-white text-xs font-bold py-3 rounded-xl transition flex items-center justify-center space-x-2 shadow-sm">
+            <span>⚡</span>
+            <span>UPI Top-up</span>
+          </button>
+        </div>
+
+        <!-- RECENT DEDUCTIONS (KHATA) -->
+        <div class="bg-white border border-[#EEDBCA] rounded-3xl p-6 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-base font-serif font-bold text-brandDark">Recent Deductions</h3>
+            <a href="#" class="text-xs font-bold text-brandAmber hover:underline">View All</a>
+          </div>
+
+          <!-- Transaction List -->
+          <div class="space-y-3.5 text-xs">
+            <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div>
+                <p class="font-semibold text-brandDark">Thursday Lunch Delivery</p>
+                <p class="text-[10px] text-gray-400">Today, Oct 16</p>
+              </div>
+              <p class="font-bold text-red-600">-₹80</p>
+            </div>
+
+            <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div>
+                <p class="font-semibold text-brandDark">Wednesday Lunch Paused</p>
+                <p class="text-[10px] text-gray-400">Yesterday, Oct 15</p>
+              </div>
+              <p class="font-bold text-emerald-600">₹0</p>
+            </div>
+
+            <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div>
+                <p class="font-semibold text-brandDark">Tuesday Lunch Delivery</p>
+                <p class="text-[10px] text-gray-400">Oct 14, 2025</p>
+              </div>
+              <p class="font-bold text-red-600">-₹80</p>
+            </div>
+
+            <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div>
+                <p class="font-semibold text-brandDark">Monday Lunch Delivery</p>
+                <p class="text-[10px] text-gray-400">Oct 13, 2025</p>
+              </div>
+              <p class="font-bold text-red-600">-₹80</p>
+            </div>
+
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="font-semibold text-brandDark">Friday Lunch Delivery</p>
+                <p class="text-[10px] text-gray-400">Oct 10, 2025</p>
+              </div>
+              <p class="font-bold text-red-600">-₹80</p>
+            </div>
+          </div>
+
+          <!-- Khata Guarantee Notice -->
+          <div class="mt-5 p-3.5 bg-[#FAF6F0] rounded-2xl border border-[#EDE2D3] flex items-start space-x-2.5 text-[11px] text-[#7A5B44]">
+            <span class="text-xs mt-0.5">🛡️</span>
+            <p>Paused meals are instantly refunded to your wallet. You can resume them at any time before the 8:00 AM cut-off.</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- JAVASCRIPT: TOGGLE LOGIC & WALLET TOP-UP -->
+  <script>
+    let currentBalance = 1200;
+
+    function toggleMeal(el, day) {
+      // Don't allow toggling past days (Oct 1 to 15)
+      if (day < 16) {
+        alert("Cannot modify past meal dates.");
+        return;
+      }
+
+      if (el.classList.contains('active-meal')) {
+        const confirmPause = confirm(`Do you want to pause lunch for October ${day}? No deduction will be made from your wallet.`);
+        if (confirmPause) {
+          el.classList.remove('active-meal', 'bg-[#E3F7EE]', 'border-[#A7E7CB]');
+          el.classList.add('paused-meal', 'bg-[#F0EBE7]', 'border-[#D9D1CB]');
+          el.querySelector('span:last-child').textContent = '⏸️';
+        }
+      } else {
+        el.classList.remove('paused-meal', 'bg-[#F0EBE7]', 'border-[#D9D1CB]');
+        el.classList.add('active-meal', 'bg-[#E3F7EE]', 'border-[#A7E7CB]');
+        el.querySelector('span:last-child').textContent = '🟢';
+      }
+    }
+
+    function topUp(amount) {
+      currentBalance += amount;
+      document.getElementById('walletBalance').textContent = `Balance: ₹${currentBalance}`;
+      alert(`Recharged ₹${amount} successfully via UPI! Current Balance: ₹${currentBalance}`);
+    }
+  </script>
+</body>
+</html>

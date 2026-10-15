@@ -193,6 +193,139 @@
         }
       },
       "registeredAt": "2026-09-24T08:44:26.595Z"
+    },
+    {
+      "id": 1790241196194,
+      "name": "Rohaan Rajendra Bhagat's Rasoi",
+      "chef": "Rohaan Rajendra Bhagat",
+      "email": "rohaan.b@somaiya.edu",
+      "phone": "9820695964",
+      "area": "Gurugram Central",
+      "sector": "Versova Sector7",
+      "serviceableSectors": [
+        "Lokhandwala",
+        "Versova",
+        "Oshiwara",
+        "Sector 6"
+      ],
+      "price": 120,
+      "rating": 5,
+      "status": "Active",
+      "dish": "Special Homestyle Daily Thali",
+      "distance": "400m away",
+      "photoUrl": "/uploads/1790241196172-chicken_thali.jpg",
+      "weeklyMenu": {
+        "monday": {
+          "main": "Paneer Bhurji Homestyle",
+          "dal": "Dal Makhani (Maa di Dal)",
+          "breadRice": "4 Phulkas + Jeera Rice",
+          "sides": "Boondi Raita + Salad"
+        },
+        "tuesday": {
+          "main": "Aloo Gobi Adraki",
+          "dal": "Dal Tadka Tempered",
+          "breadRice": "4 Ghee Phulkas + Steamed Rice",
+          "sides": "Kachumber + Chutney"
+        },
+        "wednesday": {
+          "main": "Kadhai Paneer Special",
+          "dal": "Punjabi Rajma Masala",
+          "breadRice": "4 Phulkas + Basmati Rice",
+          "sides": "Mint Chutney + Onion"
+        },
+        "thursday": {
+          "main": "Smoked Baingan Bharta",
+          "dal": "Panchmel Dal",
+          "breadRice": "4 Multigrain Rotis + Matar Pulao",
+          "sides": "Hot Gulab Jamun (1 pc)"
+        },
+        "friday": {
+          "main": "Mix Veg Handi",
+          "dal": "Pindi Chole Masala",
+          "breadRice": "4 Phulkas + Jeera Pulao",
+          "sides": "Sirka Onions + Papad"
+        },
+        "saturday": {
+          "main": "Methi Matar Malai",
+          "dal": "Yellow Dal Fry",
+          "breadRice": "4 Phulkas + Steamed Rice",
+          "sides": "Roasted Papad + Pickle"
+        },
+        "sunday": {
+          "main": "Paneer Butter Masala",
+          "dal": "Shahi Dal Makhani",
+          "breadRice": "4 Pooris + Kashmiri Pulao",
+          "sides": "Shahi Moong Dal Halwa"
+        }
+      },
+      "registeredAt": "2026-09-24T09:13:16.194Z"
+    },
+    {
+      "id": 1790243504405,
+      "name": "Himank's Rasoi",
+      "chef": "Himank",
+      "email": "rohaan.b@somaiya.edu",
+      "phone": "9820695964",
+      "area": "Gurugram Central",
+      "sector": "Versova",
+      "serviceableSectors": [
+        "Lokhandwala",
+        "Versova",
+        "Oshiwara",
+        "Sector 6",
+        "Sector 7"
+      ],
+      "price": 120,
+      "rating": 5,
+      "status": "Active",
+      "dish": "Special Homestyle Daily Thali",
+      "distance": "400m away",
+      "photoUrl": "/uploads/1790243504392-chicken_thali.jpg",
+      "weeklyMenu": {
+        "monday": {
+          "main": "Chicken Masala",
+          "dal": "Fish Curry",
+          "breadRice": "2 Butter Garlic Naan",
+          "sides": "ButterMilk + Salad"
+        },
+        "tuesday": {
+          "main": "Aloo Gobi Adraki",
+          "dal": "Dal Tadka Tempered",
+          "breadRice": "4 Ghee Phulkas + Steamed Rice",
+          "sides": "Kachumber + Chutney"
+        },
+        "wednesday": {
+          "main": "Kadhai Paneer Special",
+          "dal": "Punjabi Rajma Masala",
+          "breadRice": "4 Phulkas + Basmati Rice",
+          "sides": "Mint Chutney + Onion"
+        },
+        "thursday": {
+          "main": "Smoked Baingan Bharta",
+          "dal": "Panchmel Dal",
+          "breadRice": "4 Multigrain Rotis + Matar Pulao",
+          "sides": "Hot Gulab Jamun (1 pc)"
+        },
+        "friday": {
+          "main": "Mix Veg Handi",
+          "dal": "Pindi Chole Masala",
+          "breadRice": "4 Phulkas + Jeera Pulao",
+          "sides": "Sirka Onions + Papad"
+        },
+        "saturday": {
+          "main": "Methi Matar Malai",
+          "dal": "Yellow Dal Fry",
+          "breadRice": "4 Phulkas + Steamed Rice",
+          "sides": "Roasted Papad + Pickle"
+        },
+        "sunday": {
+          "main": "Paneer Butter Masala",
+          "dal": "Shahi Dal Makhani",
+          "breadRice": "4 Pooris + Kashmiri Pulao",
+          "sides": "Shahi Moong Dal Halwa"
+        }
+      },
+      "registeredAt": "2026-09-24T09:51:44.405Z"
     }
   ],
   "flaggedKitchens": [
@@ -204,10 +337,9 @@
       "location": "Lokhandwala, Sector 4",
       "rating": 2.1,
       "complaints": 14,
-      "status": "Banned & Refunds Issued",
-      "statusCode": "banned",
-      "refundAmount": 1120,
-      "bannedAt": "2026-09-24T08:45:43.374Z"
+      "status": "Compliant",
+      "statusCode": "compliant",
+      "refundAmount": 1120
     },
     {
       "id": 102,
@@ -273,6 +405,38 @@
     }
   ],
   "auditLogs": [
+    {
+      "action": "REINSTATE_KITCHEN",
+      "kitchen": "Mamma's Spices",
+      "timestamp": "2026-09-24T09:53:05.919Z",
+      "detail": "Administrative reinstatement: Ban lifted for Mamma's Spices. Restored to active directory."
+    },
+    {
+      "action": "BAN_AND_REFUND",
+      "kitchen": "Mamma's Spices",
+      "bannedAt": "2026-09-24T09:52:59.206Z",
+      "timestamp": "2026-09-24T09:52:59.206Z",
+      "refundIssued": "₹1120",
+      "detail": "Emergency enforcement: Mamma's Spices banned. Automated customer wallet refunds of ₹1120 processed."
+    },
+    {
+      "action": "CHEF_REGISTER",
+      "kitchen": "Himank's Rasoi",
+      "chef": "Himank",
+      "timestamp": "2026-09-24T09:51:44.405Z"
+    },
+    {
+      "action": "REINSTATE_KITCHEN",
+      "kitchen": "Mamma's Spices",
+      "timestamp": "2026-09-24T09:15:12.175Z",
+      "detail": "Administrative reinstatement: Ban lifted for Mamma's Spices. Restored to active directory."
+    },
+    {
+      "action": "CHEF_REGISTER",
+      "kitchen": "Rohaan Rajendra Bhagat's Rasoi",
+      "chef": "Rohaan Rajendra Bhagat",
+      "timestamp": "2026-09-24T09:13:16.194Z"
+    },
     {
       "action": "BAN_AND_REFUND",
       "kitchen": "Mamma's Spices",

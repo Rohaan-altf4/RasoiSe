@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RasoiSe Admin - Trust & Safety Moderation</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            adminBg: '#0D0C0A',
+            adminSurface: '#161412',
+            adminCard: '#1C1917',
+            adminBorder: '#292524',
+            adminBorderLight: '#3D3835',
+            brandAmber: '#E68A00',
+            dangerRed: '#EF4444',
+            dangerBg: '#2D1212',
+            dangerBorder: '#7F1D1D'
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #0D0C0A;
+      color: #E7E5E4;
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex text-stone-200">
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="w-64 bg-adminSurface border-r border-adminBorder flex flex-col justify-between p-5 min-h-screen">
+    <div class="space-y-6">
+      
+      <!-- Brand & Role Indicator -->
+      <div class="flex items-center space-x-3 px-2">
+        <div class="w-8 h-8 rounded-lg bg-brandAmber text-white font-bold flex items-center justify-center text-sm shadow-sm">
+          R
+        </div>
+        <div>
+          <h2 class="text-sm font-bold text-white tracking-wide">RasoiSe</h2>
+          <p class="text-[9px] font-bold text-amber-500 uppercase tracking-wider">Admin Console</p>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="space-y-1.5 text-xs font-medium">
+        <a href="admin-console.html" class="flex items-center justify-between px-3 py-2.5 rounded-xl bg-[#26201B] border border-amber-900/40 text-amber-400 font-semibold shadow-sm">
+          <div class="flex items-center space-x-3">
+            <span>🛡️</span>
+            <span>Moderation Hub</span>
+          </div>
+          <span class="bg-brandAmber text-black font-bold text-[10px] px-2 py-0.5 rounded-full">12</span>
+        </a>
+
+        <a href="#" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-stone-400 hover:text-white hover:bg-adminCard transition">
+          <span>🍴</span>
+          <span>Kitchen Directory</span>
+        </a>
+
+        <a href="#" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-stone-400 hover:text-white hover:bg-adminCard transition">
+          <div class="flex items-center space-x-3">
+            <span>⚠️</span>
+            <span>Complaints Queue</span>
+          </div>
+          <span class="bg-stone-800 text-stone-400 text-[10px] px-1.5 py-0.5 rounded-md">8</span>
+        </a>
+
+        <a href="#" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-stone-400 hover:text-white hover:bg-adminCard transition">
+          <span>📑</span>
+          <span>Refund Register</span>
+        </a>
+
+        <a href="#" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-stone-400 hover:text-white hover:bg-adminCard transition">
+          <span>📖</span>
+          <span>Compliance Logs</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Bottom System Telemetry Badge -->
+    <div class="bg-adminCard border border-adminBorder rounded-2xl p-4 text-[11px] font-mono space-y-1.5">
+      <div class="flex items-center justify-between">
+        <span class="text-stone-400 font-sans">Console Status</span>
+        <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+      </div>
+      <p class="text-stone-500">Region: IN-West-1 (Mumbai)</p>
+      <p class="text-stone-500">Uptime: 99.98%</p>
+    </div>
+  </aside>
+
+  <!-- MAIN ADMIN CONTENT AREA -->
+  <main class="flex-1 p-8 overflow-y-auto">
+    
+    <!-- Top Header Bar -->
+    <div class="flex items-start justify-between pb-6 mb-6 border-b border-adminBorder">
+      <div>
+        <h1 class="text-2xl font-bold text-white tracking-tight">Trust & Safety Moderation</h1>
+        <p class="text-xs text-stone-400 mt-1">
+          Real-time compliance monitoring, health reviews, and critical safety interventions.
+        </p>
+      </div>
+
+      <!-- Moderator Online Status -->
+      <div class="flex items-center space-x-2 bg-stone-900 border border-stone-800 px-3.5 py-1.5 rounded-full text-xs font-medium text-stone-300">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span>
+        <span>Moderator-09 Active</span>
+      </div>
+    </div>
+
+    <!-- 4 METRIC TELEMETRY CARDS -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-5 mb-8">
+      
+      <!-- Card 1: Active Kitchens -->
+      <div class="bg-adminSurface border border-adminBorder rounded-2xl p-5 shadow-sm">
+        <div class="flex items-center justify-between text-xs text-stone-400 mb-2">
+          <span class="uppercase tracking-wider font-semibold text-[10px]">Active Kitchens</span>
+          <span>📊</span>
+        </div>
+        <p class="text-3xl font-bold text-white tracking-tight">142</p>
+        <p class="text-[11px] text-emerald-400 mt-2">
+          <strong>+4% this week</strong> <span class="text-stone-500">operational home kitch...</span>
+        </p>
+      </div>
+
+      <!-- Card 2: Complaints -->
+      <div class="bg-adminSurface border border-amber-900/30 rounded-2xl p-5 shadow-sm">
+        <div class="flex items-center justify-between text-xs text-stone-400 mb-2">
+          <span class="uppercase tracking-wider font-semibold text-[10px]">Complaints</span>
+          <span class="text-amber-500">🛡️</span>
+        </div>
+        <p class="text-3xl font-bold text-amber-500 tracking-tight" id="complaintsCount">12</p>
+        <p class="text-[11px] text-amber-400 mt-2">
+          <strong>6 requires action</strong> <span class="text-stone-500">critical escalations...</span>
+        </p>
+      </div>
+
+      <!-- Card 3: Pending Review -->
+      <div class="bg-adminSurface border border-adminBorder rounded-2xl p-5 shadow-sm">
+        <div class="flex items-center justify-between text-xs text-stone-400 mb-2">
+          <span class="uppercase tracking-wider font-semibold text-[10px]">Pending Review</span>
+          <span>📈</span>
+        </div>
+        <p class="text-3xl font-bold text-white tracking-tight">8</p>
+        <p class="text-[11px] text-emerald-400 mt-2">
+          <strong>-2 since yesterday</strong> <span class="text-stone-500">kitchens flagged...</span>
+        </p>
+      </div>
+
+      <!-- Card 4: Total Refunds Today -->
+      <div class="bg-adminSurface border border-adminBorder rounded-2xl p-5 shadow-sm">
+        <div class="flex items-center justify-between text-xs text-stone-400 mb-2">
+          <span class="uppercase tracking-wider font-semibold text-[10px]">Total Refunds Today</span>
+          <span>💳</span>
+        </div>
+        <p class="text-3xl font-bold text-white tracking-tight">₹14,240</p>
+        <p class="text-[11px] text-red-400 mt-2">
+          <strong>+18% vs avg</strong> <span class="text-stone-500">issued via auto-reconcile</span>
+        </p>
+      </div>
+
+    </div>
+
+    <!-- FLAGGED REGISTERED KITCHENS SECTION -->
+    <div class="bg-adminSurface border border-adminBorder rounded-3xl p-6 shadow-sm">
+      
+      <!-- Section Header with Search -->
+      <div class="flex flex-col md:flex-row items-center justify-between mb-6 gap-4">
+        <div class="flex items-center space-x-3">
+          <h2 class="text-base font-bold text-white">Flagged Registered Kitchens</h2>
+          <span class="bg-red-950/80 border border-red-700/50 text-red-400 text-[11px] font-semibold px-2.5 py-0.5 rounded-full">
+            6 Urgent Actions
+          </span>
+        </div>
+
+        <!-- Filter / Search Input -->
+        <div class="relative w-full md:w-72">
+          <input type="text" id="kitchenSearch" placeholder="Filter by kitchen or ID..."
+                 class="w-full bg-[#1F1C18] border border-adminBorder rounded-xl pl-8 pr-4 py-1.5 text-xs text-stone-200 placeholder-stone-500 focus:outline-none focus:ring-1 focus:ring-brandAmber" />
+          <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-stone-500 text-xs">🔍</span>
+        </div>
+      </div>
+
+      <!-- AUDIT TABLE -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="text-[10px] uppercase font-bold text-stone-400 border-b border-adminBorder pb-3">
+              <th class="pb-3 px-3">Kitchen Identity</th>
+              <th class="pb-3 px-4">Hygiene Rating</th>
+              <th class="pb-3 px-4">Complaints</th>
+              <th class="pb-3 px-4">Status</th>
+              <th class="pb-3 px-4 text-right">Emergency Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-adminBorder" id="kitchenTableBody">
+            
+            <!-- ROW 1: Mamma's Spices -->
+            <tr class="hover:bg-stone-900/40 transition">
+              <td class="py-4 px-3 flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-xl bg-[#2E1E14] text-amber-500 font-bold flex items-center justify-center flex-shrink-0">
+                  M
+                </div>
+                <div>
+                  <p class="font-bold text-stone-100">Mamma's Spices</p>
+                  <p class="text-[11px] text-stone-500">Preeti Sharma • Indiranagar, Block B</p>
+                </div>
+              </td>
+              <td class="py-4 px-4">
+                <div class="flex items-center space-x-2">
+                  <span class="font-bold text-red-400 font-mono">2.1</span>
+                  <div class="w-20 bg-stone-800 rounded-full h-1.5 overflow-hidden">
+                    <div class="bg-red-500 h-full rounded-full" style="width: 42%;"></div>
+                  </div>
+                </div>
+              </td>
+              <td class="py-4 px-4 font-mono">
+                <span class="text-red-400 font-semibold">14 active</span>
+                <p class="text-[10px] text-stone-500">last 7 days</p>
+              </td>
+              <td class="py-4 px-4">
+                <span class="bg-red-950/60 border border-red-800/40 text-red-400 text-[10px] font-semibold px-2.5 py-1 rounded-full">
+                  Critical Violations
+                </span>
+              </td>
+              <td class="py-4 px-4 text-right">
+                <button onclick="banKitchen(this, 'Mamma\'s Spices')" class="bg-dangerBg hover:bg-red-900/50 border border-dangerBorder text-red-400 hover:text-red-300 text-xs font-semibold px-4 py-2 rounded-xl transition shadow-sm">
+                  Ban Kitchen & Issue Refunds
+                </button>
+              </td>
+            </tr>
+
+            <!-- ROW 2: Zaika Home Foods -->
+            <tr class="hover:bg-stone-900/40 transition">
+              <td class="py-4 px-3 flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-xl bg-[#2E1E14] text-amber-500 font-bold flex items-center justify-center flex-shrink-0">
+                  Z
+                </div>
+                <div>
+                  <p class="font-bold text-stone-100">Zaika Home Foods</p>
+                  <p class="text-[11px] text-stone-500">Arjun Kapoor • HSR Layout, Sector 4</p>
+                </div>
+              </td>
+              <td class="py-4 px-4">
+                <div class="flex items-center space-x-2">
+                  <span class="font-bold text-amber-400 font-mono">3.4</span>
+                  <div class="w-20 bg-stone-800 rounded-full h-1.5 overflow-hidden">
+                    <div class="bg-amber-500 h-full rounded-full" style="width: 68%;"></div>
+                  </div>
+                </div>
+              </td>
+              <td class="py-4 px-4 font-mono">
+                <span class="text-amber-400 font-semibold">9 active</span>
+                <p class="text-[10px] text-stone-500">last 7 days</p>
+              </td>
+              <td class="py-4 px-4">
+                <span class="bg-amber-950/60 border border-amber-800/40 text-amber-400 text-[10px] font-semibold px-2.5 py-1 rounded-full">
+                  Under Heavy Review
+                </span>
+              </td>
+              <td class="py-4 px-4 text-right">
+                <button onclick="banKitchen(this, 'Zaika Home Foods')" class="bg-dangerBg hover:bg-red-900/50 border border-dangerBorder text-red-400 hover:text-red-300 text-xs font-semibold px-4 py-2 rounded-xl transition shadow-sm">
+                  Ban Kitchen & Issue Refunds
+                </button>
+              </td>
+            </tr>
+
+            <!-- ROW 3: Grandma's Biryani -->
+            <tr class="hover:bg-stone-900/40 transition">
+              <td class="py-4 px-3 flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-xl bg-[#2E1E14] text-amber-500 font-bold flex items-center justify-center flex-shrink-0">
+                  G
+                </div>
+                <div>
+                  <p class="font-bold text-stone-100">Grandma's Biryani</p>
+                  <p class="text-[11px] text-stone-500">K. R. Rao • Koramangala, Sector 5</p>
+                </div>
+              </td>
+              <td class="py-4 px-4">
+                <div class="flex items-center space-x-2">
+                  <span class="font-bold text-emerald-400 font-mono">4.8</span>
+                  <div class="w-20 bg-stone-800 rounded-full h-1.5 overflow-hidden">
+                    <div class="bg-emerald-500 h-full rounded-full" style="width: 96%;"></div>
+                  </div>
+                </div>
+              </td>
+              <td class="py-4 px-4 font-mono">
+                <span class="text-stone-300 font-semibold">2 active</span>
+                <p class="text-[10px] text-stone-500">last 7 days</p>
+              </td>
+              <td class="py-4 px-4">
+                <span class="bg-emerald-950/60 border border-emerald-800/40 text-emerald-400 text-[10px] font-semibold px-2.5 py-1 rounded-full">
+                  Compliant
+                </span>
+              </td>
+              <td class="py-4 px-4 text-right">
+                <button onclick="banKitchen(this, 'Grandma\'s Biryani')" class="bg-dangerBg hover:bg-red-900/50 border border-dangerBorder text-red-400 hover:text-red-300 text-xs font-semibold px-4 py-2 rounded-xl transition shadow-sm">
+                  Ban Kitchen & Issue Refunds
+                </button>
+              </td>
+            </tr>
+
+            <!-- ROW 4: Uncle's Kebabs -->
+            <tr class="hover:bg-stone-900/40 transition">
+              <td class="py-4 px-3 flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-xl bg-[#2E1E14] text-amber-500 font-bold flex items-center justify-center flex-shrink-0">
+                  U
+                </div>
+                <div>
+                  <p class="font-bold text-stone-100">Uncle's Kebabs</p>
+                  <p class="text-[11px] text-stone-500">Sanjay Dutt • Jayanagar, Phase 3</p>
+                </div>
+              </td>
+              <td class="py-4 px-4">
+                <div class="flex items-center space-x-2">
+                  <span class="font-bold text-red-400 font-mono">2.8</span>
+                  <div class="w-20 bg-stone-800 rounded-full h-1.5 overflow-hidden">
+                    <div class="bg-red-500 h-full rounded-full" style="width: 56%;"></div>
+                  </div>
+                </div>
+              </td>
+              <td class="py-4 px-4 font-mono">
+                <span class="text-red-400 font-semibold">11 active</span>
+                <p class="text-[10px] text-stone-500">last 7 days</p>
+              </td>
+              <td class="py-4 px-4">
+                <span class="bg-red-950/60 border border-red-800/40 text-red-400 text-[10px] font-semibold px-2.5 py-1 rounded-full">
+                  Hygiene Failure
+                </span>
+              </td>
+              <td class="py-4 px-4 text-right">
+                <button onclick="banKitchen(this, 'Uncle\'s Kebabs')" class="bg-dangerBg hover:bg-red-900/50 border border-dangerBorder text-red-400 hover:text-red-300 text-xs font-semibold px-4 py-2 rounded-xl transition shadow-sm">
+                  Ban Kitchen & Issue Refunds
+                </button>
+              </td>
+            </tr>
+
+            <!-- ROW 5: Priya's Healthy Bowls -->
+            <tr class="hover:bg-stone-900/40 transition">
+              <td class="py-4 px-3 flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-xl bg-[#2E1E14] text-amber-500 font-bold flex items-center justify-center flex-shrink-0">
+                  P
+                </div>
+                <div>
+                  <p class="font-bold text-stone-100">Priya's Healthy Bowls</p>
+                  <p class="text-[11px] text-stone-500">Priya Nair • Whitefield, Inner Circle</p>
+                </div>
+              </td>
+              <td class="py-4 px-4">
+                <div class="flex items-center space-x-2">
+                  <span class="font-bold text-amber-400 font-mono">3.2</span>
+                  <div class="w-20 bg-stone-800 rounded-full h-1.5 overflow-hidden">
+                    <div class="bg-amber-500 h-full rounded-full" style="width: 64%;"></div>
+                  </div>
+                </div>
+              </td>
+              <td class="py-4 px-4 font-mono">
+                <span class="text-amber-400 font-semibold">8 active</span>
+                <p class="text-[10px] text-stone-500">last 7 days</p>
+              </td>
+              <td class="py-4 px-4">
+                <span class="bg-amber-950/60 border border-amber-800/40 text-amber-400 text-[10px] font-semibold px-2.5 py-1 rounded-full">
+                  Under Heavy Review
+                </span>
+              </td>
+              <td class="py-4 px-4 text-right">
+                <button onclick="banKitchen(this, 'Priya\'s Healthy Bowls')" class="bg-dangerBg hover:bg-red-900/50 border border-dangerBorder text-red-400 hover:text-red-300 text-xs font-semibold px-4 py-2 rounded-xl transition shadow-sm">
+                  Ban Kitchen & Issue Refunds
+                </button>
+              </td>
+            </tr>
+
+            <!-- ROW 6: Desi Tadka Kitchen -->
+            <tr class="hover:bg-stone-900/40 transition">
+              <td class="py-4 px-3 flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-xl bg-[#2E1E14] text-amber-500 font-bold flex items-center justify-center flex-shrink-0">
+                  D
+                </div>
+                <div>
+                  <p class="font-bold text-stone-100">Desi Tadka Kitchen</p>
+                  <p class="text-[11px] text-stone-500">Rakesh Yadav • Marathahalli, Main Rd</p>
+                </div>
+              </td>
+              <td class="py-4 px-4">
+                <div class="flex items-center space-x-2">
+                  <span class="font-bold text-emerald-400 font-mono">4.5</span>
+                  <div class="w-20 bg-stone-800 rounded-full h-1.5 overflow-hidden">
+                    <div class="bg-emerald-500 h-full rounded-full" style="width: 90%;"></div>
+                  </div>
+                </div>
+              </td>
+              <td class="py-4 px-4 font-mono">
+                <span class="text-stone-300 font-semibold">1 active</span>
+                <p class="text-[10px] text-stone-500">last 7 days</p>
+              </td>
+              <td class="py-4 px-4">
+                <span class="bg-emerald-950/60 border border-emerald-800/40 text-emerald-400 text-[10px] font-semibold px-2.5 py-1 rounded-full">
+                  Compliant
+                </span>
+              </td>
+              <td class="py-4 px-4 text-right">
+                <button onclick="banKitchen(this, 'Desi Tadka Kitchen')" class="bg-dangerBg hover:bg-red-900/50 border border-dangerBorder text-red-400 hover:text-red-300 text-xs font-semibold px-4 py-2 rounded-xl transition shadow-sm">
+                  Ban Kitchen & Issue Refunds
+                </button>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- JAVASCRIPT: FILTER & EMERGENCY BAN LOGIC -->
+  <script>
+    // Live Search Filter
+    document.getElementById('kitchenSearch').addEventListener('input', function(e) {
+      const term = e.target.value.toLowerCase();
+      const rows = document.querySelectorAll('#kitchenTableBody tr');
+      rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(term) ? '' : 'none';
+      });
+    });
+
+    // Emergency Ban Kitchen Action
+    async function banKitchen(btn, kitchenName) {
+      const confirmed = confirm(`CRITICAL WARNING: Are you sure you want to permanently ban "${kitchenName}"?\n\nThis will immediately:\n1. Deactivate their public profile.\n2. Trigger automated pro-rata refunds to all active subscribers.\n3. Send an official violation notice via SMS/WhatsApp.`);
+      
+      if (!confirmed) return;
+
+      btn.disabled = true;
+      btn.textContent = "Processing Ban...";
+      btn.classList.add("opacity-50");
+
+      try {
+        const res = await fetch(`/api/admin/ban/${encodeURIComponent(kitchenName)}`, {
+          method: 'POST'
+        });
+        const data = await res.json();
+      } catch (e) {
+        // Fallback demo behavior for static preview
+      }
+
+      const row = btn.closest('tr');
+      row.style.opacity = '0.35';
+      btn.textContent = "Banned & Refunded";
+      btn.classList.remove("hover:bg-red-900/50", "text-red-400");
+      btn.classList.add("text-stone-500", "border-stone-800");
+
+      const statusBadge = row.querySelector('td:nth-child(4) span');
+      if (statusBadge) {
+        statusBadge.textContent = "Banned / Deactivated";
+        statusBadge.className = "bg-stone-800 text-stone-400 text-[10px] font-semibold px-2.5 py-1 rounded-full";
+      }
+
+      alert(`"${kitchenName}" has been banned successfully. Customer refunds have been processed.`);
+    }
+  </script>
+</body>
+</html>
