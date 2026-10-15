@@ -1,18 +1,21 @@
 {
   "name": "rasoise",
   "version": "1.0.0",
-  "description": "",
+  "description": "RasoiSe: home-cooked meal marketplace for Andheri West",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "seed": "node seed.js",
+    "migrate": "node migrate.js",
+    "test": "node test/run.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "cors": "^2.8.6",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
     "express": "^5.2.1",
     "multer": "^2.4.0"
   }
