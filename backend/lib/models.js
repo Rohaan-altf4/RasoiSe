@@ -3,6 +3,9 @@
 
 const DAY_NAMES = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
+// The area RasoiSe serves. Change it here: the server, /api/config and every page (via /js/area.js) use it.
+const SERVICE_AREA = { name: 'Andheri West', city: 'Mumbai', center: { lat: 19.1364, lng: 72.8296 } };
+
 // Approximate centres of the neighbourhoods we serve (used when only a locality name is known).
 const LOCALITIES = {
   'Lokhandwala': { lat: 19.1424, lng: 72.8264 },
@@ -10,7 +13,7 @@ const LOCALITIES = {
   'Oshiwara': { lat: 19.1491, lng: 72.8345 },
   'Seven Bungalows': { lat: 19.1290, lng: 72.8230 },
   'Four Bungalows': { lat: 19.1265, lng: 72.8265 },
-  'Andheri West': { lat: 19.1364, lng: 72.8296 }
+  [SERVICE_AREA.name]: SERVICE_AREA.center
 };
 
 function defaultPreferences() {
@@ -21,7 +24,8 @@ function defaultPreferences() {
     allergies: [],
     rotiCount: 4,
     rice: true,
-    defaultSlot: 'lunch'    // lunch | dinner | both
+    defaultSlot: 'lunch',   // lunch | dinner | both
+    cookCancel: 'makeup'    // if the kitchen cancels a plan meal: makeup | refund
   };
 }
 
@@ -55,8 +59,33 @@ function newKitchen(fields = {}) {
     phone: fields.phone || '',
     email: fields.email || '',
     createdAt: fields.createdAt || new Date().toISOString(),
-    approvedAt: fields.approvedAt || null
+    approvedAt: fields.approvedAt || null,
+    ...kitchenRuleDefaults(fields)
   };
+}
+
+// Notice and skip rules (added later; also filled in for kitchens saved before they existed)
+function kitchenRuleDefaults(k = {}) {
+  return {
+    noticeHours: [12, 24, 48].includes(k.noticeHours) ? k.noticeHours : 24,  // changes close this long before a meal
+    slotTimes: Object.assign({ lunch: '12:30', dinner: '19:30' }, k.slotTimes || {}),
+    skipLimits: Object.assign({ plan5: 4, plan7: 6 }, k.skipLimits || {}),  // make-up days per plan
+    goodwillCredit: Number.isFinite(k.goodwillCredit) ? k.goodwillCredit : 20, // paid by the cook on late cancels
+    strikes: Array.isArray(k.strikes) ? k.strikes : []                        // late cancellations by the cook
+  };
+}
+
+// Bring older saved records up to date with safe defaults
+function upgradeRecords(data) {
+  (data.kitchens || []).forEach(k => Object.assign(k, kitchenRuleDefaults(k)));
+  (data.subscriptions || []).forEach(s => {
+    if (s.skipsUsed == null) s.skipsUsed = 0;
+    if (!Array.isArray(s.freezes)) s.freezes = [];
+  });
+  (data.users || []).forEach(u => {
+    if (u.role === 'customer' && u.preferences && !u.preferences.cookCancel) u.preferences.cookCancel = 'makeup';
+    if (!Array.isArray(u.noShows)) u.noShows = [];
+  });
 }
 
 // A day's menu is a list of "courses" (Sabzi, Dal, Roti & rice...). Each course has one or
@@ -90,6 +119,6 @@ function defaultAddons() {
 }
 
 module.exports = {
-  DAY_NAMES, LOCALITIES, defaultPreferences, newKitchen, newMenu, course,
+  DAY_NAMES, LOCALITIES, SERVICE_AREA, defaultPreferences, newKitchen, newMenu, course, kitchenRuleDefaults, upgradeRecords,
   legacyDayToCourses, defaultAddons
 };

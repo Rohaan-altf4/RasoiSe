@@ -229,9 +229,94 @@ function orderTotal(o) {
   return (o.amount || 0) + (o.addonsTotal || 0);
 }
 
+// ---------- Notice period ----------
+// Each slot starts at a set time (lunch 12:30, dinner 19:30). Changes to a meal (skip, resume,
+// cancel, dishes, extras, slot, address) close the kitchen's notice period before that,
+// e.g. 24 hours' notice: Saturday lunch can be changed until Friday 12:30 PM (India time).
+
+function slotStart(kitchen, date, slot) {
+  const times = kitchen.slotTimes || {};
+  return time.istMoment(date, times[slot] || (slot === 'dinner' ? '19:30' : '12:30'));
+}
+
+function changeDeadline(kitchen, date, slot) {
+  return new Date(slotStart(kitchen, date, slot).getTime() - (kitchen.noticeHours || 24) * 3600000);
+}
+
+function canChange(kitchen, date, slot) {
+  return time.now() < changeDeadline(kitchen, date, slot);
+}
+
+function assertCanChange(kitchen, order, what = 'change') {
+  if (canChange(kitchen, order.date, order.slot)) return;
+  const by = time.fmtIST(changeDeadline(kitchen, order.date, order.slot));
+  throw httpError(400, `Too late to ${what} this meal. Changes closed on ${by} (${kitchen.noticeHours || 24} hours' notice).`, 'DEADLINE_PASSED');
+}
+
+// Earliest deadline among the slots a kitchen serves on a date (used for whole-day closures)
+function dayDeadline(kitchen, date) {
+  const slots = (kitchen.slots && kitchen.slots.length) ? kitchen.slots : ['lunch'];
+  return new Date(Math.min(...slots.map(s => changeDeadline(kitchen, date, s).getTime())));
+}
+
+// ---------- Make-up days ----------
+
+// Last date this plan delivers on (including make-up days), ignoring cancelled meals
+// Last date this plan still has a meal on. Recomputed from the meals (not the stored endDate)
+// so it moves back again when a skip is resumed. A plan with no meals left keeps its old end.
+function planLastDate(d, sub) {
+  const last = d.orders
+    .filter(o => o.subscriptionId === sub.id && ACTIVE.includes(o.status))
+    .reduce((m, o) => (!m || o.date > m ? o.date : m), null);
+  return last || sub.endDate || sub.startDate;
+}
+
+// First day after `after` this plan can deliver `slot`: skips weekends on a 5-day plan,
+// the kitchen's off-days and holidays, days that are full, and days already booked on this plan.
+function nextOpenDate(d, kitchen, sub, after, slot) {
+  let date = time.addDays(after, 1);
+  for (let i = 0; i < 120; i++, date = time.addDays(date, 1)) {
+    const wd = time.weekday(date);
+    if (sub.plan === '5day' && (wd === 0 || wd === 6)) continue;
+    if (closedReason(kitchen, date, slot)) continue;
+    if (capacityLeft(d, kitchen, date, slot) <= 0) continue;
+    const taken = d.orders.some(o => o.subscriptionId === sub.id && o.date === date && o.slot === slot && ACTIVE.includes(o.status));
+    if (taken) continue;
+    return date;
+  }
+  throw httpError(409, `${kitchen.name} has no open day for a make-up meal in the next few months.`, 'NO_OPEN_DAY');
+}
+
+// How many make-up days a plan may earn from customer skips
+function skipLimit(kitchen, sub) {
+  const limits = kitchen.skipLimits || { plan5: 4, plan7: 6 };
+  const per = sub.plan === '5day' ? limits.plan5 : limits.plan7;
+  return per * (sub.slot === 'both' ? 2 : 1);
+}
+
+// Move a plan meal's money onto a new meal at the end of the plan. Returns the new order.
+// Ledger: the old reservation is released and the same amount reserved on the new meal,
+// so the customer's balance doesn't change and every rupee is still accounted for.
+function addMakeupDay(d, kitchen, customer, order, sub, why) {
+  const date = nextOpenDate(d, kitchen, sub, planLastDate(d, sub), order.slot);
+  wallet.release(d, order, `${why}: ${kitchen.name}, ${order.date} ${order.slot}. Moved to make-up day ${date}`);
+  const address = (customer.addresses || []).find(a => order.address && a.id === order.address.id) || findAddress(customer, null);
+  const m = createOrder(d, {
+    customer, kitchen, type: 'subscription', date, slot: order.slot, choices: {}, addons: [], note: order.note,
+    address, amount: order.amount, subscriptionId: sub.id, skipBookableCheck: true
+  });
+  m.isMakeup = true;
+  m.makeupOf = order.id;
+  order.makeupOrderId = m.id;
+  order.makeupDate = date;
+  sub.endDate = planLastDate(d, sub);
+  return m;
+}
+
 module.exports = {
   ACTIVE, CHEF_FLOW, PLAN_MEALS, PLAN_LABEL, SLOT_LABEL, httpError, getMenu, closedReason, dayMenu,
   usedCapacity, capacityLeft, cleanChoices, priceAddons, mealType, findAddress, addressSnapshot,
   checkDeliveryArea, prefsSnapshot, assertBookable, createOrder, planDates, splitPrice,
-  dietaryNotes, orderTotal
+  dietaryNotes, orderTotal, slotStart, changeDeadline, canChange, assertCanChange, dayDeadline,
+  planLastDate, nextOpenDate, skipLimit, addMakeupDay
 };

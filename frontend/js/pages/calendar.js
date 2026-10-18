@@ -13,7 +13,7 @@
   const dow = d => new Date(d + 'T00:00:00Z').getUTCDay();
   const monthStart = d => d.slice(0, 8) + '01';
   const mondayOf = d => addDays(d, -((dow(d) + 6) % 7));
-  const monthName = d => new Date(d + 'T00:00:00Z').toLocaleDateString('en-IN', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+  const monthName = d => new Date(d + 'T00:00:00Z').toLocaleDateString(window.I18n ? I18n.locale() : 'en-IN', { month: 'long', year: 'numeric', timeZone: 'UTC' });
 
   function range() {
     if (state.view === 'week') {
@@ -99,7 +99,7 @@
   }
 
   function pillText(o) {
-    const what = o.status === 'holiday' ? 'Holiday' : o.status === 'paused' ? 'Paused' : o.status === 'cancelled' ? 'Cancelled' : (o.slot === 'lunch' ? 'Lunch' : 'Dinner');
+    const what = o.status === 'holiday' ? 'Holiday' : o.status === 'paused' ? 'Skipped' : o.status === 'cancelled' ? 'Cancelled' : (o.slot === 'lunch' ? 'Lunch' : 'Dinner');
     return `${what} · ${o.kitchen ? o.kitchen.name.split(' ')[0] : ''}`;
   }
 
@@ -182,7 +182,7 @@
       <article class="card" style="margin-bottom:12px" data-order="${o.id}">
         <div class="card-head" style="padding-bottom:0">
           <div style="min-width:0">
-            <div class="flex items-center gap-2 flex-wrap"><strong>${o.slot === 'lunch' ? 'Lunch' : 'Dinner'} · ${esc(o.kitchen ? o.kitchen.name : '')}</strong>${UI.statusBadge(o.status)}</div>
+            <div class="flex items-center gap-2 flex-wrap"><strong>${o.slot === 'lunch' ? 'Lunch' : 'Dinner'} · ${esc(o.kitchen ? o.kitchen.name : '')}</strong>${UI.statusBadge(o.status)}${o.isMakeup ? `<span class="badge badge-saffron">${icon('calendar-plus')}Make-up day</span>` : ''}</div>
             <div class="text-xs text-subtle">${typeLabel} · ${esc(o.code)} · ${money(o.total)}${o.cancelReason ? ` · ${esc(o.cancelReason)}` : ''}</div>
           </div>
           ${['preparing', 'out_for_delivery'].includes(o.status) ? `<a class="btn btn-primary btn-sm" href="/orders.html?id=${o.id}">${icon('map')}Track</a>` : ''}
@@ -220,10 +220,10 @@
               <label class="field-label" for="note-${o.id}">Note for the chef</label>
               <input id="note-${o.id}" class="input" data-field="note" maxlength="200" value="${esc(o.note || '')}" placeholder="e.g. less spicy today">
             </div>
-            <p class="text-xs text-subtle" style="margin:10px 0 0">${icon('clock', 'icon-xs')} You can change this until ${cutoff} on ${UI.date(o.date)}.</p>
+            <p class="text-xs text-subtle" style="margin:10px 0 0">${icon('clock', 'icon-xs')} <span>Change by ${UI.dateTime(o.deadline)}</span></p>
             <div class="flex flex-wrap gap-2" style="margin-top:12px">
               <button type="button" class="btn btn-primary" data-act="save">Save changes</button>
-              ${o.type === 'subscription' ? `<button type="button" class="btn btn-secondary" data-act="pause">${icon('pause')}Pause this meal</button>` : `<button type="button" class="btn btn-danger" data-act="cancel">Cancel order</button>`}
+              ${o.type === 'subscription' ? `<button type="button" class="btn btn-secondary" data-act="pause">${icon('calendar-x')}Skip this meal</button>` : `<button type="button" class="btn btn-danger" data-act="cancel">Cancel order</button>`}
             </div>` : `
             <div class="text-sm" style="display:grid;gap:4px">
               ${Object.entries(o.choices || {}).map(([, v]) => `<div>${esc(v)}</div>`).join('')}
@@ -231,8 +231,14 @@
               ${o.note ? `<div class="text-subtle">Note: ${esc(o.note)}</div>` : ''}
             </div>
             ${o.status === 'paused' ? `
-              ${o.date >= App.session.today ? `<div class="flex flex-wrap gap-2 items-center" style="margin-top:12px"><button type="button" class="btn btn-success" data-act="resume">${icon('play')}Resume (${money(o.total)})</button><span class="text-xs text-subtle">Until ${cutoff} on the day</span></div>` : ''}` : ''}
-            ${o.status === 'scheduled' && !editable ? `<p class="text-xs text-subtle" style="margin:10px 0 0">${icon('lock', 'icon-xs')} Locked at ${cutoff}. The kitchen is cooking it.</p>` : ''}
+              <p class="text-sm" style="margin:10px 0 0">${icon('calendar-x', 'icon-xs')} ${o.skipCredit === 'makeup' && o.makeupDate
+                ? `<span>Skipped ${UI.date(o.date)}, added on ${UI.date(o.makeupDate)}</span>`
+                : o.skipCredit === 'none' ? '<span>Skipped with no make-up day left. This meal is charged.</span>' : '<span>Skipped</span>'}</p>
+              ${o.changeable && o.date >= App.session.today ? `<div class="flex flex-wrap gap-2 items-center" style="margin-top:12px"><button type="button" class="btn btn-success" data-act="resume">${icon('play')}Resume this meal</button><span class="text-xs text-subtle"><span>Change by ${UI.dateTime(o.deadline)}</span></span></div>` : ''}` : ''}
+            ${o.status === 'scheduled' && !editable ? `
+              <p class="text-xs text-subtle" style="margin:10px 0 0">${icon('lock', 'icon-xs')} <span>Locked: changes closed ${UI.dateTime(o.deadline)}.</span></p>
+              ${o.customerAway ? `<div class="alert alert-info" style="margin-top:10px">${icon('house')}<div><span>You told the kitchen you won't be home. The meal is still paid.</span>${o.keepForPickup ? ' <span>The kitchen is keeping it for you to collect.</span>' : ''}</div></div>` : ''}
+              ${o.canSayAway ? `<div class="flex flex-wrap gap-2 items-center" style="margin-top:10px"><button type="button" class="btn btn-secondary btn-sm" data-act="away">${icon('door-closed')}I won't be home</button><span class="text-xs text-subtle">The kitchen won't deliver. No refund this late.</span></div>` : ''}` : ''}
             ${o.canReview ? `<button type="button" class="btn btn-secondary btn-sm" style="margin-top:12px" data-act="review">${icon('star')}Rate this meal</button>` : ''}
             ${o.review ? `<p class="text-sm" style="margin:10px 0 0">You rated it ${UI.stars(o.review.rating)}</p>` : ''}`}
         </div>
@@ -273,14 +279,38 @@
           else UI.error(err);
         }
       }));
-      if (act('pause')) act('pause').addEventListener('click', e => UI.busy(e.currentTarget, async () => {
-        try {
-          const res = await API.post(`/api/orders/${id}/pause`);
-          App.setWallet(res.balances);
-          UI.toast(`Paused. ${money(o.total)} is back in your wallet.`);
-          await Promise.all([loadCalendar(), loadWallet(), loadPlans()]);
-        } catch (err) { UI.error(err); }
-      }));
+      if (act('pause')) act('pause').addEventListener('click', async e => {
+        const btn = e.currentTarget;
+        const credit = o.skipsLeft > 0;
+        const yes = await UI.confirm({
+          title: 'Skip this meal?',
+          body: credit
+            ? `It moves to the end of your plan as a make-up day. You have ${o.skipsLeft} make-up days left on this plan.`
+            : 'You have used all make-up days on this plan. The kitchen won\'t deliver, but this meal is still charged.',
+          confirmText: 'Skip meal', cancelText: 'Keep it', danger: !credit
+        });
+        if (!yes) return;
+        UI.busy(btn, async () => {
+          try {
+            const res = await API.post(`/api/orders/${id}/pause`);
+            App.setWallet(res.balances);
+            UI.toast(res.order.skipCredit === 'makeup' ? 'Skipped. Added as a make-up day at the end of your plan.' : 'Skipped. No make-up day left, so this meal is charged.');
+            await Promise.all([loadCalendar(), loadWallet(), loadPlans()]);
+          } catch (err) { UI.error(err); }
+        });
+      });
+      if (act('away')) act('away').addEventListener('click', async e => {
+        const btn = e.currentTarget;
+        const yes = await UI.confirm({ title: 'Tell the kitchen you won\'t be home?', body: 'It\'s too late to skip with a make-up day, so the meal is still paid. The kitchen won\'t make the trip, and may keep it for you to collect.', confirmText: 'Tell the kitchen', cancelText: 'Cancel' });
+        if (!yes) return;
+        UI.busy(btn, async () => {
+          try {
+            await API.post(`/api/orders/${id}/away`);
+            UI.toast('The kitchen knows you won\'t be home.');
+            await loadCalendar();
+          } catch (err) { UI.error(err); }
+        });
+      });
       if (act('resume')) act('resume').addEventListener('click', e => UI.busy(e.currentTarget, async () => {
         try {
           const res = await API.post(`/api/orders/${id}/resume`);
@@ -324,7 +354,7 @@
       <div class="panel flex items-center justify-between text-sm" style="margin-top:12px">
         <span class="text-muted">${icon('lock', 'icon-xs')} Reserved for upcoming meals</span><strong class="num">${money(b.reserved)}</strong>
       </div>
-      <p class="text-xs text-subtle" style="margin:8px 0 0">Booked meals are reserved, then charged when delivered. Pause before cutoff and it comes back to available.</p>`;
+      <p class="text-xs text-subtle" style="margin:8px 0 0">Booked meals are reserved, then charged when delivered. A skipped plan meal stays reserved for its make-up day; a cancelled meal comes back to available.</p>`;
     UI.icons(host);
   }
 
@@ -359,7 +389,7 @@
     const active = state.subs.filter(s => s.status === 'active');
     const past = state.subs.filter(s => s.status !== 'active').slice(0, 3);
     if (!state.subs.length) {
-      host.innerHTML = `<p class="text-sm text-muted" style="margin:0">No plans yet. A monthly plan works out cheaper than single meals and you can pause any day.</p><a class="btn btn-secondary btn-sm" style="margin-top:10px" href="/index.html">Browse kitchens</a>`;
+      host.innerHTML = `<p class="text-sm text-muted" style="margin:0">No plans yet. A monthly plan works out cheaper than single meals and you can skip any day with notice.</p><a class="btn btn-secondary btn-sm" style="margin-top:10px" href="/index.html">Browse kitchens</a>`;
       return;
     }
     host.innerHTML = `
@@ -386,13 +416,20 @@
           ${UI.statusBadge(s.status)}
         </div>
         <div class="progress" style="margin-top:10px" role="progressbar" aria-valuenow="${done}" aria-valuemin="0" aria-valuemax="${total}" aria-label="Meals delivered"><span style="width:${pct}%"></span></div>
-        <div class="flex justify-between text-xs text-subtle" style="margin-top:4px"><span>${done} of ${total} delivered</span><span>${s.counts.paused ? `${s.counts.paused} paused · ` : ''}ends ${UI.date(s.lastDate)}</span></div>
+        <div class="flex justify-between text-xs text-subtle" style="margin-top:4px"><span>${done} of ${total} delivered</span><span>Ends ${UI.date(s.lastDate)}</span></div>
+        <div class="plan-summary text-xs" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">
+          <span class="badge">${icon('calendar-x')}<span>Skipped: ${s.counts.skippedWithCredit + s.counts.skippedNoCredit}</span></span>
+          <span class="badge">${icon('calendar-plus')}<span>Make-up days: ${s.counts.makeupDays}</span></span>
+          ${s.status === 'active' ? `<span class="badge">${icon('ticket')}<span>Skips left: ${s.skipsLeft} of ${s.skipLimit}</span></span>` : ''}
+          <span class="badge">${icon('clock')}<span>${s.noticeHours} hours' notice</span></span>
+        </div>
         ${s.nextMeal ? `<div class="text-sm" style="margin-top:8px">Next: <strong>${UI.date(s.nextMeal.date)} ${s.nextMeal.slot}</strong></div>` : ''}
         ${s.renewError ? `<div class="alert alert-warning" style="margin-top:8px">${icon('triangle-alert')}<div>${esc(s.renewError)}</div></div>` : ''}
         <label class="switch" style="margin-top:10px"><input type="checkbox" data-autorenew="${s.id}" ${s.autoRenew ? 'checked' : ''}><span class="track"></span><span class="text-sm">Auto-renew</span></label>
         <div class="flex flex-wrap gap-2" style="margin-top:10px">
           <button type="button" class="btn btn-secondary btn-sm" data-plan="${s.id}" data-pact="renew">Renew</button>
           <button type="button" class="btn btn-secondary btn-sm" data-plan="${s.id}" data-pact="change">Change plan</button>
+          ${s.status === 'active' ? `<button type="button" class="btn btn-secondary btn-sm" data-plan="${s.id}" data-pact="freeze" ${s.freezeUsedThisMonth ? 'disabled title="One freeze per month"' : ''}>${icon('snowflake')}Freeze plan</button>` : ''}
           <button type="button" class="btn btn-danger btn-sm" data-plan="${s.id}" data-pact="cancel">Cancel</button>
         </div>
       </div>`;
@@ -415,7 +452,7 @@
     if (b.dataset.pact === 'cancel') {
       const yes = await UI.confirm({
         title: `Cancel your plan with ${s.kitchen.name}?`,
-        body: `Meals that are still open (${s.counts.scheduled} upcoming) are refunded to your wallet right away. Meals already locked for today will still be delivered.`,
+        body: `Meals that are still open, including make-up days, are refunded to your wallet right away. Meals past their change deadline will still be delivered.`,
         confirmText: 'Cancel plan', cancelText: 'Keep plan', danger: true
       });
       if (!yes) return;
@@ -446,6 +483,7 @@
       });
     }
     if (b.dataset.pact === 'change') openChangePlan(s);
+    if (b.dataset.pact === 'freeze') openFreeze(s);
   });
 
   function openChangePlan(s) {
@@ -489,6 +527,43 @@
     });
   }
 
+  // Freeze: away for more than a week. The whole plan moves forward (once a month).
+  function openFreeze(s) {
+    const t = App.session.today;
+    const dlg = document.createElement('dialog');
+    dlg.className = 'modal';
+    dlg.innerHTML = `
+      <form novalidate>
+        <div class="modal-head"><div><h2 class="h3">Freeze plan</h2><p class="text-sm text-muted" style="margin:4px 0 0">${esc(s.kitchen.name)}</p></div><button type="button" class="icon-btn" data-close aria-label="Close">${icon('x')}</button></div>
+        <div class="modal-body">
+          <p class="text-sm" style="margin:0 0 12px">Going away for more than a week? Meals between these dates move to after your plan ends. Nothing is charged and no make-up days are used.</p>
+          <div class="form-grid cols-2">
+            <div class="field"><label class="field-label" for="fzFrom">From</label><input id="fzFrom" name="from" type="date" class="input" min="${t}" value="${addDays(t, 2)}"></div>
+            <div class="field"><label class="field-label" for="fzTo">To</label><input id="fzTo" name="to" type="date" class="input" min="${t}" value="${addDays(t, 11)}"><p class="field-error">End date must be on or after the start.</p></div>
+          </div>
+          <p class="text-xs text-subtle" style="margin:12px 0 0">One freeze per month, up to 30 days. Every meal in the range must still be open to change (${s.noticeHours} hours' notice).</p>
+        </div>
+        <div class="modal-foot"><button type="button" class="btn btn-secondary" data-close>Cancel</button><button type="submit" class="btn btn-primary">Freeze these days</button></div>
+      </form>`;
+    document.body.appendChild(dlg);
+    dlg.addEventListener('close', () => setTimeout(() => dlg.remove(), 250));
+    UI.openModal(dlg);
+    const form = dlg.querySelector('form');
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      UI.clearErrors(form);
+      if (!form.from.value || !form.to.value || form.to.value < form.from.value) { UI.setFieldError(form, 'to', 'End date must be on or after the start.'); return; }
+      await UI.busy(form.querySelector('[type=submit]'), async () => {
+        try {
+          const res = await API.post(`/api/subscriptions/${s.id}/freeze`, { from: form.from.value, to: form.to.value });
+          UI.toast(`Plan frozen. ${res.moved} meals moved, plan now ends ${UI.date(res.endDate)}.`);
+          dlg.close();
+          refreshAll();
+        } catch (err) { UI.error(err); }
+      });
+    });
+  }
+
   // ---------- Holiday mode ----------
   function openHoliday() {
     const t = App.session.today;
@@ -496,19 +571,19 @@
     dlg.className = 'modal';
     dlg.innerHTML = `
       <form novalidate>
-        <div class="modal-head"><div><h2 class="h3">Holiday mode</h2><p class="text-sm text-muted" style="margin:4px 0 0">Going away? Pause every plan meal between two dates. Money comes back to your wallet.</p></div><button type="button" class="icon-btn" data-close aria-label="Close">${icon('x')}</button></div>
+        <div class="modal-head"><div><h2 class="h3">Holiday mode</h2><p class="text-sm text-muted" style="margin:4px 0 0">Away for a few days? Skip every plan meal between two dates. Each skip becomes a make-up day at the end of your plan.</p></div><button type="button" class="icon-btn" data-close aria-label="Close">${icon('x')}</button></div>
         <div class="modal-body">
           <div class="segmented" role="radiogroup" aria-label="Action" style="margin-bottom:14px">
-            <button type="button" role="radio" aria-checked="true" aria-pressed="true" data-hact="pause">Pause meals</button>
+            <button type="button" role="radio" aria-checked="true" aria-pressed="true" data-hact="pause">Skip meals</button>
             <button type="button" role="radio" aria-checked="false" aria-pressed="false" data-hact="resume">Resume meals</button>
           </div>
           <div class="form-grid cols-2">
             <div class="field"><label class="field-label" for="hFrom">From</label><input id="hFrom" name="from" type="date" class="input" min="${t}" value="${addDays(t, 1)}"></div>
             <div class="field"><label class="field-label" for="hTo">To</label><input id="hTo" name="to" type="date" class="input" min="${t}" value="${addDays(t, 3)}"><p class="field-error">End date must be on or after the start.</p></div>
           </div>
-          <p class="text-xs text-subtle" style="margin:12px 0 0">Meals already past their cutoff can't be paused and will still arrive.</p>
+          <p class="text-xs text-subtle" style="margin:12px 0 0">Up to 7 days. For longer trips, use Freeze plan. Meals past their change deadline can't be skipped and will still arrive.</p>
         </div>
-        <div class="modal-foot"><button type="button" class="btn btn-secondary" data-close>Cancel</button><button type="submit" class="btn btn-primary" id="hSubmit">Pause these days</button></div>
+        <div class="modal-foot"><button type="button" class="btn btn-secondary" data-close>Cancel</button><button type="submit" class="btn btn-primary" id="hSubmit">Skip these days</button></div>
       </form>`;
     document.body.appendChild(dlg);
     dlg.addEventListener('close', () => setTimeout(() => dlg.remove(), 250));
@@ -518,7 +593,7 @@
     dlg.querySelectorAll('[data-hact]').forEach(b => b.addEventListener('click', () => {
       action = b.dataset.hact;
       dlg.querySelectorAll('[data-hact]').forEach(x => { const on = x === b; x.setAttribute('aria-checked', String(on)); x.setAttribute('aria-pressed', String(on)); });
-      dlg.querySelector('#hSubmit').textContent = action === 'pause' ? 'Pause these days' : 'Resume these days';
+      dlg.querySelector('#hSubmit').textContent = action === 'pause' ? 'Skip these days' : 'Resume these days';
     }));
     form.addEventListener('submit', async e => {
       e.preventDefault();
@@ -528,12 +603,18 @@
         try {
           const res = await API.post('/api/meals/holiday', { from: form.from.value, to: form.to.value, action });
           App.setWallet(res.balances);
-          let msg = action === 'pause' ? `${res.changed} meal${res.changed === 1 ? '' : 's'} paused. ${money(res.refunded)} back in your wallet.` : `${res.changed} meal${res.changed === 1 ? '' : 's'} resumed.`;
-          if (res.skipped.length) msg += ` ${res.skipped.length} couldn't be changed (past cutoff or full).`;
-          UI.toast(msg);
+          // Each sentence is translated on its own, so a mixed message still comes out in one language
+          const tr = x => (window.I18n ? I18n.t(x) : x);
+          const parts = action === 'pause' ? [`${res.makeups} meals added as make-up days.`] : [`${res.changed} meals resumed.`];
+          if (res.noCredit) parts.push(`${res.noCredit} charged (no make-up days left).`);
+          if (res.skipped.length) parts.push(`${res.skipped.length} couldn't be changed (past the deadline or full).`);
+          UI.toast(parts.map(tr).join(' '));
           dlg.close();
           refreshAll();
-        } catch (err) { UI.error(err); }
+        } catch (err) {
+          UI.error(err);
+          if (err.code === 'USE_FREEZE') { dlg.close(); const s = state.subs.find(x => x.status === 'active'); if (s) openFreeze(s); }
+        }
       });
     });
   }
@@ -545,6 +626,15 @@
     if (UI.qs('started') && state.subs.length) {
       const s = state.subs.find(x => x.id === Number(UI.qs('started')));
       if (s) out.push(`<div class="alert alert-success">${icon('party-popper')}<div><div class="a-title">Your plan with ${esc(s.kitchen.name)} is on!</div>${s.mealsTotal} meals from ${UI.date(s.startDate)}. Pick your dishes for each day below.</div></div>`);
+    }
+    // Evening-before nudge: the next plan meal whose change window closes within a day.
+    const soon = state.orders
+      .filter(o => o.type === 'subscription' && o.status === 'scheduled' && o.changeable && o.deadline &&
+        Date.parse(o.deadline) - Date.now() < 24 * 3600e3)
+      .sort((a, b) => a.deadline.localeCompare(b.deadline))[0];
+    if (soon) {
+      const dishes = Object.values(soon.choices || {}).slice(0, 3).join(', ');
+      out.push(`<div class="alert alert-info">${icon('bell')}<div><div class="a-title"><span>${UI.date(soon.date)}</span> · <span>${soon.slot === 'lunch' ? 'Lunch' : 'Dinner'}</span>${dishes ? `: <span translate="no">${esc(dishes)}</span>` : ''}</div><span>Not home? Skip by ${UI.dateTime(soon.deadline)}</span></div><button class="btn btn-secondary btn-sm" data-remind-day="${soon.date}">Open day</button></div>`);
     }
     const bal = state.wallet ? state.wallet.balances.available : null;
     state.subs.filter(s => s.status === 'active' && s.autoRenew).forEach(s => {
@@ -576,6 +666,10 @@
   document.getElementById('weekBtn').addEventListener('click', () => { state.view = 'week'; loadCalendar(); });
   document.getElementById('ledgerBtn').addEventListener('click', openLedger);
   document.getElementById('holidayBtn').addEventListener('click', openHoliday);
+  document.getElementById('alerts').addEventListener('click', e => {
+    const b = e.target.closest('[data-remind-day]');
+    if (b) openDay(b.dataset.remindDay);
+  });
   UI.on('topup', async btn => {
     const b = await Wallet.openTopUp(Number(btn.dataset.need) || 0);
     if (b) loadWallet();

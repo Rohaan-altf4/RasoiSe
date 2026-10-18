@@ -64,6 +64,7 @@ function cleanPreferences(p = {}, current = {}) {
   if (p.rotiCount !== undefined) out.rotiCount = Math.max(0, Math.min(8, parseInt(p.rotiCount, 10) || 0));
   if (p.rice !== undefined) out.rice = !!p.rice;
   if (p.defaultSlot !== undefined) out.defaultSlot = SLOTS.includes(p.defaultSlot) ? p.defaultSlot : 'lunch';
+  if (p.cookCancel !== undefined) out.cookCancel = p.cookCancel === 'refund' ? 'refund' : 'makeup';
   return out;
 }
 
@@ -95,7 +96,7 @@ router.put('/me/profile', customerOnly, (req, res) => {
       const touched = new Set();
       d.orders.forEach(o => {
         const k = d.kitchens.find(x => x.id === o.kitchenId);
-        if (o.customerId === u.id && o.status === 'scheduled' && k && time.isBeforeCutoff(o.date, k.cutoffTime)) {
+        if (o.customerId === u.id && o.status === 'scheduled' && k && meals.canChange(k, o.date, o.slot)) {
           o.prefs = meals.prefsSnapshot(u);
           touched.add(k.ownerId);
         }
@@ -254,10 +255,18 @@ function orderView(d, o, viewer) {
   const review = d.reviews.find(r => r.orderId === o.id) || null;
   const tickets = d.tickets.filter(t => t.orderId === o.id).map(t => ({ id: t.id, code: t.code, status: t.status, category: t.category }));
   const customer = d.users.find(u => u.id === o.customerId);
-  const open = k && o.status === 'scheduled' && time.isBeforeCutoff(o.date, k.cutoffTime);
+  const changeable = k && meals.canChange(k, o.date, o.slot);
+  const open = k && o.status === 'scheduled' && changeable;
+  const sub = o.subscriptionId ? d.subscriptions.find(s => s.id === o.subscriptionId) : null;
   return {
     ...o,
     total: meals.orderTotal(o),
+    deadline: k ? meals.changeDeadline(k, o.date, o.slot).toISOString() : null,
+    deadlineLabel: k ? time.fmtIST(meals.changeDeadline(k, o.date, o.slot)) : '',
+    changeable: !!changeable,
+    noticeHours: k ? k.noticeHours : 24,
+    skipsLeft: sub && k ? Math.max(0, meals.skipLimit(k, sub) - (sub.skipsUsed || 0)) : null,
+    canSayAway: viewer.role === 'customer' && ['scheduled', 'preparing'].includes(o.status) && !changeable && !o.customerAway && o.date >= time.today(),
     kitchen: k ? { id: k.id, name: k.name, chefName: k.chefName, coverUrl: k.coverUrl, cutoffTime: k.cutoffTime, slots: k.slots, // Customers get the kitchen spot rounded to ~100 m, like on the storefront
     location: hasCoords(k.location) ? (viewer.role === 'customer'
       ? { lat: Math.round(k.location.lat * 1000) / 1000, lng: Math.round(k.location.lng * 1000) / 1000 }
@@ -302,7 +311,10 @@ router.put('/orders/:id', customerOnly, (req, res) => {
     const o = ownOrder(d, req, req.params.id);
     const k = kitchenOr404(d, o.kitchenId);
     if (o.status !== 'scheduled') throw httpError(400, 'Only scheduled meals can be changed.');
-    if (!time.isBeforeCutoff(o.date, k.cutoffTime)) throw httpError(400, `Changes for ${fmtDate(o.date)} closed at ${time.fmt12(k.cutoffTime)}.`, 'CUTOFF_PASSED');
+    meals.assertCanChange(k, o, 'change');
+    if (b.slot && b.slot !== o.slot && !meals.canChange(k, o.date, b.slot)) {
+      throw httpError(400, `Too late to move this meal to ${b.slot}: that slot needs ${k.noticeHours} hours' notice.`, 'DEADLINE_PASSED');
+    }
 
     const changes = [];
     if (b.slot && b.slot !== o.slot) {
@@ -354,27 +366,61 @@ router.put('/orders/:id', customerOnly, (req, res) => {
   res.json({ order: orderView(db.load(), order, req.user), balances: wallet.balances(req.user.id) });
 });
 
-// Pause one meal before cutoff: money goes back to available balance.
+// Skip one plan meal with notice. It becomes a make-up day at the end of the plan, until the
+// plan's skip limit is used up; after that the delivery stops but the meal is still charged
+// (the cook was told in time and keeps her earning). Returns { makeup } (the new meal or null).
 function pauseOrder(d, u, o, k) {
-  if (o.status !== 'scheduled') throw httpError(400, 'Only scheduled meals can be paused.');
-  if (!time.isBeforeCutoff(o.date, k.cutoffTime)) throw httpError(400, `Too late to pause: changes for ${fmtDate(o.date)} closed at ${time.fmt12(k.cutoffTime)}.`, 'CUTOFF_PASSED');
+  if (o.status !== 'scheduled') throw httpError(400, 'Only scheduled meals can be skipped.');
+  meals.assertCanChange(k, o, 'skip');
+  const sub = d.subscriptions.find(s => s.id === o.subscriptionId);
+  let makeup = null;
+  if (sub && (sub.skipsUsed || 0) < meals.skipLimit(k, sub)) {
+    makeup = meals.addMakeupDay(d, k, u, o, sub, 'Skipped');
+    sub.skipsUsed = (sub.skipsUsed || 0) + 1;
+    o.skipCredit = 'makeup';
+  } else {
+    o.skipCredit = 'none';
+    wallet.settleDelivered(d, o, k, `Skipped with no make-up day left: ${k.name}, ${mealLabel(o)}`);
+  }
   addHistory(o, 'paused', 'customer');
-  return wallet.release(d, o, `Paused: ${k.name}, ${mealLabel(o)}`);
+  return { makeup };
 }
 
+// Undo a skip (with notice). The make-up day it created is removed again.
 function resumeOrder(d, u, o, k) {
-  if (o.status !== 'paused') throw httpError(400, 'This meal is not paused.');
+  if (o.status !== 'paused') throw httpError(400, 'This meal is not skipped.');
   if (k.status !== 'approved') throw httpError(400, 'This kitchen is no longer taking orders.');
-  if (!time.isBeforeCutoff(o.date, k.cutoffTime)) throw httpError(400, `Too late to resume: changes for ${fmtDate(o.date)} closed at ${time.fmt12(k.cutoffTime)}.`, 'CUTOFF_PASSED');
+  meals.assertCanChange(k, o, 'resume');
   const reason = meals.closedReason(k, o.date, o.slot);
   if (reason) throw httpError(400, reason);
   if (meals.capacityLeft(d, k, o.date, o.slot) <= 0) throw httpError(409, `${k.name} is full for ${o.slot} that day.`, 'FULL');
+  const sub = d.subscriptions.find(s => s.id === o.subscriptionId);
+
+  if (o.skipCredit === 'none' || o.charged) {
+    // Already paid for; just deliver it after all
+    addHistory(o, 'scheduled', 'customer');
+    o.skipCredit = null;
+    return;
+  }
+  if (o.makeupOrderId) {
+    const m = d.orders.find(x => x.id === o.makeupOrderId);
+    if (m && m.status === 'scheduled') {
+      wallet.release(d, m, `Make-up day removed: ${mealLabel(o)} resumed`);
+      addHistory(m, 'cancelled', 'customer');
+      m.cancelReason = 'Original meal resumed';
+      if (sub) sub.skipsUsed = Math.max(0, (sub.skipsUsed || 0) - 1);
+    }
+    o.makeupOrderId = null;
+    o.makeupDate = null;
+  }
   const amount = meals.orderTotal(o);
   // A resumed meal is booked fresh, so reset what was paid/refunded on it
   o.paid = 0;
   o.refunded = 0;
   wallet.reserve(d, o, amount, `Resumed: ${k.name}, ${mealLabel(o)}`);
+  o.skipCredit = null;
   addHistory(o, 'scheduled', 'customer');
+  if (sub) sub.endDate = meals.planLastDate(d, sub);
 }
 
 router.post('/orders/:id/pause', customerOnly, (req, res) => {
@@ -383,10 +429,13 @@ router.post('/orders/:id/pause', customerOnly, (req, res) => {
     const o = ownOrder(d, req, req.params.id);
     const k = kitchenOr404(d, o.kitchenId);
     if (o.type !== 'subscription') throw httpError(400, 'Single and trial orders can be cancelled instead.');
-    const entry = pauseOrder(d, u, o, k);
-    const amount = entry ? entry.available : 0;
-    notify(d, u.id, { type: 'meal_paused', title: `Paused ${mealLabel(o)}`, body: `₹${amount} is back in your wallet.`, link: 'calendar.html' });
-    notify(d, k.ownerId, { type: 'meal_paused', title: `${u.name} paused ${mealLabel(o)}`, body: `${o.code} removed from that day's prep.`, link: `chef-dashboard.html?date=${o.date}` });
+    const { makeup } = pauseOrder(d, u, o, k);
+    notify(d, u.id, {
+      type: 'meal_paused', title: `Skipped ${mealLabel(o)}`,
+      body: makeup ? `Added as a make-up day on ${fmtDate(makeup.date)}.` : 'No make-up days left on this plan, so this meal is still charged.',
+      link: 'calendar.html'
+    });
+    notify(d, k.ownerId, { type: 'meal_paused', title: `${u.name} skipped ${mealLabel(o)}`, body: `${o.code} removed from that day's prep${makeup ? `. Make-up meal on ${fmtDate(makeup.date)}` : ''}.`, link: `chef-dashboard.html?date=${o.date}` });
     refresh([u.id], ['orders', 'wallet']);
     refresh([k.ownerId], ['orders']);
     return o;
@@ -413,9 +462,9 @@ router.post('/orders/:id/cancel', customerOnly, (req, res) => {
     const u = me(d, req);
     const o = ownOrder(d, req, req.params.id);
     const k = kitchenOr404(d, o.kitchenId);
-    if (o.type === 'subscription') throw httpError(400, 'Plan meals can be paused, or cancel the whole plan from "Manage plan".');
+    if (o.type === 'subscription') throw httpError(400, 'Plan meals can be skipped, or cancel the whole plan from "Manage plan".');
     if (o.status !== 'scheduled') throw httpError(400, 'This order can no longer be cancelled.');
-    if (!time.isBeforeCutoff(o.date, k.cutoffTime)) throw httpError(400, `Too late to cancel: the kitchen started prep (cutoff ${time.fmt12(k.cutoffTime)}).`, 'CUTOFF_PASSED');
+    meals.assertCanChange(k, o, 'cancel');
     addHistory(o, 'cancelled', 'customer');
     o.cancelReason = 'Cancelled by you';
     const entry = wallet.release(d, o, `Cancelled: ${o.code}`);
@@ -428,16 +477,40 @@ router.post('/orders/:id/cancel', customerOnly, (req, res) => {
   res.json({ order, balances: wallet.balances(req.user.id) });
 });
 
-// Holiday mode: pause (or resume) every plan meal in a date range.
+// Too late to skip, but the customer won't be there: tell the cook so she needn't make the trip.
+// The meal is still charged (no credit); the cook can keep it for pickup.
+router.post('/orders/:id/away', customerOnly, (req, res) => {
+  const order = db.transaction(d => {
+    const u = me(d, req);
+    const o = ownOrder(d, req, req.params.id);
+    const k = kitchenOr404(d, o.kitchenId);
+    if (!['scheduled', 'preparing'].includes(o.status)) throw httpError(400, 'This meal is already on its way or done.');
+    if (meals.canChange(k, o.date, o.slot)) throw httpError(400, 'There is still time to skip this meal. Skip it instead to keep the credit.', 'CAN_STILL_SKIP');
+    if (o.customerAway) throw httpError(400, 'You have already told the kitchen.');
+    o.customerAway = { at: time.nowISO() };
+    notify(d, k.ownerId, { type: 'order_changed', title: `${u.name} won't be home for ${mealLabel(o)}`, body: `${o.code}: no need to deliver. The meal is still paid; you can keep it for pickup.`, link: `chef-dashboard.html?date=${o.date}` });
+    refresh([k.ownerId], ['orders']);
+    refresh([u.id], ['orders']);
+    return o;
+  });
+  res.json({ order: orderView(db.load(), order, req.user) });
+});
+
+// Holiday mode: skip (or resume) every plan meal in a date range.
 router.post('/meals/holiday', customerOnly, (req, res) => {
   const { from, to, action } = req.body || {};
   if (!time.isValidDate(from) || !time.isValidDate(to) || to < from) return res.status(400).json({ error: 'Choose a valid date range.' });
-  if (time.diffDays(from, to) > 60) return res.status(400).json({ error: 'Holiday mode can cover up to 60 days at a time.' });
+  // Longer trips use "Freeze plan" (one shift of the whole plan) instead of many make-up days
+  if (action !== 'resume' && time.diffDays(from, to) + 1 > 7) {
+    return res.status(400).json({ error: 'For more than 7 days away, use "Freeze plan" on your plan instead. It moves the whole plan forward.', code: 'USE_FREEZE' });
+  }
   const result = db.transaction(d => {
     const u = me(d, req);
     const done = [];
     const skipped = [];
-    let refunded = 0;
+    let refunded = 0; // kept in the response for older pages; skips now move to make-up days
+    let makeups = 0;
+    let noCredit = 0;
     const chefs = new Map();
     d.orders
       .filter(o => o.customerId === u.id && o.type === 'subscription' && o.date >= from && o.date <= to)
@@ -449,8 +522,8 @@ router.post('/meals/holiday', customerOnly, (req, res) => {
             resumeOrder(d, u, o, k);
           } else {
             if (o.status !== 'scheduled') return;
-            const e = pauseOrder(d, u, o, k);
-            refunded += e ? e.available : 0;
+            const r = pauseOrder(d, u, o, k);
+            if (r.makeup) makeups++; else noCredit++;
           }
           done.push(o.id);
           chefs.set(k.ownerId, (chefs.get(k.ownerId) || 0) + 1);
@@ -459,7 +532,7 @@ router.post('/meals/holiday', customerOnly, (req, res) => {
           skipped.push({ id: o.id, date: o.date, reason: err.message });
         }
       });
-    if (!done.length && !skipped.length) throw httpError(400, action === 'resume' ? 'No paused plan meals in those dates.' : 'No scheduled plan meals in those dates.');
+    if (!done.length && !skipped.length) throw httpError(400, action === 'resume' ? 'No skipped plan meals in those dates.' : 'No scheduled plan meals in those dates.');
     chefs.forEach((count, chefId) => {
       notify(d, chefId, {
         type: action === 'resume' ? 'meal_resumed' : 'meal_paused',
@@ -469,13 +542,13 @@ router.post('/meals/holiday', customerOnly, (req, res) => {
     });
     if (done.length) {
       notify(d, u.id, {
-        type: 'holiday', title: action === 'resume' ? `Resumed ${done.length} meals` : `Holiday mode: ${done.length} meals paused`,
-        body: action === 'resume' ? `${fmtDate(from)} – ${fmtDate(to)}` : `₹${refunded} is back in your wallet.`, link: 'calendar.html'
+        type: 'holiday', title: action === 'resume' ? `Resumed ${done.length} meals` : `Holiday mode: ${done.length} meals skipped`,
+        body: action === 'resume' ? `${fmtDate(from)} – ${fmtDate(to)}` : `${makeups} added as make-up days at the end of your plan${noCredit ? `, ${noCredit} charged (no make-up days left)` : ''}.`, link: 'calendar.html'
       });
     }
     refresh([u.id], ['orders', 'wallet']);
     refresh([...chefs.keys()], ['orders']);
-    return { changed: done.length, skipped, refunded };
+    return { changed: done.length, skipped, refunded, makeups, noCredit };
   });
   res.json({ ...result, balances: wallet.balances(req.user.id) });
 });
@@ -527,6 +600,8 @@ function createSubscription(d, u, k, { plan, slot, startDate, addressId, autoRen
     autoRenew: !!autoRenew,
     addressId: address.id,
     previousId,
+    skipsUsed: 0,   // make-up days earned from skips (see kitchen.skipLimits)
+    freezes: [],    // [{ from, to, at }] at most one per month
     createdAt: time.nowISO()
   };
   d.subscriptions.push(sub);
@@ -551,7 +626,7 @@ function createSubscription(d, u, k, { plan, slot, startDate, addressId, autoRen
 function cancelRemaining(d, sub, k, reason) {
   let refunded = 0;
   d.orders.filter(o => o.subscriptionId === sub.id).forEach(o => {
-    const canStop = (o.status === 'scheduled' && time.isBeforeCutoff(o.date, k.cutoffTime)) || o.status === 'paused';
+    const canStop = (o.status === 'scheduled' && meals.canChange(k, o.date, o.slot)) || o.status === 'paused';
     if (!canStop) return;
     if (o.status === 'scheduled') {
       const e = wallet.release(d, o, `${reason}: ${k.name}, ${mealLabel(o)}`);
@@ -574,10 +649,17 @@ function subView(d, s) {
     kitchen: k ? { id: k.id, name: k.name, chefName: k.chefName, coverUrl: k.coverUrl, status: k.status, pricing: k.pricing, cutoffTime: k.cutoffTime } : null,
     counts: {
       delivered: count('delivered'), scheduled: upcoming.length, paused: count('paused'),
-      cancelled: count('cancelled'), holiday: count('holiday')
+      cancelled: count('cancelled'), holiday: count('holiday'),
+      skippedWithCredit: orders.filter(o => o.status === 'paused' && o.skipCredit === 'makeup').length,
+      skippedNoCredit: orders.filter(o => o.status === 'paused' && o.skipCredit === 'none').length,
+      makeupDays: orders.filter(o => o.isMakeup && meals.ACTIVE.includes(o.status)).length
     },
+    skipLimit: k ? meals.skipLimit(k, s) : 0,
+    skipsLeft: k ? Math.max(0, meals.skipLimit(k, s) - (s.skipsUsed || 0)) : 0,
+    freezeUsedThisMonth: (s.freezes || []).some(f => time.istParts(new Date(f.at)).date.slice(0, 7) === time.today().slice(0, 7)),
+    noticeHours: k ? k.noticeHours : 24,
     nextMeal: upcoming[0] ? { id: upcoming[0].id, date: upcoming[0].date, slot: upcoming[0].slot, status: upcoming[0].status } : null,
-    lastDate: orders.reduce((m, o) => (o.date > m ? o.date : m), s.endDate)
+    lastDate: meals.planLastDate(d, s)
   };
 }
 
@@ -631,6 +713,52 @@ router.post('/subscriptions/:id/cancel', customerOnly, (req, res) => {
     return { refunded, subscription: s };
   });
   res.json({ refunded: result.refunded, subscription: subView(db.load(), result.subscription), balances: wallet.balances(req.user.id) });
+});
+
+// Freeze plan (for trips longer than a week): every remaining meal from `from` moves to after
+// `to`, in order, so the whole plan shifts once. Same money, same meals. At most once a month.
+router.post('/subscriptions/:id/freeze', customerOnly, (req, res) => {
+  const { from, to } = req.body || {};
+  if (!time.isValidDate(from) || !time.isValidDate(to) || to < from) return res.status(400).json({ error: 'Choose the dates you\'ll be away.' });
+  if (time.diffDays(from, to) + 1 > 30) return res.status(400).json({ error: 'A freeze can be up to 30 days. For longer, cancel the plan and start again later.' });
+  const result = db.transaction(d => {
+    const u = me(d, req);
+    const s = d.subscriptions.find(x => x.id === Number(req.params.id) && x.customerId === u.id);
+    if (!s) throw httpError(404, 'Plan not found.');
+    if (s.status !== 'active') throw httpError(400, 'Only an active plan can be frozen.');
+    const k = kitchenOr404(d, s.kitchenId);
+    const month = time.today().slice(0, 7);
+    if ((s.freezes || []).some(f => time.istParts(new Date(f.at)).date.slice(0, 7) === month)) {
+      throw httpError(400, 'You have already frozen this plan once this month. Skip single days instead.', 'FREEZE_USED');
+    }
+    const moving = d.orders
+      .filter(o => o.subscriptionId === s.id && o.status === 'scheduled' && o.date >= from)
+      .sort((a, b) => (a.date + a.slot).localeCompare(b.date + b.slot));
+    if (!moving.length) throw httpError(400, 'No upcoming meals on this plan from that date.');
+    moving.forEach(o => meals.assertCanChange(k, o, 'freeze'));
+
+    // Take them out of the schedule, then lay them out again after the trip, slot by slot
+    moving.forEach(o => { o.status = 'frozen'; });
+    const cursor = { lunch: to, dinner: to };
+    moving.forEach(o => {
+      const date = meals.nextOpenDate(d, k, s, cursor[o.slot], o.slot);
+      cursor[o.slot] = date;
+      o.fromDate = o.fromDate || o.date;
+      o.date = date;
+      o.choices = meals.cleanChoices(meals.dayMenu(d, k, date).courses, {}, meals.getMenu(d, k.id).dishes || [], (u.preferences || {}).diet);
+      o.mealType = meals.mealType(d, k, o.choices);
+      o.status = 'scheduled';
+      o.statusHistory.push({ status: 'scheduled', at: time.nowISO(), by: 'customer', note: `Moved by freeze (${fmtDate(o.fromDate)} → ${fmtDate(date)})` });
+    });
+    s.freezes = [...(s.freezes || []), { from, to, at: time.nowISO(), meals: moving.length }];
+    s.endDate = meals.planLastDate(d, s);
+    notify(d, u.id, { type: 'subscription_changed', title: `Plan frozen ${fmtDate(from)} – ${fmtDate(to)}`, body: `${moving.length} meals moved. Your plan now ends ${fmtDate(s.endDate)}.`, link: 'calendar.html' });
+    notify(d, k.ownerId, { type: 'subscription_changed', title: `${u.name} froze their plan`, body: `Away ${fmtDate(from)} – ${fmtDate(to)}. ${moving.length} meals moved; plan now ends ${fmtDate(s.endDate)}.`, link: 'chef-dashboard.html#upcoming' });
+    refresh([u.id], ['orders', 'subscriptions']);
+    refresh([k.ownerId], ['orders']);
+    return { moved: moving.length, endDate: s.endDate };
+  });
+  res.json(result);
 });
 
 router.post('/subscriptions/:id/renew', customerOnly, (req, res) => {

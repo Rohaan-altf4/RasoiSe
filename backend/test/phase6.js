@@ -75,8 +75,9 @@ const login = (c, id) => c.post('/api/auth/login', { identifier: id, password: '
   const [p1, p2] = await Promise.all([c.post(`/api/orders/${firstMeal.id}/pause`), c.post(`/api/orders/${firstMeal.id}/pause`)]);
   ok([p1.status, p2.status].sort().join() === '200,400', 'double-clicked pause: one succeeds, one is rejected');
   r = await c.get('/api/wallet');
-  ok(r.data.balances.available === w0 + firstMeal.total, `refund of ₹${firstMeal.total} appears once`);
-  ok(r.data.ledger[0].kind === 'release' && /Paused/.test(r.data.ledger[0].note), 'ledger shows the pause refund');
+  // Changed behaviour: a skip with notice moves the money to a make-up day instead of refunding it
+  ok(r.data.balances.available === w0, 'skip keeps the money reserved (no cash refund)');
+  ok(r.data.ledger[1].kind === 'release' && /Moved to make-up day/.test(r.data.ledger[1].note) && r.data.ledger[0].kind === 'reserve', 'ledger moves the money to the make-up day');
   const after = await chefA.get(`/api/chef/manifest?date=${firstMeal.date}`);
   ok(after.data.counts.total === before.data.counts.total - 1 && after.data.counts.paused === before.data.counts.paused + 1, 'chef prep count drops by one');
 

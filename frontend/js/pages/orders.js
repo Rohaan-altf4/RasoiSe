@@ -129,9 +129,14 @@
 
   function tracker(o) {
     if (['paused', 'cancelled', 'holiday'].includes(o.status)) {
-      const msg = o.status === 'paused' ? 'You paused this meal. The money is back in your wallet.'
-        : o.status === 'holiday' ? `The kitchen is closed this day${o.cancelReason ? ` (${esc(o.cancelReason)})` : ''}. Refunded to your wallet.`
-          : `Cancelled${o.cancelReason ? `: ${esc(o.cancelReason)}` : ''}. Refunded to your wallet.`;
+      // Plan meals that were skipped or cancelled by the kitchen may have moved to a make-up day
+      const outcome = o.makeupDate ? `<span>Moved to a make-up day on ${UI.date(o.makeupDate)}.</span>`
+        : o.skipCredit === 'none' ? '<span>No make-up day left, so this meal is charged.</span>'
+          : '<span>Refunded to your wallet.</span>';
+      const reason = o.cancelReason ? ` <span translate="no">(${esc(o.cancelReason)})</span>` : '';
+      const msg = o.status === 'paused' ? `<span>You skipped this meal.</span> ${outcome}`
+        : o.status === 'holiday' ? `<span>The kitchen is closed this day.</span>${reason} ${outcome}`
+          : `<span>Cancelled.</span>${reason} ${outcome}`;
       return `<div class="alert ${o.status === 'paused' ? 'alert-warning' : 'alert-info'}">${icon(o.status === 'paused' ? 'pause' : 'info')}<div>${msg}</div></div>`;
     }
     const idx = STEPS.findIndex(s => s[0] === o.status);

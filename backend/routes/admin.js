@@ -33,13 +33,19 @@ function startOfDayISO(date) {
 
 // ---------- Overview ----------
 
+// Wallet moves that aren't refunds: money moved to a make-up day (and straight back into
+// reserve), a resumed meal, or extras removed. Kept out of refund figures.
+function isInternalMove(t) {
+  return /^(Paused|Resumed|Add-ons removed|Make-up day removed)/.test(t.note || '') || /Moved to make-up day/.test(t.note || '');
+}
+
 router.get('/admin/stats', (req, res) => {
   const d = db.load();
   const today = time.today();
   const since = startOfDayISO(today);
   const customerIds = new Set(d.users.filter(u => u.role === 'customer').map(u => u.id));
   const returnedToday = d.walletTransactions
-    .filter(t => customerIds.has(t.userId) && ['release', 'refund'].includes(t.kind) && t.createdAt >= since && !/^(Paused|Resumed|Add-ons removed)/.test(t.note))
+    .filter(t => customerIds.has(t.userId) && ['release', 'refund'].includes(t.kind) && t.createdAt >= since && !isInternalMove(t))
     .reduce((s, t) => s + t.available, 0);
   const todays = d.orders.filter(o => o.date === today);
   res.json({
@@ -67,6 +73,7 @@ function adminKitchen(d, k) {
     ownerEmail: owner ? owner.email : '',
     stats: kitchenStats(d, k.id),
     openFlags: k.flags.filter(f => !f.resolved).length,
+    strikesThisMonth: (k.strikes || []).filter(s => time.istParts(new Date(s.at)).date.slice(0, 7) === time.today().slice(0, 7)).length,
     activeSubscribers: d.subscriptions.filter(s => s.kitchenId === k.id && s.status === 'active').length
   };
 }
@@ -232,6 +239,8 @@ router.get('/admin/users', (req, res) => {
       ...auth.publicUser(u),
       wallet: u.role === 'admin' ? null : wallet.balances(u.id),
       orders: d.orders.filter(o => o.customerId === u.id).length,
+      noShowsThisMonth: (u.noShows || []).filter(n => time.istParts(new Date(n.at)).date.slice(0, 7) === time.today().slice(0, 7)).length,
+      flagged: u.flagged || null,
       kitchenName: u.kitchenId ? (d.kitchens.find(k => k.id === u.kitchenId) || {}).name : null
     }))
     .sort((a, b) => b.id - a.id);
@@ -275,7 +284,7 @@ function refundOrder(d, o, k, amountInput, reason, ticketId, actor) {
   const total = meals.orderTotal(o);
   let amount = Math.round(amountInput || total);
   if (!(amount > 0)) throw httpError(400, 'Enter a refund amount.');
-  if (o.status === 'delivered') {
+  if (o.status === 'delivered' || o.charged) { // already paid to the kitchen
     const already = o.goodwillRefund || 0;
     if (amount > total - already) throw httpError(400, `You can refund up to ₹${total - already} on this order.`);
     wallet.refundDelivered(d, o, k, amount, reason, ticketId);
@@ -302,7 +311,7 @@ router.get('/admin/refunds', (req, res) => {
   const d = db.load();
   const customerIds = new Set(d.users.filter(u => u.role === 'customer').map(u => u.id));
   const list = d.walletTransactions
-    .filter(t => customerIds.has(t.userId) && (t.kind === 'refund' || (t.kind === 'release' && !/^(Paused|Add-ons removed)/.test(t.note))))
+    .filter(t => customerIds.has(t.userId) && (t.kind === 'refund' || (t.kind === 'release' && !isInternalMove(t))))
     .sort((a, b) => b.id - a.id)
     .slice(0, 300)
     .map(t => {

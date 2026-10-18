@@ -32,6 +32,9 @@
     if (kitchen.status === 'approved' && kitchen.paused) parts.push(`<div class="alert alert-info">${icon('circle-pause')}<div><div class="a-title">New orders are paused</div>Existing orders and plans still need to be cooked.</div></div>`);
     const lastWarn = (kitchen.warnings || []).slice(-1)[0];
     if (lastWarn && Date.now() - new Date(lastWarn.at).getTime() < 14 * 86400000) parts.push(`<div class="alert alert-warning">${icon('triangle-alert')}<div><div class="a-title">Warning from RasoiSe · ${UI.relTime(lastWarn.at)}</div>${esc(lastWarn.reason)}</div></div>`);
+    const month = App.session.today.slice(0, 7);
+    const strikes = (kitchen.strikes || []).filter(x => new Date(Date.parse(x.at) + 19800e3).toISOString().slice(0, 7) === month).length;
+    if (strikes) parts.push(`<div class="alert ${strikes >= 3 ? 'alert-danger' : 'alert-warning'}">${icon('calendar-x')}<div><div class="a-title"><span>Late cancellations this month: ${strikes} of 3</span></div><span>Cancelling with less than ${kitchen.noticeHours || 24} hours' notice gives customers a ₹${kitchen.goodwillCredit || 20} credit from your earnings. Three in a month brings a warning.</span></div></div>`);
     host.innerHTML = parts.length ? `<div style="display:grid;gap:10px;margin-bottom:var(--s4)">${parts.join('')}</div>` : '';
     UI.icons(host);
     const pb = document.getElementById('pauseBtn');
@@ -207,8 +210,12 @@
                 ${stop > -1 && !inactive ? `<span class="badge badge-dark" title="Drop number">#${stop + 1}</span>` : ''}
                 <strong>${esc(o.customerName)}</strong>${UI.foodMark(o.mealType)}
                 <span class="text-xs text-subtle">${esc(o.code)} · ${o.slot} · ${o.type === 'subscription' ? 'plan' : o.type}</span>
+                ${o.isMakeup ? `<span class="badge badge-saffron">${icon('calendar-plus')}Make-up day</span>` : ''}
+                ${o.customerAway ? `<span class="badge badge-warning">${icon('door-closed')}Customer away</span>` : ''}
+                ${o.keepForPickup ? `<span class="badge badge-neutral">${icon('package')}Keep for pickup</span>` : ''}
+                ${o.outcome === 'not_available' ? `<span class="badge badge-neutral">${icon('user-x')}Not available</span>` : ''}
               </div>
-              <div class="text-sm" style="margin-top:4px">${esc([a.flat, a.building].filter(Boolean).join(', '))}${a.landmark ? `<span class="text-subtle"> · near ${esc(a.landmark)}</span>` : ''}</div>
+              <div class="text-sm" style="margin-top:4px" translate="no">${esc([a.flat, a.building].filter(Boolean).join(', '))}${a.landmark ? `<span class="text-subtle"> · ${esc(a.landmark)}</span>` : ''}</div>
             </div>
             ${UI.statusBadge(o.status)}
           </div>
@@ -220,6 +227,9 @@
           <div class="flex flex-wrap gap-2 no-print" style="margin-top:12px">
             ${canAct ? `<button type="button" class="btn ${n[3]} btn-sm" data-next="${n[0]}">${icon(n[2])}${n[1]}</button>` : ''}
             ${o.customerPhone ? `<a class="btn btn-ghost btn-sm" href="tel:+91${esc(o.customerPhone)}">${icon('phone')}Call</a>` : ''}
+            ${canAct && o.status === 'out_for_delivery' ? `<button type="button" class="btn btn-ghost btn-sm" data-oact="not-available">${icon('user-x')}Not available</button>` : ''}
+            ${o.customerAway && !o.keepForPickup && ['scheduled', 'preparing', 'out_for_delivery'].includes(o.status) ? `<button type="button" class="btn btn-ghost btn-sm" data-oact="pickup">${icon('package')}Keep for pickup</button>` : ''}
+            ${['scheduled', 'preparing'].includes(o.status) && o.date >= App.session.today ? `<button type="button" class="btn btn-ghost btn-sm text-danger" data-oact="cancel">${icon('x')}Cancel meal</button>` : ''}
             ${a.lat ? `<a class="btn btn-ghost btn-sm" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=${a.lat},${a.lng}&travelmode=driving">${icon('navigation')}Navigate</a>` : ''}
           </div>`}
         </div>
@@ -244,6 +254,7 @@
         await loadManifest();
       } catch (err) { UI.error(err); }
     })));
+    today.querySelectorAll('[data-oact]').forEach(b => b.addEventListener('click', () => orderAction(b)));
     today.querySelectorAll('[data-bulk]').forEach(b => b.addEventListener('click', async () => {
       const labels = { preparing: 'start cooking all meals', out_for_delivery: 'send all meals out for delivery', delivered: 'mark all meals delivered' };
       const yes = await UI.confirm({ title: 'Update all orders?', body: `This will ${labels[b.dataset.bulk]} for ${state.slot || 'every slot'} on ${UI.date(state.date)}. Every customer gets a notification.`, confirmText: 'Update all' });
@@ -258,6 +269,43 @@
     }));
   }
 
+  // Is this meal inside the kitchen's notice window? (slot start minus noticeHours, IST)
+  function isLate(o) {
+    const t = (kitchen.slotTimes || {})[o.slot] || (o.slot === 'lunch' ? '12:30' : '19:30');
+    return Date.parse(`${o.date}T${t}:00+05:30`) - (kitchen.noticeHours || 24) * 3600e3 < Date.now();
+  }
+
+  async function orderAction(b) {
+    const id = Number(b.closest('[data-oid]').dataset.oid);
+    const o = state.manifest.orders.find(x => x.id === id);
+    const act = b.dataset.oact;
+    let body = {};
+    if (act === 'not-available') {
+      const yes = await UI.confirm({ title: 'Customer not available?', body: 'The meal counts as delivered and is paid to you. The customer is told. Three in a month and RasoiSe follows up with them.', confirmText: 'Mark not available' });
+      if (!yes) return;
+    }
+    if (act === 'cancel') {
+      const late = isLate(o);
+      const reason = await UI.prompt({
+        title: late ? 'Emergency cancellation' : 'Cancel this meal?',
+        body: late
+          ? `Less than ${kitchen.noticeHours || 24} hours' notice. The customer gets their money back plus a ₹${kitchen.goodwillCredit || 20} credit from your earnings, and this counts as a late cancellation.`
+          : 'Plan customers get a make-up day at the end of their plan (or a refund if they prefer). Single orders are refunded.',
+        label: 'Reason for the customer', placeholder: 'e.g. Family emergency', confirmText: 'Cancel meal', danger: true, required: late, minLength: late ? 5 : 0
+      });
+      if (reason == null) return;
+      body = { reason };
+    }
+    UI.busy(b, async () => {
+      try {
+        const res = await API.post(`/api/chef/orders/${id}/${act}`, body);
+        if (act === 'cancel') UI.toast(res.late ? `Cancelled. ₹${res.goodwill} goodwill credit given to the customer.` : 'Cancelled. The customer has been told.');
+        else UI.toast(act === 'pickup' ? 'Noted. The customer knows to collect it.' : 'Marked as not available. Payment added to your earnings.');
+        await Promise.all([loadManifest(), loadKitchen()]);
+      } catch (err) { UI.error(err); }
+    });
+  }
+
   // ---------- Upcoming ----------
   const upcoming = document.getElementById('tab-upcoming');
   async function loadUpcoming() {
@@ -270,7 +318,7 @@
           <a class="btn btn-secondary btn-sm" href="/chef-settings.html#holidays">${icon('palmtree')}Add a day off</a>
         </div>
         <div class="table-wrap"><table class="table">
-          <thead><tr><th>Day</th><th class="right">Lunch</th><th class="right">Dinner</th><th class="right">Paused</th><th></th></tr></thead>
+          <thead><tr><th>Day</th><th class="right">Lunch</th><th class="right">Dinner</th><th class="right">Skipped</th><th></th></tr></thead>
           <tbody>${res.days.map(d => {
             const cell = s => !s.offered ? '<span class="text-subtle">–</span>' : `<strong class="num">${s.meals}</strong><span class="text-subtle num"> / ${s.capacity}</span>${s.meals >= s.capacity ? ' <span class="badge badge-danger">Full</span>' : ''}`;
             return `<tr>

@@ -101,7 +101,8 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
   r = await chef.post('/api/chef/holidays', { date: hDate, reason: 'Family function' });
   ok(r.status === 200 && r.data.affected >= 1, `holiday cancels ${r.data.affected} meal(s)`);
   const w2 = (await cust.get('/api/wallet')).data.balances;
-  ok(w2.available > w1.available, 'customer refunded for the holiday');
+  // Changed behaviour: with notice, a cook holiday gives plan customers a make-up day (not cash)
+  ok(r.data.makeups >= 1 && w2.available === w1.available && w2.reserved === w1.reserved, 'holiday meal becomes a make-up day, money stays reserved');
   r = await cust.get(`/api/calendar?from=${hDate}&to=${hDate}`);
   ok(r.data.orders.some(o => o.status === 'holiday') && r.data.holidays.length === 1, 'calendar shows the chef holiday');
   r = await chef.post('/api/chef/holidays', { date: addDays(today, -1) });
@@ -143,5 +144,5 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
   console.log(`\nAll ${passed} checks passed.`);
 })().catch(err => {
   console.error('\n✗ FAILED:', err.message);
-  process.exitCode = 1;
+  process.exit(1); // the live-update streams would otherwise keep the process open
 });

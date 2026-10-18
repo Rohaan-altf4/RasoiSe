@@ -11,8 +11,9 @@ const { notify, refresh } = require('./notify');
 
 const WARN_FROM_MINUTES = 18 * 60; // 6 PM IST
 
+// Includes make-up days; skipped and cancelled meals don't count
 function lastMealDate(d, sub) {
-  return d.orders.filter(o => o.subscriptionId === sub.id && o.status !== 'cancelled').reduce((m, o) => (o.date > m ? o.date : m), sub.startDate);
+  return require('./meals').planLastDate(d, sub);
 }
 
 function renewalPrice(k, sub) {

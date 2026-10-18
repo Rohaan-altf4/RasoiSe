@@ -76,6 +76,7 @@ function reserve(d, order, amount, note) {
 
 // Give back whatever is still reserved for an order (or part of it).
 function release(d, order, note, amount = null) {
+  if (order.charged) return null; // already paid out: refunds go through refundDelivered
   const held = (order.paid || 0) - (order.refunded || 0);
   const value = amount == null ? held : Math.min(amount, held);
   if (value <= 0) return null;
@@ -87,13 +88,15 @@ function release(d, order, note, amount = null) {
 }
 
 // Meal delivered: take the reserved money and pay the kitchen its share.
-function settleDelivered(d, order, kitchen) {
+function settleDelivered(d, order, kitchen, note = null) {
+  if (order.charged) return; // never charge the same meal twice
   const amount = (order.paid || 0) - (order.refunded || 0);
   if (amount <= 0) return;
+  order.charged = true;
   post(d, {
     userId: order.customerId, kind: 'charge', reserved: -amount,
     orderId: order.id, subscriptionId: order.subscriptionId || null,
-    note: `Delivered: ${kitchen.name} (${order.code})`
+    note: note || `Delivered: ${kitchen.name} (${order.code})`
   });
   const fee = Math.round(amount * COMMISSION);
   order.platformFee = fee;

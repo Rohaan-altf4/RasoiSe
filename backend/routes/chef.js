@@ -87,6 +87,15 @@ function applyKitchenFields(k, b) {
     k.cutoffTime = str(b.cutoffTime);
   }
   if (b.radiusM !== undefined) k.radiusM = intIn(b.radiusM, 300, 8000, k.radiusM);
+  if (b.noticeHours !== undefined) {
+    const n = Number(b.noticeHours);
+    if (![12, 24, 48].includes(n)) throw httpError(400, 'Notice period must be 12, 24 or 48 hours.');
+    k.noticeHours = n;
+  }
+  if (b.skipLimits !== undefined) {
+    const s = parseMaybeJSON(b.skipLimits, {});
+    k.skipLimits = { plan5: intIn(s.plan5, 0, 22, k.skipLimits.plan5), plan7: intIn(s.plan7, 0, 30, k.skipLimits.plan7) };
+  }
   if (b.location !== undefined) {
     const l = parseMaybeJSON(b.location, {});
     const loc = { lat: Number(l.lat), lng: Number(l.lng), address: str(l.address, 250), locality: str(l.locality, 60) };
@@ -187,7 +196,7 @@ router.post('/chef/register', upload.fields([{ name: 'cover', maxCount: 1 }]), (
     Object.assign(menu, cleaned);
     d.menus.push(menu);
 
-    audit(d, u, 'CHEF_REGISTER', k.name, `${u.name} applied to cook as "${k.name}" (${k.location.locality || 'Andheri West'}).`);
+    audit(d, u, 'CHEF_REGISTER', k.name, `${u.name} applied to cook as "${k.name}" (${k.location.locality || require('../lib/models').SERVICE_AREA.name}).`);
     notify(d, adminIds(d), { type: 'kitchen_pending', title: `New kitchen waiting for approval`, body: `${k.name} by ${u.name}`, link: 'admin-console.html#approvals' });
     refresh(adminIds(d), ['kitchens']);
     notify(d, u.id, { type: 'kitchen_pending', title: 'Application received', body: 'We will review your kitchen within a day. You can set up your menu meanwhile.', link: 'chef-settings.html' });
@@ -269,27 +278,93 @@ router.put('/chef/menu', chefOnly, (req, res) => {
   res.json(result);
 });
 
-// Close the kitchen on a date: every meal that day is refunded and customers are told.
-function closeDate(d, k, date, reason, actor) {
-  let affected = 0;
-  let refunded = 0;
-  const customers = new Set();
-  d.orders.filter(o => o.kitchenId === k.id && o.date === date && ['scheduled', 'paused'].includes(o.status)).forEach(o => {
-    if (o.status === 'scheduled') {
-      const e = wallet.release(d, o, `Kitchen holiday: ${k.name}, ${mealLabel(o)}`);
-      refunded += e ? e.available : 0;
+// ---------- Cook cancellations ----------
+// The same rules for cooks as for customers:
+// - With enough notice: plan meals become a make-up day at the end of the plan (or a refund, if
+//   the customer prefers refunds); single and trial meals are refunded.
+// - With less notice: only as an emergency with a reason. Customers also get a small goodwill
+//   credit, paid from the cook's earnings, and the cook gets a strike. 3 strikes in a month
+//   means an automatic warning and admin is told.
+
+function monthOf(iso) {
+  return time.istParts(new Date(iso)).date.slice(0, 7);
+}
+
+function addStrike(d, k, reason, meals, actor) {
+  const now = time.nowISO();
+  k.strikes.push({ at: now, reason, meals });
+  const thisMonth = k.strikes.filter(s => monthOf(s.at) === monthOf(now)).length;
+  if (thisMonth >= 3 && !k.warnings.some(w => w.auto && monthOf(w.at) === monthOf(now))) {
+    const text = `${thisMonth} late cancellations this month. Please give customers ${k.noticeHours} hours' notice.`;
+    k.warnings.push({ reason: text, at: now, by: 'RasoiSe (automatic)', auto: true });
+    notify(d, k.ownerId, { type: 'kitchen_warning', title: 'Warning: too many late cancellations', body: text, link: 'chef-dashboard.html' });
+    notify(d, adminIds(d), { type: 'kitchen_flagged', title: `${k.name}: ${thisMonth} late cancellations this month`, body: reason, link: 'admin-console.html#kitchens' });
+    audit(d, actor, 'KITCHEN_WARNED', k.name, `Automatic warning: ${text}`);
+  }
+  return thisMonth;
+}
+
+// Cancel some of a kitchen's meals. kind: 'holiday' (whole day) or 'order' (one meal).
+function cookCancel(d, k, orders, { reason, actor, kind }) {
+  const live = orders.filter(o => ['scheduled', 'preparing'].includes(o.status));
+  const late = live.some(o => !meals.canChange(k, o.date, o.slot));
+  if (late && String(reason || '').trim().length < 5) {
+    throw httpError(400, `Less than ${k.noticeHours} hours' notice: this is an emergency cancellation. Please give a short reason for your customers.`, 'REASON_REQUIRED');
+  }
+  const result = { affected: 0, refunded: 0, makeups: 0, goodwill: 0, late, strikes: null };
+  const perCustomer = new Map();
+  live.forEach(o => {
+    const customer = d.users.find(u => u.id === o.customerId);
+    const sub = o.subscriptionId ? d.subscriptions.find(s => s.id === o.subscriptionId) : null;
+    const lateOne = !meals.canChange(k, o.date, o.slot);
+    const why = kind === 'holiday' ? 'Kitchen holiday' : 'Cancelled by the kitchen';
+    let makeupDate = null;
+    if (sub && sub.status === 'active' && (customer.preferences || {}).cookCancel !== 'refund') {
+      makeupDate = meals.addMakeupDay(d, k, customer, o, sub, why).date;
+      result.makeups++;
+    } else {
+      const e = wallet.release(d, o, `${why}: ${k.name}, ${mealLabel(o)}`);
+      result.refunded += e ? e.available : 0;
     }
-    addHistory(o, 'holiday', 'chef');
-    o.cancelReason = reason || 'Kitchen holiday';
-    affected++;
-    customers.add(o.customerId);
+    if (lateOne && k.goodwillCredit > 0) {
+      const g = k.goodwillCredit;
+      wallet.post(d, { userId: o.customerId, kind: 'refund', available: g, orderId: o.id, note: `Goodwill credit: late cancellation by ${k.name}` });
+      wallet.post(d, { userId: k.ownerId, kind: 'clawback', available: -g, orderId: o.id, note: `Goodwill credit to customer for late cancellation of ${o.code}` });
+      result.goodwill += g;
+    }
+    addHistory(o, kind === 'holiday' ? 'holiday' : 'cancelled', 'chef');
+    o.cancelReason = reason || why;
+    o.cookCancelled = true;
+    result.affected++;
+    const c = perCustomer.get(o.customerId) || { makeup: [], refund: 0, goodwill: 0, meals: [] };
+    if (makeupDate) c.makeup.push(makeupDate);
+    if (!makeupDate) c.refund += meals.orderTotal(o);
+    if (lateOne) c.goodwill += k.goodwillCredit;
+    c.meals.push(mealLabel(o));
+    perCustomer.set(o.customerId, c);
   });
-  customers.forEach(cid => {
-    notify(d, cid, { type: 'kitchen_holiday', title: `${k.name} is closed on ${fmtDate(date)}`, body: `${reason ? reason + '. ' : ''}Your meal that day is cancelled and refunded to your wallet.`, link: 'calendar.html' });
+  perCustomer.forEach((c, cid) => {
+    const parts = [];
+    if (c.makeup.length) parts.push(`Added as a make-up day on ${c.makeup.map(fmtDate).join(', ')}.`);
+    if (c.refund) parts.push(`₹${c.refund} refunded to your wallet.`);
+    if (c.goodwill) parts.push(`Plus ₹${c.goodwill} goodwill credit for the short notice.`);
+    notify(d, cid, {
+      type: 'kitchen_holiday', title: `${k.name} can't make ${c.meals.join(', ')}`,
+      body: `${reason ? reason + '. ' : ''}${parts.join(' ')}`, link: 'calendar.html'
+    });
   });
-  refresh([...customers], ['orders', 'wallet']);
-  if (affected) audit(d, actor, 'KITCHEN_HOLIDAY', k.name, `${fmtDate(date)}: ${affected} meals refunded (₹${refunded}).`);
-  return { affected, refunded };
+  refresh([...perCustomer.keys()], ['orders', 'wallet']);
+  if (late) result.strikes = addStrike(d, k, reason, result.affected, actor);
+  if (result.affected) {
+    audit(d, actor, late ? 'KITCHEN_LATE_CANCEL' : 'KITCHEN_HOLIDAY', k.name,
+      `${result.affected} meal(s) cancelled${late ? ' at short notice' : ''}: ${result.makeups} make-up day(s), ₹${result.refunded} refunded, ₹${result.goodwill} goodwill. ${reason || ''}`.trim());
+  }
+  return result;
+}
+
+// Close the kitchen on a date (holiday)
+function closeDate(d, k, date, reason, actor) {
+  return cookCancel(d, k, d.orders.filter(o => o.kitchenId === k.id && o.date === date), { reason, actor, kind: 'holiday' });
 }
 
 router.post('/chef/holidays', chefOnly, (req, res) => {
@@ -298,9 +373,6 @@ router.post('/chef/holidays', chefOnly, (req, res) => {
     const k = myKitchen(d, req);
     if (!time.isValidDate(date)) throw httpError(400, 'Choose a date.');
     if (date < time.today()) throw httpError(400, 'Choose today or a later date.');
-    if (date === time.today() && !time.isBeforeCutoff(date, k.cutoffTime)) {
-      throw httpError(400, 'Today\'s cutoff has passed and customers are expecting food. Contact support if you can\'t cook today.');
-    }
     if (k.holidays.some(h => h.date === date)) throw httpError(400, 'That day is already marked as a holiday.');
     k.holidays.push({ date, reason: str(reason, 80) });
     k.holidays.sort((a, b) => a.date.localeCompare(b.date));
@@ -332,16 +404,22 @@ router.put('/chef/offdays', chefOnly, (req, res) => {
     k.offDays = list;
     let affected = 0;
     let refunded = 0;
+    let makeups = 0;
+    let kept = 0; // meals inside the notice period still go ahead
     if (added.length) {
       const dates = [...new Set(d.orders.filter(o => o.kitchenId === k.id && o.date >= time.today() && ['scheduled', 'paused'].includes(o.status) && added.includes(time.dayKey(o.date))).map(o => o.date))];
       dates.forEach(date => {
-        if (date === time.today() && !time.isBeforeCutoff(date, k.cutoffTime)) return;
+        if (time.now() >= meals.dayDeadline(k, date)) {
+          kept += d.orders.filter(o => o.kitchenId === k.id && o.date === date && o.status === 'scheduled').length;
+          return;
+        }
         const r = closeDate(d, k, date, 'Kitchen closed on this weekday', req.user);
         affected += r.affected;
         refunded += r.refunded;
+        makeups += r.makeups;
       });
     }
-    return { offDays: k.offDays, affected, refunded };
+    return { offDays: k.offDays, affected, refunded, makeups, kept };
   });
   res.json(result);
 });
@@ -509,6 +587,72 @@ router.post('/chef/dispatch', chefOnly, (req, res) => {
     return { updated: list.length };
   });
   res.json(result);
+});
+
+function myOrder(d, req) {
+  const k = myKitchen(d, req);
+  const o = d.orders.find(x => x.id === Number(req.params.id) && x.kitchenId === k.id);
+  if (!o) throw httpError(404, 'Order not found.');
+  return { k, o };
+}
+
+// Cancel one meal (not the whole day). Same notice rules as holidays.
+router.post('/chef/orders/:id/cancel', chefOnly, (req, res) => {
+  const reason = str((req.body || {}).reason, 200);
+  const result = db.transaction(d => {
+    const { k, o } = myOrder(d, req);
+    if (!['scheduled', 'preparing'].includes(o.status)) throw httpError(400, `${o.code} can't be cancelled now (${o.status.replace(/_/g, ' ')}).`);
+    const r = cookCancel(d, k, [o], { reason, actor: req.user, kind: 'order' });
+    refresh([req.user.id], ['orders', 'earnings']);
+    return r;
+  });
+  res.json(result);
+});
+
+// The customer wasn't there to take the meal. Counts as delivered (and charged).
+// Three in a calendar month: the customer is warned and admin is told.
+router.post('/chef/orders/:id/not-available', chefOnly, (req, res) => {
+  const order = db.transaction(d => {
+    const { k, o } = myOrder(d, req);
+    if (!['scheduled', 'preparing', 'out_for_delivery'].includes(o.status)) throw httpError(400, `${o.code} is already ${o.status.replace(/_/g, ' ')}.`);
+    if (o.date > time.today()) throw httpError(400, `${o.code} is for ${fmtDate(o.date)}. You can update it on the day.`);
+    addHistory(o, 'delivered', 'chef');
+    o.outcome = 'not_available';
+    o.deliveredAt = time.nowISO();
+    wallet.settleDelivered(d, o, k, `Customer not available: ${k.name} (${o.code}), meal charged`);
+    const u = d.users.find(x => x.id === o.customerId);
+    u.noShows = [...(u.noShows || []), { orderId: o.id, at: time.nowISO() }];
+    const month = time.today().slice(0, 7);
+    const count = u.noShows.filter(n => time.istParts(new Date(n.at)).date.slice(0, 7) === month).length;
+    notify(d, u.id, {
+      type: 'order_status', title: `${k.name} couldn't reach you for ${mealLabel(o)}`,
+      body: count >= 3 ? `That's ${count} missed deliveries this month. Please skip meals ${k.noticeHours} hours ahead, or tap "I won't be home".` : 'The meal is charged. If you will be away, skip ahead of time or tap "I won\'t be home".',
+      link: `orders.html?id=${o.id}`
+    });
+    if (count >= 3 && !(u.flagged && u.flagged.month === month)) {
+      u.flagged = { reason: `${count} missed deliveries in ${month}`, month, at: time.nowISO() };
+      notify(d, adminIds(d), { type: 'kitchen_flagged', title: `Customer ${u.name}: ${count} missed deliveries this month`, body: `Latest: ${o.code} at ${k.name}`, link: 'admin-console.html#users' });
+      audit(d, req.user, 'CUSTOMER_FLAGGED', u.name, `${count} missed deliveries in ${month}.`);
+    }
+    refresh([o.customerId], ['orders', 'wallet']);
+    refresh([req.user.id], ['orders', 'earnings']);
+    return o;
+  });
+  res.json({ order: orderView(db.load(), order, req.user) });
+});
+
+// Customer said "I won't be home": the cook can keep the meal for them to collect
+router.post('/chef/orders/:id/pickup', chefOnly, (req, res) => {
+  const order = db.transaction(d => {
+    const { k, o } = myOrder(d, req);
+    if (!['scheduled', 'preparing', 'out_for_delivery'].includes(o.status)) throw httpError(400, `${o.code} is already ${o.status.replace(/_/g, ' ')}.`);
+    o.keepForPickup = true;
+    notify(d, o.customerId, { type: 'order_status', title: `${k.name} is keeping your ${o.slot} for pickup`, body: `${mealLabel(o)}. Collect it from the kitchen when you're back today.`, link: `orders.html?id=${o.id}` });
+    refresh([o.customerId], ['orders']);
+    refresh([req.user.id], ['orders']);
+    return o;
+  });
+  res.json({ order: orderView(db.load(), order, req.user) });
 });
 
 // ---------- Earnings & payouts ----------

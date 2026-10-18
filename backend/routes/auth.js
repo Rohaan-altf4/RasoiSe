@@ -93,6 +93,15 @@ router.get('/me', (req, res) => {
   res.json(mePayload(req.user));
 });
 
+// Remember the chosen site language on the account (guests just keep it in the browser)
+router.post('/language', (req, res) => {
+  const lang = String((req.body || {}).lang || '');
+  if (!['en', 'hi', 'mr', 'gu'].includes(lang)) return res.status(400).json({ error: 'Unknown language.' });
+  if (!req.user) return res.json({ saved: false });
+  db.transaction(d => { d.users.find(u => u.id === req.user.id).lang = lang; });
+  res.json({ saved: true });
+});
+
 router.post('/password', auth.requireAuth, (req, res) => {
   const { current, next } = req.body || {};
   if (!auth.checkPassword(String(current || ''), req.user.passwordHash)) return res.status(400).json({ error: 'Current password is wrong.' });

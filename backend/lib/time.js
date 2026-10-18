@@ -71,6 +71,20 @@ function fmt12(hhmm) {
   return `${((h + 11) % 12) + 1}:${String(m).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`;
 }
 
+// The moment 'YYYY-MM-DD' at 'HH:MM' happens in India (as a real Date)
+function istMoment(dateStr, hhmm) {
+  return new Date(Date.parse(dateStr + 'T00:00:00Z') - IST_OFFSET_MS + toMinutes(hhmm) * 60000);
+}
+
+// 'Thu 16 Oct, 12:30 PM' for a Date, in India time
+function fmtIST(d) {
+  const s = new Date(d.getTime() + IST_OFFSET_MS);
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const hhmm = `${String(s.getUTCHours()).padStart(2, '0')}:${String(s.getUTCMinutes()).padStart(2, '0')}`;
+  return `${days[s.getUTCDay()]} ${s.getUTCDate()} ${months[s.getUTCMonth()]}, ${fmt12(hhmm)}`;
+}
+
 // Days between two YYYY-MM-DD strings (b - a)
 function diffDays(a, b) {
   return Math.round((Date.parse(b + 'T00:00:00Z') - Date.parse(a + 'T00:00:00Z')) / 86400000);
@@ -78,5 +92,5 @@ function diffDays(a, b) {
 
 module.exports = {
   DAY_KEYS, now, nowISO, istParts, today, addDays, weekday, dayKey,
-  isValidDate, toMinutes, fmt12, isBeforeCutoff, diffDays
+  isValidDate, toMinutes, fmt12, isBeforeCutoff, diffDays, istMoment, fmtIST
 };

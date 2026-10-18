@@ -410,6 +410,8 @@
         <div class="form-grid cols-2" style="margin-top:16px">
           <div class="field"><label class="field-label" for="cap">Max meals per slot</label><input id="cap" name="capacity" class="input num" type="number" min="1" max="300" value="${k.capacity}"><p class="field-hint">New bookings stop when you're full.</p><p class="field-error"></p></div>
           <div class="field"><label class="field-label" for="cut">Daily cutoff</label><input id="cut" name="cutoffTime" class="input" type="time" min="05:00" max="11:00" value="${k.cutoffTime}"><p class="field-hint">After this, the day's orders are locked and you start cooking.</p><p class="field-error"></p></div>
+          <div class="field"><label class="field-label" for="notice">Notice for changes</label><select id="notice" name="noticeHours" class="select">${[12, 24, 48].map(h => `<option value="${h}" ${(k.noticeHours || 24) === h ? 'selected' : ''}>${h} hours before the meal</option>`).join('')}</select><p class="field-hint">Customers can skip or change a meal until this long before it (lunch ${UI.time12((k.slotTimes || {}).lunch || '12:30')}, dinner ${UI.time12((k.slotTimes || {}).dinner || '19:30')}). You get the same notice when cancelling.</p></div>
+          <div class="field"><label class="field-label" for="sk5">Make-up days per plan</label><div class="flex gap-2"><input id="sk5" name="skip5" class="input num" type="number" min="0" max="22" value="${(k.skipLimits || {}).plan5 ?? 4}" aria-label="22-meal plan"><input name="skip7" class="input num" type="number" min="0" max="30" value="${(k.skipLimits || {}).plan7 ?? 6}" aria-label="30-meal plan"></div><p class="field-hint">22-meal plan · 30-meal plan. Skips beyond this are charged.</p><p class="field-error"></p></div>
         </div>
         <button type="submit" class="btn btn-primary" style="margin-top:16px">Save</button>
       </form>`;
@@ -425,7 +427,7 @@
       const cap = Number(f.capacity.value);
       if (!(cap >= 1 && cap <= 300)) return UI.setFieldError(f, 'capacity', 'Between 1 and 300.');
       if (f.cutoffTime.value > '11:00') return UI.setFieldError(f, 'cutoffTime', 'Latest cutoff is 11:00 AM.');
-      await saveKitchen({ pricing: { single: Number(f.single.value), trial: Number(f.trial.value), plan5: Number(f.plan5.value), plan7: Number(f.plan7.value) }, slots, capacity: cap, cutoffTime: f.cutoffTime.value }, f.querySelector('[type=submit]'), 'Prices and capacity saved');
+      await saveKitchen({ pricing: { single: Number(f.single.value), trial: Number(f.trial.value), plan5: Number(f.plan5.value), plan7: Number(f.plan7.value) }, slots, capacity: cap, cutoffTime: f.cutoffTime.value, noticeHours: Number(f.noticeHours.value), skipLimits: { plan5: Number(f.skip5.value), plan7: Number(f.skip7.value) } }, f.querySelector('[type=submit]'), 'Prices and capacity saved');
       renderPricing(); UI.icons(root);
     });
   }
@@ -502,14 +504,14 @@
       const offDays = [...root.querySelectorAll('[name="off"]:checked')].map(c => c.value);
       const added = offDays.filter(d => !(k.offDays || []).includes(d));
       if (added.length) {
-        const yes = await UI.confirm({ title: 'Close on these days every week?', body: `Any meals already booked on ${added.join(', ')} will be cancelled and refunded to customers.`, confirmText: 'Save' });
+        const yes = await UI.confirm({ title: 'Close on these days every week?', body: `Meals already booked on ${added.join(', ')} are cancelled. Plan customers get a make-up day, others a refund. Meals inside your notice window stay, so cook those.`, confirmText: 'Save' });
         if (!yes) return;
       }
       UI.busy(e.currentTarget, async () => {
         try {
           const res = await API.put('/api/chef/offdays', { offDays });
           k.offDays = res.offDays;
-          UI.toast(res.affected ? `Saved. ${res.affected} meal${res.affected > 1 ? 's' : ''} refunded (${money(res.refunded)}).` : 'Weekly days off saved');
+          UI.toast(res.affected ? `Saved. ${res.affected} meals moved or refunded.${res.kept ? ` ${res.kept} too close to cancel, please cook them.` : ''}` : 'Weekly days off saved');
         } catch (err) { UI.error(err); }
       });
     });
@@ -517,14 +519,20 @@
     hf.addEventListener('submit', async e => {
       e.preventDefault();
       if (!hf.date.value) return UI.toast('Pick a date.', { type: 'error' });
-      const yes = await UI.confirm({ title: `Take ${UI.date(hf.date.value)} off?`, body: 'Customers with meals that day are notified and refunded right away.', confirmText: 'Mark holiday' });
+      const yes = await UI.confirm({ title: `Take ${UI.date(hf.date.value)} off?`, body: 'Customers with meals that day are told. Plan customers get a make-up day at the end of their plan, others a refund.', confirmText: 'Mark holiday' });
       if (!yes) return;
+      const send = async reason => {
+        const res = await API.post('/api/chef/holidays', { date: hf.date.value, reason });
+        UI.toast(res.affected ? `Holiday added. ${res.makeups} make-up days, ${money(res.refunded)} refunded.${res.late ? ` ₹${res.goodwill} goodwill credit given (late notice).` : ''}` : 'Holiday added');
+        await load();
+      };
       UI.busy(hf.querySelector('button'), async () => {
-        try {
-          const res = await API.post('/api/chef/holidays', { date: hf.date.value, reason: hf.reason.value });
-          UI.toast(res.affected ? `Holiday added. ${res.affected} meal${res.affected > 1 ? 's' : ''} refunded (${money(res.refunded)}).` : 'Holiday added');
-          await load();
-        } catch (err) { UI.error(err); }
+        try { await send(hf.reason.value); } catch (err) {
+          if (err.code !== 'REASON_REQUIRED') return UI.error(err);
+          const reason = await UI.prompt({ title: 'Emergency day off', body: err.message, label: 'Reason for your customers', placeholder: 'e.g. Unwell today', confirmText: 'Take the day off', danger: true });
+          if (reason == null) return;
+          try { await send(reason); } catch (err2) { UI.error(err2); }
+        }
       });
     });
     root.querySelectorAll('[data-hdel]').forEach(b => b.addEventListener('click', () => UI.busy(b, async () => {
