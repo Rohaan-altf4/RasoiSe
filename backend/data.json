@@ -3,13 +3,13 @@
   "counters": {
     "users": 15,
     "kitchens": 8,
-    "notifications": 1,
-    "walletTransactions": 193,
+    "notifications": 9,
+    "walletTransactions": 200,
     "subscriptions": 5,
-    "orders": 133,
+    "orders": 134,
     "reviews": 12,
     "tickets": 2,
-    "auditLog": 12
+    "auditLog": 14
   },
   "users": [
     {
@@ -25,7 +25,9 @@
       "addresses": [],
       "defaultAddressId": null,
       "favourites": [],
-      "kitchenId": 1
+      "kitchenId": 1,
+      "noShows": [],
+      "lang": "en"
     },
     {
       "id": 2,
@@ -40,7 +42,8 @@
       "addresses": [],
       "defaultAddressId": null,
       "favourites": [],
-      "kitchenId": 2
+      "kitchenId": 2,
+      "noShows": []
     },
     {
       "id": 3,
@@ -55,7 +58,8 @@
       "addresses": [],
       "defaultAddressId": null,
       "favourites": [],
-      "kitchenId": 3
+      "kitchenId": 3,
+      "noShows": []
     },
     {
       "id": 4,
@@ -70,7 +74,8 @@
       "addresses": [],
       "defaultAddressId": null,
       "favourites": [],
-      "kitchenId": 4
+      "kitchenId": 4,
+      "noShows": []
     },
     {
       "id": 5,
@@ -85,7 +90,8 @@
       "addresses": [],
       "defaultAddressId": null,
       "favourites": [],
-      "kitchenId": 5
+      "kitchenId": 5,
+      "noShows": []
     },
     {
       "id": 6,
@@ -100,7 +106,8 @@
       "addresses": [],
       "defaultAddressId": null,
       "favourites": [],
-      "kitchenId": 6
+      "kitchenId": 6,
+      "noShows": []
     },
     {
       "id": 7,
@@ -115,7 +122,8 @@
       "addresses": [],
       "defaultAddressId": null,
       "favourites": [],
-      "kitchenId": 7
+      "kitchenId": 7,
+      "noShows": []
     },
     {
       "id": 8,
@@ -130,7 +138,8 @@
       "addresses": [],
       "defaultAddressId": null,
       "favourites": [],
-      "kitchenId": 8
+      "kitchenId": 8,
+      "noShows": []
     },
     {
       "id": 9,
@@ -148,7 +157,8 @@
         "allergies": [],
         "rotiCount": 3,
         "rice": true,
-        "defaultSlot": "lunch"
+        "defaultSlot": "lunch",
+        "cookCancel": "makeup"
       },
       "addresses": [
         {
@@ -168,7 +178,8 @@
         1,
         7
       ],
-      "kitchenId": null
+      "kitchenId": null,
+      "noShows": []
     },
     {
       "id": 10,
@@ -186,7 +197,8 @@
         "allergies": [],
         "rotiCount": 4,
         "rice": false,
-        "defaultSlot": "lunch"
+        "defaultSlot": "lunch",
+        "cookCancel": "makeup"
       },
       "addresses": [
         {
@@ -203,7 +215,13 @@
       ],
       "defaultAddressId": 1,
       "favourites": [],
-      "kitchenId": null
+      "kitchenId": null,
+      "noShows": [
+        {
+          "orderId": 32,
+          "at": "2026-10-19T09:21:51.117Z"
+        }
+      ]
     },
     {
       "id": 11,
@@ -223,7 +241,8 @@
         ],
         "rotiCount": 4,
         "rice": true,
-        "defaultSlot": "lunch"
+        "defaultSlot": "lunch",
+        "cookCancel": "makeup"
       },
       "addresses": [
         {
@@ -240,7 +259,8 @@
       ],
       "defaultAddressId": 1,
       "favourites": [],
-      "kitchenId": null
+      "kitchenId": null,
+      "noShows": []
     },
     {
       "id": 12,
@@ -258,7 +278,8 @@
         "allergies": [],
         "rotiCount": 4,
         "rice": true,
-        "defaultSlot": "lunch"
+        "defaultSlot": "lunch",
+        "cookCancel": "makeup"
       },
       "addresses": [
         {
@@ -277,7 +298,8 @@
       "favourites": [
         3
       ],
-      "kitchenId": null
+      "kitchenId": null,
+      "noShows": []
     },
     {
       "id": 13,
@@ -295,7 +317,8 @@
         "allergies": [],
         "rotiCount": 4,
         "rice": true,
-        "defaultSlot": "lunch"
+        "defaultSlot": "lunch",
+        "cookCancel": "makeup"
       },
       "addresses": [
         {
@@ -312,7 +335,8 @@
       ],
       "defaultAddressId": 1,
       "favourites": [],
-      "kitchenId": null
+      "kitchenId": null,
+      "noShows": []
     },
     {
       "id": 14,
@@ -330,7 +354,8 @@
         "allergies": [],
         "rotiCount": 2,
         "rice": true,
-        "defaultSlot": "lunch"
+        "defaultSlot": "lunch",
+        "cookCancel": "makeup"
       },
       "addresses": [
         {
@@ -347,7 +372,8 @@
       ],
       "defaultAddressId": 1,
       "favourites": [],
-      "kitchenId": null
+      "kitchenId": null,
+      "noShows": []
     },
     {
       "id": 15,
@@ -362,16 +388,11 @@
       "addresses": [],
       "defaultAddressId": null,
       "favourites": [],
-      "kitchenId": null
+      "kitchenId": null,
+      "noShows": []
     }
   ],
   "sessions": [
-    {
-      "id": "aff111aaac2e07ea604b66774ac9539922c5dcfbfa0bce520de2d1ce7475f9b2",
-      "userId": 15,
-      "createdAt": "2026-10-15T18:05:26.607Z",
-      "expiresAt": "2026-11-14T18:05:26.605Z"
-    },
     {
       "id": "449cca3a0b692c216a404142eece1eb90d322fde6e24fe95348fb45c3fbf4d62",
       "userId": 1,
@@ -389,6 +410,12 @@
       "userId": 9,
       "createdAt": "2026-10-15T18:27:13.789Z",
       "expiresAt": "2026-11-14T18:27:13.788Z"
+    },
+    {
+      "id": "934761e9af621fda31423b4e487977de5bf3a582f9b820377aed48ad65b93d23",
+      "userId": 1,
+      "createdAt": "2026-10-18T18:49:41.959Z",
+      "expiresAt": "2026-11-17T18:49:41.958Z"
     }
   ],
   "kitchens": [
@@ -399,10 +426,10 @@
       "chefName": "Asha Sharma",
       "bio": "Light Gujarati and North Indian food, less oil, fresh phulkas.",
       "story": "I have cooked for my family of six for 25 years. My kadhi and thepla are what neighbours ask for most. Everything is made the same morning in small batches.",
-      "coverUrl": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=1200&auto=format&fit=crop&q=75",
+      "coverUrl": "https://images.unsplash.com/photo-1589778655375-3e622a9fc91c?w=1200&auto=format&fit=crop&q=75",
       "gallery": [
-        "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=1200&auto=format&fit=crop&q=75",
-        "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=1200&auto=format&fit=crop&q=75"
+        "https://images.unsplash.com/photo-1742281257687-092746ad6021?w=1200&auto=format&fit=crop&q=75",
+        "https://images.unsplash.com/photo-1714799263291-272975db795a?w=1200&auto=format&fit=crop&q=75"
       ],
       "cuisines": [
         "Gujarati",
@@ -442,7 +469,18 @@
       "phone": "9876543210",
       "email": "asha@rasoise.demo",
       "createdAt": "2026-08-16T05:30:00.000Z",
-      "approvedAt": "2026-08-18T09:30:00.000Z"
+      "approvedAt": "2026-08-18T09:30:00.000Z",
+      "noticeHours": 24,
+      "slotTimes": {
+        "lunch": "12:30",
+        "dinner": "19:30"
+      },
+      "skipLimits": {
+        "plan5": 4,
+        "plan7": 6
+      },
+      "goodwillCredit": 20,
+      "strikes": []
     },
     {
       "id": 2,
@@ -453,8 +491,8 @@
       "story": "Punjabi home food the way my mother-in-law taught me in Ludhiana. No cream from a packet, no colour. Just slow-cooked dal and fresh rotis.",
       "coverUrl": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=1200&auto=format&fit=crop&q=75",
       "gallery": [
-        "https://images.unsplash.com/photo-1596797038530-2c107229654b?w=1200&auto=format&fit=crop&q=75",
-        "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=1200&auto=format&fit=crop&q=75"
+        "https://images.unsplash.com/photo-1788602564560-9bcbf0f9acb6?w=1200&auto=format&fit=crop&q=75",
+        "https://images.unsplash.com/photo-1789983665266-f1a6ea13b311?w=1200&auto=format&fit=crop&q=75"
       ],
       "cuisines": [
         "Punjabi"
@@ -491,7 +529,18 @@
       "phone": "9812345678",
       "email": "harpreet@rasoise.demo",
       "createdAt": "2026-08-17T05:30:00.000Z",
-      "approvedAt": "2026-08-19T09:30:00.000Z"
+      "approvedAt": "2026-08-19T09:30:00.000Z",
+      "noticeHours": 24,
+      "slotTimes": {
+        "lunch": "12:30",
+        "dinner": "19:30"
+      },
+      "skipLimits": {
+        "plan5": 4,
+        "plan7": 6
+      },
+      "goodwillCredit": 20,
+      "strikes": []
     },
     {
       "id": 3,
@@ -500,9 +549,10 @@
       "chefName": "Sunita Naik",
       "bio": "Malvani fish curries, sol kadhi and bhakri from a Konkan family kitchen.",
       "story": "My family is from Malvan. Fish comes from Versova jetty every morning. There is always a veg option the same day.",
-      "coverUrl": "https://images.unsplash.com/photo-1574653853027-5382a3d23a15?w=1200&auto=format&fit=crop&q=75",
+      "coverUrl": "https://images.unsplash.com/photo-1786222084052-fb6f27bfb135?w=1200&auto=format&fit=crop&q=75",
       "gallery": [
-        "https://images.unsplash.com/photo-1625398407796-82650a8c135f?w=1200&auto=format&fit=crop&q=75"
+        "https://images.unsplash.com/photo-1620894580123-466ad3a0ca06?w=1200&auto=format&fit=crop&q=75",
+        "https://images.unsplash.com/photo-1632660345494-9cc2607f89c2?w=1200&auto=format&fit=crop&q=75"
       ],
       "cuisines": [
         "Maharashtrian",
@@ -542,7 +592,18 @@
       "phone": "9820011223",
       "email": "sunita@rasoise.demo",
       "createdAt": "2026-08-18T05:30:00.000Z",
-      "approvedAt": "2026-08-20T09:30:00.000Z"
+      "approvedAt": "2026-08-20T09:30:00.000Z",
+      "noticeHours": 24,
+      "slotTimes": {
+        "lunch": "12:30",
+        "dinner": "19:30"
+      },
+      "skipLimits": {
+        "plan5": 4,
+        "plan7": 6
+      },
+      "goodwillCredit": 20,
+      "strikes": []
     },
     {
       "id": 4,
@@ -595,7 +656,18 @@
       "phone": "9833445566",
       "email": "lakshmi@rasoise.demo",
       "createdAt": "2026-08-19T05:30:00.000Z",
-      "approvedAt": "2026-08-21T09:30:00.000Z"
+      "approvedAt": "2026-08-21T09:30:00.000Z",
+      "noticeHours": 24,
+      "slotTimes": {
+        "lunch": "12:30",
+        "dinner": "19:30"
+      },
+      "skipLimits": {
+        "plan5": 4,
+        "plan7": 6
+      },
+      "goodwillCredit": 20,
+      "strikes": []
     },
     {
       "id": 5,
@@ -605,9 +677,7 @@
       "bio": "Sai bhaji, Sindhi kadhi and koki, the way my nani made it.",
       "story": "Sindhi food is hard to find outside a Sindhi home. I cook it the old way, with plenty of greens.",
       "coverUrl": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=1200&auto=format&fit=crop&q=75",
-      "gallery": [
-        "https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=1200&auto=format&fit=crop&q=75"
-      ],
+      "gallery": [],
       "cuisines": [
         "Sindhi"
       ],
@@ -645,7 +715,18 @@
       "phone": "9867012345",
       "email": "kavita@rasoise.demo",
       "createdAt": "2026-08-20T05:30:00.000Z",
-      "approvedAt": "2026-08-22T09:30:00.000Z"
+      "approvedAt": "2026-08-22T09:30:00.000Z",
+      "noticeHours": 24,
+      "slotTimes": {
+        "lunch": "12:30",
+        "dinner": "19:30"
+      },
+      "skipLimits": {
+        "plan5": 4,
+        "plan7": 6
+      },
+      "goodwillCredit": 20,
+      "strikes": []
     },
     {
       "id": 6,
@@ -703,7 +784,18 @@
       "phone": "9819876543",
       "email": "rukhsana@rasoise.demo",
       "createdAt": "2026-08-21T05:30:00.000Z",
-      "approvedAt": "2026-08-23T09:30:00.000Z"
+      "approvedAt": "2026-08-23T09:30:00.000Z",
+      "noticeHours": 24,
+      "slotTimes": {
+        "lunch": "12:30",
+        "dinner": "19:30"
+      },
+      "skipLimits": {
+        "plan5": 4,
+        "plan7": 6
+      },
+      "goodwillCredit": 20,
+      "strikes": []
     },
     {
       "id": 7,
@@ -712,9 +804,9 @@
       "chefName": "Ritu Mehta",
       "bio": "Low-oil, high-protein thalis. Jain option every day.",
       "story": "I am a nutritionist. These are the meals I plan for my clients: millet rotis, sprouts, lots of vegetables, no maida.",
-      "coverUrl": "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=1200&auto=format&fit=crop&q=75",
+      "coverUrl": "https://images.unsplash.com/photo-1743674453123-93356ade2891?w=1200&auto=format&fit=crop&q=75",
       "gallery": [
-        "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=1200&auto=format&fit=crop&q=75"
+        "https://images.unsplash.com/photo-1680993032090-1ef7ea9b51e5?w=1200&auto=format&fit=crop&q=75"
       ],
       "cuisines": [
         "Healthy",
@@ -754,7 +846,18 @@
       "phone": "9821234567",
       "email": "ritu@rasoise.demo",
       "createdAt": "2026-08-22T05:30:00.000Z",
-      "approvedAt": "2026-08-24T09:30:00.000Z"
+      "approvedAt": "2026-08-24T09:30:00.000Z",
+      "noticeHours": 24,
+      "slotTimes": {
+        "lunch": "12:30",
+        "dinner": "19:30"
+      },
+      "skipLimits": {
+        "plan5": 4,
+        "plan7": 6
+      },
+      "goodwillCredit": 20,
+      "strikes": []
     },
     {
       "id": 8,
@@ -799,13 +902,52 @@
       "phone": "9867543210",
       "email": "meera@rasoise.demo",
       "createdAt": "2026-10-14T12:30:00.000Z",
-      "approvedAt": null
+      "approvedAt": null,
+      "noticeHours": 24,
+      "slotTimes": {
+        "lunch": "12:30",
+        "dinner": "19:30"
+      },
+      "skipLimits": {
+        "plan5": 4,
+        "plan7": 6
+      },
+      "goodwillCredit": 20,
+      "strikes": []
     }
   ],
   "menus": [
     {
       "kitchenId": 1,
-      "dishes": [],
+      "dishes": [
+        {
+          "id": "p1",
+          "name": "Bateta Nu Shaak",
+          "type": "veg",
+          "spice": "medium",
+          "allergens": [],
+          "photo": "https://images.unsplash.com/photo-1652545296892-3787063f8b4d?w=1200&auto=format&fit=crop&q=75",
+          "description": ""
+        },
+        {
+          "id": "p2",
+          "name": "Ringan No Olo",
+          "type": "veg",
+          "spice": "medium",
+          "allergens": [],
+          "photo": "https://images.unsplash.com/photo-1777613112774-1a64a2c2d337?w=1200&auto=format&fit=crop&q=75",
+          "description": ""
+        },
+        {
+          "id": "p3",
+          "name": "Bateta Rasawala",
+          "type": "veg",
+          "spice": "medium",
+          "allergens": [],
+          "photo": "https://images.unsplash.com/photo-1652545296893-ff9227b3512e?w=1200&auto=format&fit=crop&q=75",
+          "description": ""
+        }
+      ],
       "addons": [
         {
           "id": "extra-roti",
@@ -1067,7 +1209,53 @@
     },
     {
       "kitchenId": 2,
-      "dishes": [],
+      "dishes": [
+        {
+          "id": "p1",
+          "name": "Shahi Paneer",
+          "type": "veg",
+          "spice": "medium",
+          "allergens": [],
+          "photo": "https://images.unsplash.com/photo-1631452180539-96aca7d48617?w=1200&auto=format&fit=crop&q=75",
+          "description": ""
+        },
+        {
+          "id": "p2",
+          "name": "Bhindi Do Pyaza",
+          "type": "veg",
+          "spice": "medium",
+          "allergens": [],
+          "photo": "https://images.unsplash.com/photo-1788621138183-dda1ef14b032?w=1200&auto=format&fit=crop&q=75",
+          "description": ""
+        },
+        {
+          "id": "p3",
+          "name": "Kadhi Pakora",
+          "type": "veg",
+          "spice": "medium",
+          "allergens": [],
+          "photo": "https://images.unsplash.com/photo-1789992252185-3faaeea5c045?w=1200&auto=format&fit=crop&q=75",
+          "description": ""
+        },
+        {
+          "id": "p4",
+          "name": "Amritsari Chole",
+          "type": "veg",
+          "spice": "medium",
+          "allergens": [],
+          "photo": "https://images.unsplash.com/photo-1788602564560-9bcbf0f9acb6?w=1200&auto=format&fit=crop&q=75",
+          "description": ""
+        },
+        {
+          "id": "p5",
+          "name": "Butter Paneer",
+          "type": "veg",
+          "spice": "medium",
+          "allergens": [],
+          "photo": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=1200&auto=format&fit=crop&q=75",
+          "description": ""
+        }
+      ],
       "addons": [
         {
           "id": "extra-roti",
@@ -1332,7 +1520,7 @@
           "allergens": [
             "fish"
           ],
-          "photo": "",
+          "photo": "https://images.unsplash.com/photo-1654863404432-cac67587e25d?w=1200&auto=format&fit=crop&q=75",
           "description": ""
         },
         {
@@ -1341,7 +1529,7 @@
           "type": "nonveg",
           "spice": "spicy",
           "allergens": [],
-          "photo": "",
+          "photo": "https://images.unsplash.com/photo-1764304733301-3a9f335f0c67?w=1200&auto=format&fit=crop&q=75",
           "description": ""
         },
         {
@@ -1363,7 +1551,7 @@
           "allergens": [
             "egg"
           ],
-          "photo": "",
+          "photo": "https://images.unsplash.com/photo-1764315197254-94385571df22?w=1200&auto=format&fit=crop&q=75",
           "description": ""
         },
         {
@@ -1374,7 +1562,7 @@
           "allergens": [
             "shellfish"
           ],
-          "photo": "",
+          "photo": "https://images.unsplash.com/photo-1632660345494-9cc2607f89c2?w=1200&auto=format&fit=crop&q=75",
           "description": ""
         },
         {
@@ -1403,7 +1591,16 @@
           "type": "veg",
           "spice": "spicy",
           "allergens": [],
-          "photo": "",
+          "photo": "https://images.unsplash.com/photo-1665156958464-90a8b463e1e6?w=1200&auto=format&fit=crop&q=75",
+          "description": ""
+        },
+        {
+          "id": "p9",
+          "name": "Varan Bhaat",
+          "type": "veg",
+          "spice": "medium",
+          "allergens": [],
+          "photo": "https://images.unsplash.com/photo-1755090154817-58d9d36ec988?w=1200&auto=format&fit=crop&q=75",
           "description": ""
         }
       ],
@@ -1673,7 +1870,7 @@
           "type": "veg",
           "spice": "mild",
           "allergens": [],
-          "photo": "",
+          "photo": "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=1200&auto=format&fit=crop&q=75",
           "description": ""
         },
         {
@@ -1682,7 +1879,7 @@
           "type": "veg",
           "spice": "mild",
           "allergens": [],
-          "photo": "",
+          "photo": "https://images.unsplash.com/photo-1743517894265-c86ab035adef?w=1200&auto=format&fit=crop&q=75",
           "description": ""
         },
         {
@@ -1706,6 +1903,42 @@
             "cashew"
           ],
           "photo": "",
+          "description": ""
+        },
+        {
+          "id": "p5",
+          "name": "Idli Sambar",
+          "type": "veg",
+          "spice": "medium",
+          "allergens": [],
+          "photo": "https://images.unsplash.com/photo-1680359871322-aabe6b33eff5?w=1200&auto=format&fit=crop&q=75",
+          "description": ""
+        },
+        {
+          "id": "p6",
+          "name": "Vegetable Upma",
+          "type": "veg",
+          "spice": "medium",
+          "allergens": [],
+          "photo": "https://images.unsplash.com/photo-1630409349197-b733a524b24e?w=1200&auto=format&fit=crop&q=75",
+          "description": ""
+        },
+        {
+          "id": "p7",
+          "name": "Sambar",
+          "type": "veg",
+          "spice": "medium",
+          "allergens": [],
+          "photo": "https://images.unsplash.com/photo-1736239092819-da2e9b4b5c6b?w=1200&auto=format&fit=crop&q=75",
+          "description": ""
+        },
+        {
+          "id": "p8",
+          "name": "Vada Sambar",
+          "type": "veg",
+          "spice": "medium",
+          "allergens": [],
+          "photo": "https://images.unsplash.com/photo-1630383249896-424e482df921?w=1200&auto=format&fit=crop&q=75",
           "description": ""
         }
       ],
@@ -1964,7 +2197,35 @@
     },
     {
       "kitchenId": 5,
-      "dishes": [],
+      "dishes": [
+        {
+          "id": "p1",
+          "name": "Bhindi Basar",
+          "type": "veg",
+          "spice": "medium",
+          "allergens": [],
+          "photo": "https://images.unsplash.com/photo-1616144089518-05e4b9482b46?w=1200&auto=format&fit=crop&q=75",
+          "description": ""
+        },
+        {
+          "id": "p2",
+          "name": "Seyal Bhindi",
+          "type": "veg",
+          "spice": "medium",
+          "allergens": [],
+          "photo": "https://images.unsplash.com/photo-1616144089518-05e4b9482b46?w=1200&auto=format&fit=crop&q=75",
+          "description": ""
+        },
+        {
+          "id": "p3",
+          "name": "Kadhi Chawal",
+          "type": "veg",
+          "spice": "medium",
+          "allergens": [],
+          "photo": "https://images.unsplash.com/photo-1727018742095-14c9a05aa71a?w=1200&auto=format&fit=crop&q=75",
+          "description": ""
+        }
+      ],
       "addons": [
         {
           "id": "extra-roti",
@@ -2226,7 +2487,7 @@
           "type": "nonveg",
           "spice": "medium",
           "allergens": [],
-          "photo": "",
+          "photo": "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?w=1200&auto=format&fit=crop&q=75",
           "description": ""
         },
         {
@@ -2238,7 +2499,7 @@
             "cashew",
             "dairy"
           ],
-          "photo": "",
+          "photo": "https://images.unsplash.com/photo-1708782344490-9026aaa5eec7?w=1200&auto=format&fit=crop&q=75",
           "description": ""
         },
         {
@@ -2256,7 +2517,7 @@
           "type": "nonveg",
           "spice": "medium",
           "allergens": [],
-          "photo": "",
+          "photo": "https://images.unsplash.com/photo-1633945274309-2c16c9682a8c?w=1200&auto=format&fit=crop&q=75",
           "description": ""
         },
         {
@@ -2274,7 +2535,7 @@
           "type": "nonveg",
           "spice": "spicy",
           "allergens": [],
-          "photo": "",
+          "photo": "https://images.unsplash.com/photo-1545247181-516773cae754?w=1200&auto=format&fit=crop&q=75",
           "description": ""
         },
         {
@@ -2283,7 +2544,7 @@
           "type": "nonveg",
           "spice": "medium",
           "allergens": [],
-          "photo": "",
+          "photo": "https://images.unsplash.com/photo-1782541370275-6761522e39d1?w=1200&auto=format&fit=crop&q=75",
           "description": ""
         },
         {
@@ -2295,6 +2556,42 @@
             "dairy"
           ],
           "photo": "",
+          "description": ""
+        },
+        {
+          "id": "p9",
+          "name": "Veg Biryani",
+          "type": "veg",
+          "spice": "medium",
+          "allergens": [],
+          "photo": "https://images.unsplash.com/photo-1736680056325-ba2ade6250a3?w=1200&auto=format&fit=crop&q=75",
+          "description": ""
+        },
+        {
+          "id": "p10",
+          "name": "Veg Pulao",
+          "type": "veg",
+          "spice": "medium",
+          "allergens": [],
+          "photo": "https://images.unsplash.com/photo-1697155406055-2db32d47ca07?w=1200&auto=format&fit=crop&q=75",
+          "description": ""
+        },
+        {
+          "id": "p11",
+          "name": "Paneer Do Pyaza",
+          "type": "veg",
+          "spice": "medium",
+          "allergens": [],
+          "photo": "https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?w=1200&auto=format&fit=crop&q=75",
+          "description": ""
+        },
+        {
+          "id": "p12",
+          "name": "Veg Dum Biryani",
+          "type": "veg",
+          "spice": "medium",
+          "allergens": [],
+          "photo": "https://images.unsplash.com/photo-1642821373181-696a54913e93?w=1200&auto=format&fit=crop&q=75",
           "description": ""
         }
       ],
@@ -2523,7 +2820,17 @@
     },
     {
       "kitchenId": 7,
-      "dishes": [],
+      "dishes": [
+        {
+          "id": "p1",
+          "name": "Lauki Chana Dal",
+          "type": "veg",
+          "spice": "medium",
+          "allergens": [],
+          "photo": "https://images.unsplash.com/photo-1736680056444-02b10f16a245?w=1200&auto=format&fit=crop&q=75",
+          "description": ""
+        }
+      ],
       "addons": [
         {
           "id": "extra-roti",
@@ -2778,7 +3085,44 @@
     },
     {
       "kitchenId": 8,
-      "dishes": [],
+      "dishes": [
+        {
+          "id": "p1",
+          "name": "Bhindi Masala",
+          "type": "veg",
+          "spice": "medium",
+          "allergens": [],
+          "photo": "https://images.unsplash.com/photo-1788621138183-dda1ef14b032?w=1200&auto=format&fit=crop&q=75",
+          "description": ""
+        },
+        {
+          "id": "p2",
+          "name": "Kadhai Paneer",
+          "type": "veg",
+          "spice": "medium",
+          "allergens": [],
+          "photo": "https://images.unsplash.com/photo-1631292784640-2b24be784d5d?w=1200&auto=format&fit=crop&q=75",
+          "description": ""
+        },
+        {
+          "id": "p3",
+          "name": "Baingan Bharta",
+          "type": "veg",
+          "spice": "medium",
+          "allergens": [],
+          "photo": "https://images.unsplash.com/photo-1777613112774-1a64a2c2d337?w=1200&auto=format&fit=crop&q=75",
+          "description": ""
+        },
+        {
+          "id": "p4",
+          "name": "Paneer Butter Masala",
+          "type": "veg",
+          "spice": "medium",
+          "allergens": [],
+          "photo": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=1200&auto=format&fit=crop&q=75",
+          "description": ""
+        }
+      ],
       "addons": [
         {
           "id": "extra-roti",
@@ -3633,10 +3977,23 @@
         {
           "status": "scheduled",
           "at": "2026-10-07T15:30:00.000Z"
+        },
+        {
+          "status": "paused",
+          "at": "2026-10-18T18:47:03.972Z",
+          "by": "customer"
+        },
+        {
+          "status": "scheduled",
+          "at": "2026-10-18T18:47:09.800Z",
+          "by": "customer"
         }
       ],
       "createdAt": "2026-10-07T15:30:00.000Z",
-      "updatedAt": "2026-10-07T15:30:00.000Z"
+      "updatedAt": "2026-10-18T18:47:09.800Z",
+      "makeupOrderId": null,
+      "makeupDate": null,
+      "skipCredit": null
     },
     {
       "id": 11,
@@ -4794,7 +5151,7 @@
       "type": "subscription",
       "date": "2026-10-19",
       "slot": "lunch",
-      "status": "scheduled",
+      "status": "delivered",
       "choices": {
         "sabzi": "Shahi Paneer",
         "dal": "Dal Makhani",
@@ -4830,10 +5187,35 @@
         {
           "status": "scheduled",
           "at": "2026-10-09T15:30:00.000Z"
+        },
+        {
+          "status": "preparing",
+          "at": "2026-10-19T09:21:40.674Z",
+          "by": "chef"
+        },
+        {
+          "status": "out_for_delivery",
+          "at": "2026-10-19T09:21:42.176Z",
+          "by": "chef"
+        },
+        {
+          "status": "delivered",
+          "at": "2026-10-19T09:21:51.116Z",
+          "by": "chef"
         }
       ],
       "createdAt": "2026-10-09T15:30:00.000Z",
-      "updatedAt": "2026-10-09T15:30:00.000Z"
+      "updatedAt": "2026-10-19T09:21:51.116Z",
+      "customerAway": {
+        "at": "2026-10-19T09:21:22.040Z"
+      },
+      "keepForPickup": true,
+      "outForDeliveryAt": "2026-10-19T09:21:42.176Z",
+      "outcome": "not_available",
+      "deliveredAt": "2026-10-19T09:21:51.116Z",
+      "charged": true,
+      "platformFee": 10,
+      "chefEarning": 90
     },
     {
       "id": 33,
@@ -10242,6 +10624,64 @@
       ],
       "createdAt": "2026-10-15T14:30:00.000Z",
       "updatedAt": "2026-10-15T14:30:00.000Z"
+    },
+    {
+      "id": 134,
+      "code": "RS1134",
+      "customerId": 9,
+      "kitchenId": 1,
+      "subscriptionId": 1,
+      "type": "subscription",
+      "date": "2026-11-09",
+      "slot": "lunch",
+      "status": "cancelled",
+      "choices": {
+        "sabzi": "Sev Tameta",
+        "dal": "Gujarati Kadhi",
+        "bread": "Rotli + Steamed Rice",
+        "sides": "Kachumber + Chhundo"
+      },
+      "addons": [],
+      "note": "",
+      "address": {
+        "id": 1,
+        "label": "Home",
+        "flat": "B-402, 4th floor",
+        "building": "Silver Oaks CHS",
+        "landmark": "opposite Lokhandwala market",
+        "formatted": "Silver Oaks CHS, opposite Lokhandwala market, Andheri West, Mumbai",
+        "lat": 19.1433,
+        "lng": 72.8268
+      },
+      "prefs": {
+        "diet": "veg",
+        "noOnionGarlic": false,
+        "spice": "mild",
+        "allergies": [],
+        "rotiCount": 3,
+        "rice": true
+      },
+      "mealType": "veg",
+      "amount": 95,
+      "addonsTotal": 0,
+      "paid": 95,
+      "refunded": 95,
+      "statusHistory": [
+        {
+          "status": "scheduled",
+          "at": "2026-10-18T18:47:03.972Z"
+        },
+        {
+          "status": "cancelled",
+          "at": "2026-10-18T18:47:09.800Z",
+          "by": "customer"
+        }
+      ],
+      "createdAt": "2026-10-18T18:47:03.972Z",
+      "updatedAt": "2026-10-18T18:47:09.800Z",
+      "isMakeup": true,
+      "makeupOf": 10,
+      "cancelReason": "Original meal resumed"
     }
   ],
   "subscriptions": [
@@ -10253,14 +10693,17 @@
       "plan": "5day",
       "slot": "lunch",
       "startDate": "2026-10-08",
-      "endDate": "2026-11-06",
+      "endDate": "2026-11-09",
       "mealsTotal": 22,
       "price": 2090,
       "status": "active",
       "autoRenew": true,
       "addressId": 1,
       "previousId": null,
-      "createdAt": "2026-10-07T15:30:00.000Z"
+      "createdAt": "2026-10-07T15:30:00.000Z",
+      "lowBalanceWarnedOn": null,
+      "skipsUsed": 0,
+      "freezes": []
     },
     {
       "id": 2,
@@ -10277,7 +10720,9 @@
       "autoRenew": true,
       "addressId": 1,
       "previousId": null,
-      "createdAt": "2026-10-09T15:30:00.000Z"
+      "createdAt": "2026-10-09T15:30:00.000Z",
+      "skipsUsed": 0,
+      "freezes": []
     },
     {
       "id": 3,
@@ -10294,7 +10739,9 @@
       "autoRenew": true,
       "addressId": 1,
       "previousId": null,
-      "createdAt": "2026-10-10T15:30:00.000Z"
+      "createdAt": "2026-10-10T15:30:00.000Z",
+      "skipsUsed": 0,
+      "freezes": []
     },
     {
       "id": 4,
@@ -10311,7 +10758,9 @@
       "autoRenew": true,
       "addressId": 1,
       "previousId": null,
-      "createdAt": "2026-10-08T15:30:00.000Z"
+      "createdAt": "2026-10-08T15:30:00.000Z",
+      "skipsUsed": 0,
+      "freezes": []
     },
     {
       "id": 5,
@@ -10328,7 +10777,9 @@
       "autoRenew": true,
       "addressId": 1,
       "previousId": null,
-      "createdAt": "2026-10-11T15:30:00.000Z"
+      "createdAt": "2026-10-11T15:30:00.000Z",
+      "skipsUsed": 0,
+      "freezes": []
     }
   ],
   "walletTransactions": [
@@ -12647,6 +13098,90 @@
       "ticketId": null,
       "note": "Kitchen holiday: Amma's Kitchen, 2026-10-19 lunch",
       "createdAt": "2026-10-14T11:30:00.000Z"
+    },
+    {
+      "id": 194,
+      "userId": 9,
+      "kind": "topup",
+      "available": 2000,
+      "reserved": 0,
+      "orderId": null,
+      "subscriptionId": null,
+      "ticketId": null,
+      "note": "Wallet top-up (SIM-DD248A245E)",
+      "createdAt": "2026-10-15T18:44:37.706Z"
+    },
+    {
+      "id": 195,
+      "userId": 9,
+      "kind": "release",
+      "available": 95,
+      "reserved": -95,
+      "orderId": 10,
+      "subscriptionId": 1,
+      "ticketId": null,
+      "note": "Skipped: Annapurna Kitchen, 2026-10-21 lunch. Moved to make-up day 2026-11-09",
+      "createdAt": "2026-10-18T18:47:03.971Z"
+    },
+    {
+      "id": 196,
+      "userId": 9,
+      "kind": "reserve",
+      "available": -95,
+      "reserved": 95,
+      "orderId": 134,
+      "subscriptionId": 1,
+      "ticketId": null,
+      "note": "Plan meal: Annapurna Kitchen, 2026-11-09 lunch",
+      "createdAt": "2026-10-18T18:47:03.972Z"
+    },
+    {
+      "id": 197,
+      "userId": 9,
+      "kind": "release",
+      "available": 95,
+      "reserved": -95,
+      "orderId": 134,
+      "subscriptionId": 1,
+      "ticketId": null,
+      "note": "Make-up day removed: Wed, 21 Oct lunch resumed",
+      "createdAt": "2026-10-18T18:47:09.800Z"
+    },
+    {
+      "id": 198,
+      "userId": 9,
+      "kind": "reserve",
+      "available": -95,
+      "reserved": 95,
+      "orderId": 10,
+      "subscriptionId": 1,
+      "ticketId": null,
+      "note": "Resumed: Annapurna Kitchen, Wed, 21 Oct lunch",
+      "createdAt": "2026-10-18T18:47:09.800Z"
+    },
+    {
+      "id": 199,
+      "userId": 10,
+      "kind": "charge",
+      "available": 0,
+      "reserved": -100,
+      "orderId": 32,
+      "subscriptionId": 2,
+      "ticketId": null,
+      "note": "Customer not available: Nanak's Rasoi (RS1032), meal charged",
+      "createdAt": "2026-10-19T09:21:51.117Z"
+    },
+    {
+      "id": 200,
+      "userId": 2,
+      "kind": "earning",
+      "available": 90,
+      "reserved": 0,
+      "orderId": 32,
+      "subscriptionId": null,
+      "ticketId": null,
+      "note": "RS1032 delivered (₹100 - ₹10 platform fee)",
+      "createdAt": "2026-10-19T09:21:51.117Z"
     }
   ],
   "reviews": [
@@ -12961,6 +13496,86 @@
       "link": "chef-settings.html",
       "read": false,
       "createdAt": "2026-10-14T12:30:00.000Z"
+    },
+    {
+      "id": 2,
+      "userId": 9,
+      "type": "meal_paused",
+      "title": "Skipped Wed, 21 Oct lunch",
+      "body": "Added as a make-up day on Mon, 9 Nov.",
+      "link": "calendar.html",
+      "read": false,
+      "createdAt": "2026-10-18T18:47:04.045Z"
+    },
+    {
+      "id": 3,
+      "userId": 1,
+      "type": "meal_paused",
+      "title": "Neha Kulkarni skipped Wed, 21 Oct lunch",
+      "body": "RS1010 removed from that day's prep. Make-up meal on Mon, 9 Nov.",
+      "link": "chef-dashboard.html?date=2026-10-21",
+      "read": false,
+      "createdAt": "2026-10-18T18:47:04.046Z"
+    },
+    {
+      "id": 4,
+      "userId": 1,
+      "type": "meal_resumed",
+      "title": "Neha Kulkarni resumed Wed, 21 Oct lunch",
+      "body": "RS1010 is back on that day's prep.",
+      "link": "chef-dashboard.html?date=2026-10-21",
+      "read": false,
+      "createdAt": "2026-10-18T18:47:09.800Z"
+    },
+    {
+      "id": 5,
+      "userId": 2,
+      "type": "order_changed",
+      "title": "Rohan Desai won't be home for Mon, 19 Oct lunch",
+      "body": "RS1032: no need to deliver. The meal is still paid; you can keep it for pickup.",
+      "link": "chef-dashboard.html?date=2026-10-19",
+      "read": false,
+      "createdAt": "2026-10-19T09:21:22.057Z"
+    },
+    {
+      "id": 6,
+      "userId": 10,
+      "type": "order_status",
+      "title": "Nanak's Rasoi is keeping your lunch for pickup",
+      "body": "Mon, 19 Oct lunch. Collect it from the kitchen when you're back today.",
+      "link": "orders.html?id=32",
+      "read": false,
+      "createdAt": "2026-10-19T09:21:34.721Z"
+    },
+    {
+      "id": 7,
+      "userId": 10,
+      "type": "order_status",
+      "title": "Your lunch from Nanak's Rasoi is being prepared",
+      "body": "RS1032 · Mon, 19 Oct lunch",
+      "link": "orders.html?id=32",
+      "read": false,
+      "createdAt": "2026-10-19T09:21:40.674Z"
+    },
+    {
+      "id": 8,
+      "userId": 10,
+      "type": "order_status",
+      "title": "Your lunch from Nanak's Rasoi is out for delivery",
+      "body": "RS1032 · Mon, 19 Oct lunch",
+      "link": "orders.html?id=32",
+      "read": false,
+      "createdAt": "2026-10-19T09:21:42.177Z"
+    },
+    {
+      "id": 9,
+      "userId": 10,
+      "type": "order_status",
+      "title": "Nanak's Rasoi couldn't reach you for Mon, 19 Oct lunch",
+      "body": "The meal is charged. If you will be away, skip ahead of time or tap \"I won't be home\".",
+      "link": "orders.html?id=32",
+      "read": false,
+      "createdAt": "2026-10-19T09:21:51.117Z"
     }
   ],
   "auditLog": [
@@ -13071,6 +13686,24 @@
       "target": "Meera's Pulao House",
       "detail": "Meera Joshi applied to cook as \"Meera's Pulao House\" (Oshiwara).",
       "createdAt": "2026-10-14T12:30:00.000Z"
+    },
+    {
+      "id": 13,
+      "action": "KITCHEN_UPDATED",
+      "actorId": 1,
+      "actorName": "Asha Sharma (chef)",
+      "target": "Annapurna Kitchen",
+      "detail": "Kitchen settings updated.",
+      "createdAt": "2026-10-19T09:10:28.500Z"
+    },
+    {
+      "id": 14,
+      "action": "KITCHEN_UPDATED",
+      "actorId": 1,
+      "actorName": "Asha Sharma (chef)",
+      "target": "Annapurna Kitchen",
+      "detail": "Kitchen settings updated.",
+      "createdAt": "2026-10-19T09:10:30.016Z"
     }
   ]
 }
