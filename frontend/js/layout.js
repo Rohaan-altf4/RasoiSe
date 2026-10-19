@@ -23,6 +23,7 @@
         location.href = u ? '/index.html' : `/login.html?next=${encodeURIComponent(location.pathname + location.search)}`;
         return new Promise(() => {}); // stop the page script
       }
+      if (window.I18n) I18n.syncWithAccount(u);
       renderHeader();
       renderFooter();
       renderBottomNav();
@@ -114,7 +115,7 @@
         ${icon('map-pin', 'text-saffron')}
         <span class="truncate" style="min-width:0">
           <span class="loc-label">${esc(origin ? origin.label : 'Set location')}${icon('chevron-down', 'icon-xs')}</span>
-          <span class="loc-sub truncate" style="display:block">${esc(origin ? (origin.sub || 'Andheri West') : 'To see kitchens that deliver to you')}</span>
+          <span class="loc-sub truncate" style="display:block">${esc(origin ? (origin.sub || RASOI_AREA.name) : 'To see kitchens that deliver to you')}</span>
         </span>
       </button>` : '';
 
@@ -164,12 +165,30 @@
         ${search}
         <nav class="header-actions" aria-label="Main">
           ${links}
-          ${role !== 'admin' ? themeButtonHtml() : ''}
+          ${role !== 'admin' ? langMenuHtml() + themeButtonHtml() : ''}
           ${right}
         </nav>
       </div>`;
 
     wireHeader();
+  }
+
+  // ---------- Language menu (English / हिन्दी / मराठी / ગુજરાતી) ----------
+  function langMenuHtml() {
+    if (!window.I18n) return '';
+    const cur = I18n.LANGS[I18n.lang];
+    return `
+      <div class="dropdown">
+        <button type="button" class="icon-btn lang-btn" id="langBtn" aria-haspopup="true" aria-expanded="false" aria-label="Language" title="Language">
+          ${icon('languages')}<span class="lang-short" translate="no">${cur.short}</span>
+        </button>
+        <div class="menu" id="langMenu" role="menu" style="min-width:180px" translate="no">
+          ${Object.entries(I18n.LANGS).map(([code, l]) => `
+            <button type="button" class="menu-item" role="menuitemradio" aria-checked="${code === I18n.lang}" data-lang="${code}" lang="${code}">
+              ${code === I18n.lang ? icon('check', 'icon-sm') : '<span style="width:16px"></span>'}${l.name}
+            </button>`).join('')}
+        </div>
+      </div>`;
   }
 
   // ---------- Light / dark toggle ----------
@@ -289,6 +308,13 @@
         if (open && window.Live) Live.openBell();
       });
     }
+    const langBtn = document.getElementById('langBtn');
+    if (langBtn) {
+      langBtn.addEventListener('click', e => { e.stopPropagation(); toggleMenu(langBtn, document.getElementById('langMenu')); });
+      document.querySelectorAll('[data-lang]').forEach(b => b.addEventListener('click', () => {
+        if (b.dataset.lang !== I18n.lang) I18n.setLang(b.dataset.lang);
+      }));
+    }
     const themeBtn = document.getElementById('themeBtn');
     if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
     const out = document.getElementById('signOutBtn');
@@ -356,7 +382,7 @@
           <div><h3>Cook</h3><ul>${chefLinks}</ul></div>
           <div><h3>Where we deliver</h3><ul><li>Lokhandwala</li><li>Versova & Seven Bungalows</li><li>Oshiwara</li></ul></div>
         </div>
-        <div class="legal"><span>© ${new Date().getFullYear()} RasoiSe · Andheri West, Mumbai</span><span>Payments are simulated in this version.</span></div>
+        <div class="legal"><span>© ${new Date().getFullYear()} RasoiSe · ${esc(RASOI_AREA.name)}, ${esc(RASOI_AREA.city)}</span><span>Payments are simulated in this version.</span></div>
       </div>`;
     document.body.appendChild(f);
   }
