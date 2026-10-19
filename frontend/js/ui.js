@@ -9,19 +9,21 @@
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
   const money = n => '₹' + Math.round(Number(n) || 0).toLocaleString('en-IN');
+  // Dates follow the chosen language (digits stay 0-9); money always uses Indian grouping
+  const loc = () => (window.I18n ? I18n.locale() : 'en-IN');
 
   // 'YYYY-MM-DD' -> 'Thu, 16 Oct'
   function date(d, opts = { weekday: 'short', day: 'numeric', month: 'short' }) {
     if (!d) return '';
-    return new Date(d + 'T00:00:00Z').toLocaleDateString('en-IN', { ...opts, timeZone: 'UTC' });
+    return new Date(d + 'T00:00:00Z').toLocaleDateString(loc(), { ...opts, timeZone: 'UTC' });
   }
 
   function dateTime(iso) {
-    return new Date(iso).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit', timeZone: 'Asia/Kolkata' });
+    return new Date(iso).toLocaleString(loc(), { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit', timeZone: 'Asia/Kolkata' });
   }
 
   function timeOnly(iso) {
-    return new Date(iso).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', timeZone: 'Asia/Kolkata' });
+    return new Date(iso).toLocaleTimeString(loc(), { hour: 'numeric', minute: '2-digit', timeZone: 'Asia/Kolkata' });
   }
 
   function relTime(iso) {
@@ -227,7 +229,7 @@
     preparing: ['Preparing', 'badge-info', 'chef-hat'],
     out_for_delivery: ['Out for delivery', 'badge-info', 'bike'],
     delivered: ['Delivered', 'badge-neutral', 'check'],
-    paused: ['Paused', 'badge-warning', 'pause'],
+    paused: ['Skipped', 'badge-warning', 'calendar-x'],
     cancelled: ['Cancelled', 'badge-danger', 'x'],
     holiday: ['Chef holiday', 'badge-neutral', 'palmtree'],
     pending: ['Pending approval', 'badge-warning', 'hourglass'],
@@ -268,8 +270,17 @@
     return `<span class="stars" aria-label="${r} out of 5 stars">${'★'.repeat(r)}<span style="color:var(--star-off)">${'★'.repeat(5 - r)}</span></span>`;
   }
 
-  function img(url, alt = '', cls = '') {
-    return `<img src="${esc(url || PLACEHOLDER)}" alt="${esc(alt)}" class="${cls}" loading="lazy" onerror="this.onerror=null;this.src='${PLACEHOLDER}'">`;
+  // Unsplash photos come in any width, so offer a few and let the browser pick the smallest that
+  // fits (a card on a phone doesn't need the 1200px original). `sizes` = how wide it shows.
+  function img(url, alt = '', cls = '', sizes = '(max-width: 640px) 100vw, 400px') {
+    let src = url || PLACEHOLDER;
+    let srcset = '';
+    if (/^https:\/\/images\.unsplash\.com\//.test(src)) {
+      const at = w => (/[?&]w=\d+/.test(src) ? src.replace(/([?&]w=)\d+/, `$1${w}`) : `${src}${src.includes('?') ? '&' : '?'}w=${w}`);
+      srcset = ` srcset="${[400, 800, 1200].map(w => `${esc(at(w))} ${w}w`).join(', ')}" sizes="${esc(sizes)}"`;
+      src = at(800);
+    }
+    return `<img src="${esc(src)}"${srcset} alt="${esc(alt)}" class="${cls}" loading="lazy" decoding="async" onerror="this.onerror=null;this.removeAttribute('srcset');this.src='${PLACEHOLDER}'">`;
   }
 
   function empty({ icon: ic = 'utensils', title, body = '', action = '' }) {
@@ -302,6 +313,51 @@
   function qs(name) {
     return new URLSearchParams(location.search).get(name);
   }
+
+  // ---------- Show / hide password ----------
+  // Every <input type="password"> on any page (including ones added later in dialogs)
+  // gets an eye button. One helper, applied automatically.
+  function addPasswordToggle(input) {
+    if (input.dataset.pwToggle) return;
+    input.dataset.pwToggle = '1';
+    const wrap = document.createElement('span');
+    wrap.className = 'pw-wrap';
+    input.parentNode.insertBefore(wrap, input);
+    wrap.appendChild(input);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'pw-toggle';
+    btn.setAttribute('aria-label', 'Show password');
+    btn.setAttribute('aria-pressed', 'false');
+    if (input.id) btn.setAttribute('aria-controls', input.id);
+    btn.innerHTML = `<span class="pw-show">${icon('eye')}</span><span class="pw-hide">${icon('eye-off')}</span>`;
+    btn.addEventListener('click', () => {
+      const show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      btn.setAttribute('aria-pressed', String(show));
+      btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+      input.focus({ preventScroll: true });
+    });
+    wrap.appendChild(btn);
+    icons(btn);
+  }
+
+  function enhancePasswords(root = document) {
+    root.querySelectorAll('input[type="password"]:not([data-pw-toggle])').forEach(addPasswordToggle);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    enhancePasswords();
+    new MutationObserver(muts => {
+      for (const m of muts) {
+        m.addedNodes.forEach(n => {
+          if (n.nodeType !== 1) return;
+          if (n.matches && n.matches('input[type="password"]')) addPasswordToggle(n);
+          else if (n.querySelector && n.querySelector('input[type="password"]')) enhancePasswords(n);
+        });
+      }
+    }).observe(document.body, { childList: true, subtree: true });
+  });
 
   window.UI = {
     PLACEHOLDER, esc, money, date, dateTime, timeOnly, relTime, time12, distance, icons, icon,

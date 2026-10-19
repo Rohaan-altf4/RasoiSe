@@ -116,9 +116,9 @@
     const isOwner = role === 'chef' && App.session.kitchen && App.session.kitchen.id === k.id;
     root.innerHTML = `
       ${k.status !== 'approved' ? `<div class="alert alert-warning" style="margin-bottom:16px">${icon('eye')}<div><div class="a-title">Preview</div>This kitchen is ${esc(UI.statusLabel(k.status).toLowerCase())} and not visible to customers yet.</div></div>` : ''}
-      <section class="grid grid-cols-1 gap-3 lg:grid-cols-[2fr_1fr]">
-        <div class="kcard-img" style="aspect-ratio:16/8">${UI.img(photos[0], `Food from ${k.name}`)}</div>
-        ${photos.length > 1 ? `<div class="hidden lg:grid grid-cols-2 gap-3">${photos.slice(1, 5).map((p, i) => `<button type="button" class="kcard-img" style="aspect-ratio:1;border:0;padding:0;cursor:pointer" data-action="photo" data-src="${esc(p)}" aria-label="View photo ${i + 2}">${UI.img(p, '')}</button>`).join('')}</div>` : ''}
+      <section class="grid grid-cols-1 gap-3 ${photos.length > 1 ? 'lg:grid-cols-[2fr_1fr]' : ''}">
+        <div class="kcard-img" style="aspect-ratio:${photos.length > 1 ? '16/8' : '16/6'}">${UI.img(photos[0], `Food from ${k.name}`, '', '(max-width: 1024px) 100vw, 66vw')}</div>
+        ${photos.length > 1 ? `<div class="hidden lg:grid ${photos.length === 2 ? 'grid-cols-1' : 'grid-cols-2'} gap-3">${photos.slice(1, 5).map((p, i) => `<button type="button" class="kcard-img" style="aspect-ratio:${photos.length === 2 ? 'auto' : '1'};border:0;padding:0;cursor:pointer" data-action="photo" data-src="${esc(p)}" aria-label="View photo ${i + 2}">${UI.img(p, '')}</button>`).join('')}</div>` : ''}
       </section>
       ${photos.length > 1 ? `<div class="chip-scroll lg:hidden" style="margin-top:10px">${photos.map((p, i) => `<button type="button" style="border:0;padding:0;border-radius:10px;overflow:hidden;width:72px;height:56px;flex-shrink:0;cursor:pointer" data-action="photo" data-src="${esc(p)}" aria-label="View photo ${i + 1}">${UI.img(p, '')}</button>`).join('')}</div>` : ''}
 
@@ -142,6 +142,7 @@
             ${stat('Order by', `${UI.time12(k.cutoffTime)} same day`)}
             ${stat('Delivers within', `${(k.radiusM / 1000).toFixed(1)} km`)}
           </dl>
+          ${s.reliability ? `<p class="text-sm" style="margin:10px 0 0">${icon('shield-check', 'icon-xs')} <span>Delivered ${s.reliability.percent}% of booked meals in the last 30 days</span></p>` : ''}
           ${k.fssai ? `<p class="text-xs text-subtle" style="margin:10px 0 0">${icon('badge-check', 'icon-xs')} FSSAI licence ${esc(k.fssai)}</p>` : ''}
           ${k.deliversToYou === false ? `<div class="alert alert-warning" style="margin-top:16px">${icon('map-pin-off')}<div>This kitchen delivers within ${(k.radiusM / 1000).toFixed(1)} km. Your address is ${UI.distance(k.distance)} away.</div><button class="btn btn-secondary btn-sm" data-action="change-address">Change address</button></div>` : ''}
           ${k.paused ? `<div class="alert alert-info" style="margin-top:16px">${icon('circle-pause')}<div>${esc(k.chefName || 'The chef')} has paused new orders for now. Existing plans continue as usual.</div></div>` : ''}
@@ -419,7 +420,9 @@
         <div class="kv total"><span>Total</span><span class="num">${money(total)}</span></div>
       </div>
       ${ctaHtml(total, book.mode === 'trial' ? `Book trial · ${money(total)}` : `Place order · ${money(total)}`)}
-      <p class="text-xs text-subtle" style="margin:10px 0 0;text-align:center">Cancel free until ${UI.time12(k.cutoffTime)} on the day.</p>`;
+      ${book.date && book.slot && pastDeadline(book.date, book.slot)
+        ? `<p class="text-xs text-warning" style="margin:10px 0 0;text-align:center">${icon('lock', 'icon-xs')} <span>This meal is inside the ${k.noticeHours}-hour notice window. Once booked it can't be cancelled.</span></p>`
+        : `<p class="text-xs text-subtle" style="margin:10px 0 0;text-align:center"><span>Cancel free up to ${k.noticeHours} hours before the meal.</span></p>`}`;
 
     body.querySelectorAll('[data-date]').forEach(b => b.addEventListener('click', () => {
       book.date = b.dataset.date;
@@ -487,7 +490,8 @@
     const dates = book.start ? planDatesPreview(book.start, book.plan) : [];
     const firstDay = bookableDays()[0];
     body.innerHTML = `
-      <p class="text-sm text-muted" style="margin:0 0 12px">Fresh food every day. Pause any day before ${UI.time12(k.cutoffTime)} and the money goes back to your wallet.</p>
+      <p class="text-sm text-muted" style="margin:0 0 12px">Fresh food every day.</p>
+      ${policyHtml()}
       <div class="grid grid-cols-2 gap-2" role="radiogroup" aria-label="Plan">
         ${[['5day', 'Mon–Fri', 22, k.pricing.plan5], ['7day', 'Every day', 30, k.pricing.plan7]].map(([p, l, n, price]) => `
           <label class="option-card" style="padding:12px">
@@ -556,8 +560,34 @@
     });
   }
 
+  // When a meal's change window closes: slot start minus the kitchen's notice period (IST).
+  function pastDeadline(date, slot) {
+    const t = (k.slotTimes || {})[slot] || (slot === 'lunch' ? '12:30' : '19:30');
+    return Date.parse(`${date}T${t}:00+05:30`) - (k.noticeHours || 24) * 3600e3 < Date.now();
+  }
+
+  function policyHtml() {
+    const lim = k.skipLimits || { plan5: 4, plan7: 6 };
+    return `<div class="panel text-sm" style="margin:0 0 14px">
+        <strong style="display:block;margin-bottom:6px">${icon('info', 'icon-xs')} How changes work</strong>
+        <ul style="margin:0;padding-left:18px;display:grid;gap:4px">
+          <li>Skip, change or cancel a meal up to ${k.noticeHours || 24} hours before it.</li>
+          <li>A skipped meal becomes a make-up day at the end of your plan. Up to ${lim.plan5} on a 22-meal plan, ${lim.plan7} on a 30-meal plan.</li>
+          <li>Away for more than a week? Freeze the plan once a month.</li>
+          <li>Cancel the plan anytime. Unused meals and make-up days are refunded to your wallet.</li>
+        </ul>
+      </div>`;
+  }
+
   async function startPlan(btn) {
     if (!book.start) { UI.toast('Choose a start date.', { type: 'error' }); return; }
+    let seen = false;
+    try { seen = localStorage.getItem('rasoi_policy_ok') === '1'; } catch (e) { /* storage blocked */ }
+    if (!seen) {
+      const yes = await UI.confirm({ title: 'Before you start', body: `Changes need ${k.noticeHours || 24} hours' notice. Skipped meals move to the end of your plan as make-up days. Late changes and missed deliveries are still charged.`, confirmText: 'Got it, continue', cancelText: 'Go back' });
+      if (!yes) return;
+      try { localStorage.setItem('rasoi_policy_ok', '1'); } catch (e) { /* storage blocked */ }
+    }
     if (!(await needAddress())) return;
     await UI.busy(btn, async () => {
       try {

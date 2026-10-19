@@ -208,7 +208,7 @@
   }
 
   async function searchPlaces(q) {
-    // Bias results to Andheri West
+    // Bias results to the service area
     const r = await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=5&countrycodes=in&viewbox=72.79,19.17,72.87,19.10&bounded=1&q=${encodeURIComponent(q)}`, { headers: { 'Accept-Language': 'en' } });
     const list = await r.json();
     return list.map(x => ({ label: x.display_name.split(', ').slice(0, 4).join(', '), lat: Number(x.lat), lng: Number(x.lon) }));
@@ -270,12 +270,12 @@
       pickedEl.innerHTML = `${icon('map-pin', 'icon-xs')} ${esc(formatted || 'Finding address…')}`;
       UI.icons(pickedEl);
       // Report the spot straight away; the readable address follows once it's looked up
-      onChange({ lat: Math.round(p.lat * 1e6) / 1e6, lng: Math.round(p.lng * 1e6) / 1e6, formatted: formatted || `${nearestLocality(p)}, Andheri West`, locality: nearestLocality(p) });
+      onChange({ lat: Math.round(p.lat * 1e6) / 1e6, lng: Math.round(p.lng * 1e6) / 1e6, formatted: formatted || `${nearestLocality(p)}, ${RASOI_AREA.name}`, locality: nearestLocality(p) });
       const text = formatted || await reverseGeocode(p);
       if (my !== seq) return;
       const locality = nearestLocality(p);
-      const label = text || `${locality}, Andheri West`;
-      pickedEl.innerHTML = `${icon('map-pin', 'icon-xs')} ${esc(label)}${outOfArea(p) ? ' <span class="badge badge-warning">Outside our area: we deliver in Andheri West</span>' : ''}`;
+      const label = text || `${locality}, ${RASOI_AREA.name}`;
+      pickedEl.innerHTML = `${icon('map-pin', 'icon-xs')} ${esc(label)}${outOfArea(p) ? ' <span class="badge badge-warning">Outside our area: we deliver in ${esc(RASOI_AREA.name)}</span>' : ''}`;
       UI.icons(pickedEl);
       onChange({ lat: Math.round(p.lat * 1e6) / 1e6, lng: Math.round(p.lng * 1e6) / 1e6, formatted: label, locality });
     }

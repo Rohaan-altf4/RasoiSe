@@ -7,7 +7,13 @@
     "start": "node server.js",
     "seed": "node seed.js",
     "migrate": "node migrate.js",
-    "test": "node test/run.js"
+    "test": "node test/run.js",
+    "i18n": "node i18n-source/build.js",
+    "test:mongo": "node test/run.js --mongo",
+    "mongo:import": "node mongo-import.js",
+    "build:css": "tailwindcss -c tailwind.config.js -i tailwind-input.css -o ../frontend/css/tailwind.css --minify",
+    "build:icons": "node build-icons.js",
+    "build": "npm run build:css && npm run build:icons"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +23,12 @@
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.5",
     "express": "^5.2.1",
+    "mongodb": "^6.21.0",
     "multer": "^2.4.0"
+  },
+  "devDependencies": {
+    "lucide": "^0.469.0",
+    "puppeteer-core": "^23.11.1",
+    "tailwindcss": "^3.4.17"
   }
 }

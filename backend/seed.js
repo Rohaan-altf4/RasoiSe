@@ -4,6 +4,7 @@
 //
 // Everything goes through the same wallet/order functions the app uses, so every rupee
 // reconciles. Stop the server first, then:  npm run seed
+// (Seeds MongoDB when MONGODB_URI is set in .env, otherwise data.json.)
 // (The admin account is created from .env when the server starts.)
 
 const path = require('path');
@@ -149,6 +150,9 @@ function run() {
     users[s.key] = u;
     kitchens[s.key] = k;
   });
+  // Kitchen and dish photos that actually show each kitchen's food
+  require('./lib/demo-photos').apply(d);
+
   // Today's special at Annapurna
   d.menus[0].specials.push({ date: today, name: 'Methi Thepla (4 pcs)', description: 'With chhundo and curd', price: 60 });
 
@@ -335,4 +339,14 @@ function run() {
   console.log(`Demo password for every seeded chef and customer: ${PASSWORD}`);
 }
 
-run();
+
+// With MongoDB, connect first (without importing data.json) and wait for every write to land
+(async () => {
+  await db.init({ importFile: false });
+  run();
+  await db.close();
+  if (db.USE_MONGO) console.log(`Saved to MongoDB database "${db.MONGODB_DB}".`);
+})().catch(err => {
+  console.error(err.message);
+  process.exit(1);
+});

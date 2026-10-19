@@ -17,6 +17,7 @@
     if (![...prefForm.rotiCount.options].some(o => o.value === prefForm.rotiCount.value)) prefForm.rotiCount.value = '4';
     prefForm.defaultSlot.value = p.defaultSlot || 'lunch';
     prefForm.allergies.value = (p.allergies || []).join(', ');
+    prefForm.cookCancel.value = p.cookCancel === 'refund' ? 'refund' : 'makeup';
     syncJain();
   }
 
@@ -33,7 +34,7 @@
     const preferences = {
       diet: prefForm.diet.value, noOnionGarlic: prefForm.noOnionGarlic.checked, spice: prefForm.spice.value,
       rotiCount: Number(prefForm.rotiCount.value), rice: prefForm.rice.checked, defaultSlot: prefForm.defaultSlot.value,
-      allergies: prefForm.allergies.value
+      allergies: prefForm.allergies.value, cookCancel: prefForm.cookCancel.value
     };
     await UI.busy(prefForm.querySelector('[type=submit]'), async () => {
       try {

@@ -51,6 +51,15 @@ app.get(['/calender.html', '/shef-dashboard.html'], (req, res) => {
 // Chef photos live in UPLOADS_DIR (frontend/uploads by default, or DATA_DIR/uploads on a host disk)
 app.use('/uploads', express.static(UPLOADS_DIR, { maxAge: '7d' }));
 
+// The service area for every page, from the one value in lib/models.js
+app.get('/js/area.js', (req, res) => {
+  res.type('application/javascript').set('Cache-Control', 'no-cache')
+    .send(`window.RASOI_AREA = ${JSON.stringify(require('./lib/models').SERVICE_AREA)};`);
+});
+
+// Link previews (WhatsApp etc.) for the home, kitchen and cook-signup pages
+require('./lib/previews').register(app);
+
 // Code files are revalidated on every load so updates show up immediately; photos can be cached.
 app.use(express.static(FRONTEND, {
   extensions: ['html'],
@@ -71,7 +80,7 @@ app.get('/api/config', (req, res) => {
   res.json({
     mapsKey: process.env.GOOGLE_MAPS_API_KEY || '',
     mapsProvider: process.env.GOOGLE_MAPS_API_KEY ? 'google' : 'leaflet',
-    serviceArea: { name: 'Andheri West', center: { lat: 19.1364, lng: 72.8296 } },
+    serviceArea: require('./lib/models').SERVICE_AREA,
     localities: Object.entries(require('./lib/models').LOCALITIES).map(([name, c]) => ({ name, ...c })),
     today: time.today()
   });
@@ -126,15 +135,29 @@ function ensureAdmin() {
   });
 }
 
-function start() {
-  db.load();
+async function start() {
+  await db.init(); // connects to MongoDB when MONGODB_URI is set, else reads data.json
   ensureAdmin();
   require('./lib/jobs').start();
-  return app.listen(PORT, () => {
+  const server = app.listen(PORT, () => {
     console.log(`RasoiSe running at http://localhost:${PORT}`);
   });
+  // On Ctrl+C / host shutdown, finish any database writes still in flight before exiting
+  const stop = async () => {
+    server.close();
+    await db.close().catch(() => {});
+    process.exit(0);
+  };
+  process.once('SIGINT', stop);
+  process.once('SIGTERM', stop);
+  return server;
 }
 
-if (require.main === module) start();
+if (require.main === module) {
+  start().catch(err => {
+    console.error(`[startup] ${err.message}`);
+    process.exit(1);
+  });
+}
 
 module.exports = { app, start, defaultPreferences };

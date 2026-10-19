@@ -5,6 +5,7 @@
   const grid = document.getElementById('kitchenGrid');
   const state = { kitchens: [], filters: new Set(), sort: 'distance', q: '', cuisine: '', showOutside: false, view: 'list' };
 
+  document.title = `RasoiSe · Home-cooked meals in ${RASOI_AREA.name}`;
   grid.innerHTML = UI.skeletonCards(6);
   await App.init({ active: 'home', search: true });
   const isCustomer = App.role === 'customer';
@@ -76,11 +77,12 @@
   }
 
   function filtered() {
-    const q = state.q.toLowerCase();
+    const q = state.q.trim();
     let list = state.kitchens.filter(k => {
+      // Forgiving match: Hindi/Marathi/Gujarati letters and near spellings (see js/search.js)
       if (q) {
-        const hay = [k.name, k.chefName, k.bio, (k.cuisines || []).join(' '), (k.todaysMenu || []).join(' '), k.location.locality].join(' ').toLowerCase();
-        if (!hay.includes(q)) return false;
+        const hay = [k.name, k.chefName, k.bio, (k.cuisines || []).join(' '), (k.todaysMenu || []).join(' '), k.location.locality].join(' ');
+        if (!SearchText.matches(hay, q)) return false;
       }
       if (state.cuisine && !(k.cuisines || []).includes(state.cuisine)) return false;
       if (state.filters.has('walk') && !(k.distance != null && k.distance <= 1000)) return false;
@@ -146,7 +148,7 @@
     const { list, outsideCount } = filtered();
     const title = document.getElementById('resultsTitle');
     const o = App.origin();
-    title.textContent = `${list.length} kitchen${list.length === 1 ? '' : 's'} ${o ? `delivering to ${o.label}` : 'in Andheri West'}`;
+    title.textContent = `${list.length} kitchen${list.length === 1 ? '' : 's'} ${o ? `delivering to ${o.label}` : `in ${RASOI_AREA.name}`}`;
     if (!list.length) {
       const hasFilters = state.filters.size || state.q || state.cuisine;
       grid.innerHTML = `<div style="grid-column:1/-1">${UI.empty({
@@ -214,14 +216,27 @@
     const openToday = k => k.nextOpening && k.nextOpening.date === App.session.today;
     document.getElementById('todayNote').textContent = cooking.some(openToday) ? '' : 'Orders for today have closed. Book for tomorrow.';
     document.getElementById('todayList').innerHTML = cooking.map(k => {
-      const main = k.todaysSpecial ? k.todaysSpecial.name : k.todaysMenu[0];
-      const rest = k.todaysMenu.slice(k.todaysSpecial ? 0 : 1, 3).join(' · ');
+      const dish = k.todaysDish || { name: k.todaysMenu[0], photo: '', type: k.dietType === 'veg' ? 'veg' : 'nonveg' };
+      const thali = (k.todaysSpecial ? [k.todaysSpecial.name] : []).concat(k.todaysMenu).slice(0, 3).join(' · ');
+      const special = k.todaysSpecial ? `<span class="chip-on-img">${icon('sparkles', 'icon-xs')}Special ${money(k.todaysSpecial.price)}</span>` : '';
+      // With a photo of the dish itself, the card is about the dish. Without one, the photo is the
+      // kitchen's, so the card is titled with the kitchen and lists today's thali underneath.
+      if (dish.photo) {
+        return `<a class="dish-card" href="/kitchen.html?id=${k.id}">
+          <div class="dc-img">${UI.img(dish.photo, dish.name)}${special}</div>
+          <div class="dc-body">
+            <div class="dc-title flex items-center gap-2">${UI.foodMark(dish.type)}<span class="truncate" translate="no">${esc(dish.name)}</span></div>
+            <div class="dc-sub truncate"><span>with</span> <span translate="no">${esc(k.todaysMenu.filter(x => x !== dish.name).slice(0, 2).join(' · '))}</span></div>
+            <div class="dc-sub truncate" style="margin-top:6px;color:var(--ink-2)"><span translate="no">${esc(k.name)}</span> · ${money(k.pricing.single)}</div>
+          </div>
+        </a>`;
+      }
       return `<a class="dish-card" href="/kitchen.html?id=${k.id}">
-        <div class="dc-img">${UI.img(k.coverUrl, main)}${k.todaysSpecial ? `<span class="chip-on-img">${icon('sparkles', 'icon-xs')}Special ${money(k.todaysSpecial.price)}</span>` : ''}</div>
+        <div class="dc-img">${UI.img(k.coverUrl, k.name)}${special}</div>
         <div class="dc-body">
-          <div class="dc-title flex items-center gap-2">${UI.foodMark(k.dietType === 'veg' ? 'veg' : 'nonveg')}<span class="truncate">${esc(main)}</span></div>
-          <div class="dc-sub truncate">${esc(rest)}</div>
-          <div class="dc-sub truncate" style="margin-top:6px;color:var(--ink-2)">${esc(k.name)} · ${money(k.pricing.single)}</div>
+          <div class="dc-title flex items-center gap-2">${UI.foodMark(dish.type)}<span class="truncate" translate="no">${esc(k.name)}</span></div>
+          <div class="dc-sub" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden"><span>Today's thali:</span> <span translate="no">${esc(thali)}</span></div>
+          <div class="dc-sub truncate" style="margin-top:6px;color:var(--ink-2)">${money(k.pricing.single)} <span>per meal</span></div>
         </div>
       </a>`;
     }).join('');

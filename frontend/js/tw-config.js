@@ -1,5 +1,5 @@
-// Shared Tailwind (CDN) config. Tailwind is used for layout utilities only;
-// colours and components come from css/style.css.
+// Runs first in <head> on every page: page fade-in and light/dark theme.
+// (Tailwind layout classes now come from the ready-made css/tailwind.css; see backend/tailwind.config.js.)
 // Keep the page hidden until the header, styles and icons are ready, so there is no flash of
 // unstyled content. layout.js reveals it; the timer makes sure a page never stays hidden.
 document.documentElement.classList.add('page-loading');
@@ -21,25 +21,3 @@ setTimeout(() => document.documentElement.classList.remove('page-loading'), 2500
     });
   }
 })();
-
-window.tailwind = window.tailwind || {};
-tailwind.config = {
-  corePlugins: { preflight: false },
-  theme: {
-    extend: {
-      colors: {
-        brandCream: '#FDF8F0',
-        brandAlmond: '#F8E7C8',
-        brandAmber: '#E68A00',
-        brandAmberHover: '#CF7B00',
-        brandDark: '#331507',
-        brandBorder: '#EEDBCA',
-        brandFooter: '#241005'
-      },
-      fontFamily: {
-        sans: ['Inter', 'sans-serif'],
-        serif: ['Playfair Display', 'serif']
-      }
-    }
-  }
-};

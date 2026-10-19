@@ -150,7 +150,7 @@
         if (!hasMaps) {
           const l = cfg.localities.find(x => x.name === form.locality.value);
           if (!l) { UI.setFieldError(form, 'locality', 'Choose your area.'); return; }
-          loc = { lat: l.lat, lng: l.lng, formatted: `${l.name}, Andheri West, Mumbai` };
+          loc = { lat: l.lat, lng: l.lng, formatted: `${l.name}, ${RASOI_AREA.name}, ${RASOI_AREA.city}` };
         }
         if (!loc) { UI.toast('Pin your location on the map first.', { type: 'error' }); return; }
         if (!form.flat.value.trim()) { UI.setFieldError(form, 'flat', 'Add your flat or house number.'); form.flat.focus(); return; }
@@ -210,7 +210,7 @@
     UI.openModal(dlg);
     dlg.querySelectorAll('[data-loc]').forEach(b => b.addEventListener('click', () => {
       const l = cfg.localities.find(x => x.name === b.dataset.loc);
-      App.setGuestOrigin({ lat: l.lat, lng: l.lng, label: l.name, sub: 'Andheri West, Mumbai' });
+      App.setGuestOrigin({ lat: l.lat, lng: l.lng, label: l.name, sub: `${RASOI_AREA.name}, ${RASOI_AREA.city}` });
       dlg.close();
     }));
     const geo = dlg.querySelector('#guestGeo');

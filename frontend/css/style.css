@@ -17,7 +17,7 @@
   --surface-2: #FFFBF5;
   --ink: var(--brand-dark);
   --ink-2: #6B4B35;
-  --ink-3: #8A6F5E;
+  --ink-3: #7A604F; /* 5:1 or better on cream, white and grey panels */
   --line: var(--brand-border);
   --line-strong: #DFC6AE;
   --saffron-soft: #FFF2D6;
@@ -134,7 +134,8 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--brand-saffron)
   user-select: none;
 }
 .btn svg { width: 18px; height: 18px; }
-.btn-primary { background: var(--brand-saffron); color: #fff; }
+/* Dark text on saffron: white on #E68A00 is only 2.6:1 contrast, brand-dark is 6.4:1 (WCAG AA) */
+.btn-primary { background: var(--brand-saffron); color: var(--brand-dark); }
 .btn-primary:hover { background: var(--brand-saffron-hover); }
 .btn-dark { background: var(--brand-dark); color: #fff; }
 .btn-dark:hover { background: #4A200B; }
@@ -160,6 +161,7 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--brand-saffron)
   content: ''; position: absolute; width: 18px; height: 18px; border-radius: 50%;
   border: 2px solid rgba(255,255,255,0.5); border-top-color: #fff; animation: spin 0.7s linear infinite;
 }
+.btn-primary.is-loading::after { border-color: rgba(51, 21, 7, 0.3); border-top-color: var(--brand-dark); }
 .btn-secondary.is-loading::after, .btn-ghost.is-loading::after, .btn-danger.is-loading::after { border-color: var(--line); border-top-color: var(--brand-saffron); }
 @keyframes spin { to { transform: rotate(360deg); } }
 .link { color: var(--saffron-text); font-weight: 600; text-decoration: none; background: none; border: 0; padding: 0; cursor: pointer; font: inherit; font-weight: 600; }
@@ -289,7 +291,7 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--brand-saffron)
 .rating-pill svg { width: 12px; height: 12px; fill: currentColor; }
 .rating-pill.low { background: #C26A0A; }
 .rating-pill.bad { background: var(--danger); }
-.stars { color: var(--brand-saffron); letter-spacing: 1px; }
+.stars { color: var(--brand-saffron-hover); /* 3:1 against white, the minimum for icons */ letter-spacing: 1px; }
 
 /* ---------- Header ---------- */
 .site-header { position: sticky; top: 0; z-index: 40; background: var(--surface); border-bottom: 1px solid var(--line); }
@@ -461,7 +463,7 @@ dialog.modal.modal-sm { width: min(420px, calc(100vw - 24px)); }
 .step .dot svg { width: 16px; height: 16px; }
 .step.done .dot { background: var(--success); border-color: var(--success); color: #fff; }
 .step.done::before { background: var(--success); }
-.step.current .dot { background: var(--brand-saffron); border-color: var(--brand-saffron); color: #fff; box-shadow: 0 0 0 5px rgba(230, 138, 0, 0.18); }
+.step.current .dot { background: var(--brand-saffron); border-color: var(--brand-saffron); color: var(--brand-dark); box-shadow: 0 0 0 5px rgba(230, 138, 0, 0.18); }
 .step .s-title { font-weight: 600; margin-top: 5px; }
 .step .s-sub { font-size: var(--t-xs); color: var(--ink-3); }
 
@@ -639,3 +641,21 @@ html[data-theme="dark"] .theme-toggle .when-light { display: none; }
 html[data-theme="dark"] body:not(.admin-theme) .chip-on-img,
 html[data-theme="dark"] body:not(.admin-theme) .fav-btn { color: #241005; }
 html[data-theme="dark"] body:not(.admin-theme) .fav-btn.is-on { color: #B3261E; }
+
+/* ---------- Show / hide password (added by ui.js) ---------- */
+.pw-wrap { position: relative; display: block; }
+.pw-wrap .input { padding-right: 46px; }
+.pw-toggle { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); width: 38px; height: 38px; border: 0; background: none; color: var(--ink-3); border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.pw-toggle:hover { color: var(--ink); background: var(--muted-bg); }
+.pw-toggle .pw-show, .pw-toggle .pw-hide { display: inline-flex; }
+.pw-toggle[aria-pressed="true"] .pw-show, .pw-toggle[aria-pressed="false"] .pw-hide { display: none; }
+
+/* ---------- Languages ---------- */
+.lang-btn { width: auto; padding: 0 8px; gap: 4px; }
+.lang-short { font-size: var(--t-xs); font-weight: 700; }
+/* Devanagari / Gujarati: Noto fonts (loaded by i18n.js) with Windows/Android system fonts as offline fallback */
+html:lang(hi), html:lang(mr) { --font-sans: 'Inter', 'Noto Sans Devanagari', 'Nirmala UI', 'Mangal', sans-serif; --font-serif: 'Playfair Display', 'Noto Serif Devanagari', 'Noto Sans Devanagari', 'Nirmala UI', serif; }
+html:lang(gu) { --font-sans: 'Inter', 'Noto Sans Gujarati', 'Nirmala UI', 'Shruti', sans-serif; --font-serif: 'Playfair Display', 'Noto Serif Gujarati', 'Noto Sans Gujarati', 'Nirmala UI', serif; }
+/* Indic scripts need a little more line height, and long words should wrap instead of overflowing */
+html:not(:lang(en)) body { line-height: 1.6; }
+html:not(:lang(en)) .btn { white-space: normal; text-align: center; line-height: 1.25; }
