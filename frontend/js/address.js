@@ -1,6 +1,23 @@
 // Saved addresses: switcher (pick where to deliver), editor (add/edit), and the guest locality picker.
 // The editor uses Maps (js/maps.js) when it is loaded on the page; otherwise a locality list.
 
+// "Lokhandwala market" → "near Lokhandwala market". Landmarks already written as "near ...",
+// "opposite ..." etc. are shown as typed, so addresses never read "near near".
+function landmarkText(l) {
+  const s = String(l || '').trim();
+  if (!s) return '';
+  return /^(near|opp|opposite|behind|next to|beside|in front of|above|below|off)\b/i.test(s) ? s : `near ${s}`;
+}
+
+// One line for an address: flat, building, landmark, then the map's text, skipping any part the
+// map text already contains (so nothing is printed twice).
+function addressText(a) {
+  if (!a) return '';
+  const full = String(a.formatted || '');
+  const has = p => p && full.toLowerCase().includes(String(p).toLowerCase().replace(/^near /, ''));
+  return [a.flat, has(a.building) ? '' : a.building, has(a.landmark) ? '' : landmarkText(a.landmark), full].filter(Boolean).join(', ');
+}
+
 (function () {
   const { esc, icon } = UI;
   let config = null;
@@ -15,7 +32,7 @@
   }
 
   function addrLine(a) {
-    return [a.flat, a.building, a.landmark ? `near ${a.landmark}` : '', a.formatted].filter(Boolean).join(', ');
+    return addressText(a);
   }
 
   function labelIcon(label) {

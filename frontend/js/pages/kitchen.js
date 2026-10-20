@@ -100,10 +100,9 @@
     return x.toISOString().slice(0, 10);
   }
 
-  function dishType(name) {
-    const d = (k.menu.dishes || []).find(x => x.name.toLowerCase() === String(name).toLowerCase());
-    return d ? d.type : (k.dietType === 'veg' ? 'veg' : 'veg');
-  }
+  // The thali's veg / non-veg tag for a day's courses, or for the dishes picked so far
+  const dayTag = courses => UI.thaliTag(UI.menuType(courses, k.menu.dishes || [], k.dietType));
+  const pickedTag = courses => UI.thaliTag(UI.thaliType(courses.map(c => book.choices[c.id] || c.options[0]), k.menu.dishes || [], k.dietType));
 
   function dishMeta(name) {
     return (k.menu.dishes || []).find(x => x.name.toLowerCase() === String(name).toLowerCase()) || null;
@@ -129,11 +128,11 @@
               <h1 class="h1">${esc(k.name)}</h1>
               <p class="text-muted" style="margin:6px 0 0">by ${esc(k.chefName || 'Home chef')}${k.location.locality ? ` · ${esc(k.location.locality)}` : ''}${k.distance != null ? ` · ${UI.distance(k.distance)} (${k.walkMinutes} min walk)` : ''}</p>
             </div>
-            ${role === 'customer' ? `<button type="button" class="btn btn-secondary btn-icon" data-action="fav" aria-pressed="${!!k.isFavourite}" aria-label="${k.isFavourite ? 'Remove from' : 'Save to'} favourites" style="${k.isFavourite ? 'color:var(--danger)' : ''}">${icon('heart')}</button>` : ''}
+            ${role === 'customer' ? `<button type="button" class="btn btn-secondary btn-icon" data-action="fav" aria-pressed="${!!k.isFavourite}" aria-label="${k.isFavourite ? 'Remove from' : 'Save to'} favourites">${icon('heart')}</button>` : ''}
           </div>
           <div class="flex flex-wrap items-center gap-2" style="margin-top:12px">
             ${UI.ratingPill(s.rating)} <a class="text-sm link" href="#reviews">${s.reviewsCount} review${s.reviewsCount === 1 ? '' : 's'}</a>
-            <span class="badge badge-neutral">${UI.foodMark(k.dietType === 'veg' ? 'veg' : 'nonveg')}${k.dietType === 'veg' ? 'Pure veg' : k.dietType === 'egg' ? 'Veg & egg' : 'Veg & non-veg'}</span>
+            ${UI.kitchenDietTag(k.dietType)}
             ${(k.cuisines || []).map(c => `<span class="badge badge-neutral">${esc(c)}</span>`).join('')}
           </div>
           <dl class="grid grid-cols-2 sm:grid-cols-4 gap-3" style="margin:var(--s5) 0 0">
@@ -218,14 +217,15 @@
       box.innerHTML = '<p class="text-muted" style="margin:0">The chef hasn\'t set the menu for this day yet.</p>';
     } else {
       box.innerHTML = `
+        <div style="margin-bottom:12px">${dayTag(courses)}</div>
         <ul style="list-style:none;margin:0;padding:0;display:grid;gap:12px">
           ${courses.map(c => `
             <li class="flex gap-3">
               <span class="label-caps" style="width:96px;flex-shrink:0;padding-top:2px">${esc(c.label)}</span>
               <span style="flex:1">${c.options.map(o => {
                 const m = dishMeta(o);
-                return `<span class="flex items-center gap-2" style="margin-bottom:2px">${UI.foodMark(dishType(o))}<span style="font-weight:500">${esc(o)}</span>${m && m.spice === 'spicy' ? '<span class="badge badge-danger" style="font-size:11px">Spicy</span>' : ''}${m && m.allergens && m.allergens.length ? `<span class="text-xs text-subtle">Contains ${esc(m.allergens.join(', '))}</span>` : ''}</span>`;
-              }).join(c.options.length > 1 ? '<span class="text-xs text-subtle" style="display:block;margin:-2px 0 2px 22px">or</span>' : '')}</span>
+                return `<span class="flex items-center gap-2" style="margin-bottom:2px"><span style="font-weight:500" translate="no">${esc(o)}</span>${m && m.spice === 'spicy' ? '<span class="badge badge-danger" style="font-size:11px">Spicy</span>' : ''}${m && m.allergens && m.allergens.length ? `<span class="text-xs text-subtle">Contains ${esc(m.allergens.join(', '))}</span>` : ''}</span>`;
+              }).join(c.options.length > 1 ? '<span class="text-xs text-subtle" style="display:block;margin:-2px 0 2px">or</span>' : '')}</span>
             </li>`).join('')}
         </ul>
         ${special ? `<div class="panel" style="margin-top:14px;display:flex;gap:10px;align-items:center">${icon('sparkles', 'text-saffron')}<div><strong>Today's special: ${esc(special.name)}</strong> · ${money(special.price)}<div class="text-xs text-muted">${esc(special.description || 'Add it to your meal as an extra.')}</div></div></div>` : ''}`;
@@ -384,13 +384,13 @@
       </div>
       ${courses.length ? `
       <div class="field" style="margin-top:14px">
-        <span class="field-label">Your thali</span>
+        <div class="flex flex-wrap items-center justify-between gap-2" style="margin-bottom:6px"><span class="field-label" style="margin:0">Your thali</span><span id="thaliTagBox">${pickedTag(courses)}</span></div>
         <div style="display:grid;gap:10px">
           ${courses.map(c => c.options.length > 1 ? `
             <fieldset style="border:0;padding:0;margin:0">
               <legend class="text-xs text-subtle" style="margin-bottom:4px">${esc(c.label)}: pick one</legend>
-              <div class="chips">${c.options.map((o, i) => `<label class="chip"><input type="radio" name="ch-${esc(c.id)}" value="${esc(o)}" ${((book.choices[c.id] || c.options[0]) === o) ? 'checked' : ''}>${UI.foodMark(dishType(o))}${esc(o)}</label>`).join('')}</div>
-            </fieldset>` : `<div class="flex items-center gap-2 text-sm">${UI.foodMark(dishType(c.options[0]))}<span class="text-subtle" style="width:84px">${esc(c.label)}</span><span>${esc(c.options[0])}</span></div>`).join('')}
+              <div class="chips">${c.options.map((o, i) => `<label class="chip"><input type="radio" name="ch-${esc(c.id)}" value="${esc(o)}" ${((book.choices[c.id] || c.options[0]) === o) ? 'checked' : ''}>${esc(o)}</label>`).join('')}</div>
+            </fieldset>` : `<div class="flex items-center gap-2 text-sm"><span class="text-subtle" style="width:84px">${esc(c.label)}</span><span>${esc(c.options[0])}</span></div>`).join('')}
         </div>
       </div>` : ''}
       ${addonsList.length ? `
@@ -433,7 +433,11 @@
       renderBooking();
     }));
     body.querySelectorAll('[name="bslot"]').forEach(r => r.addEventListener('change', () => { book.slot = r.value; }));
-    body.querySelectorAll('input[type=radio][name^="ch-"]').forEach(r => r.addEventListener('change', () => { book.choices[r.name.slice(3)] = r.value; }));
+    body.querySelectorAll('input[type=radio][name^="ch-"]').forEach(r => r.addEventListener('change', () => {
+      book.choices[r.name.slice(3)] = r.value;
+      const box = body.querySelector('#thaliTagBox');
+      if (box) box.innerHTML = pickedTag(dayInfo(book.date).courses || []);
+    }));
     body.querySelectorAll('[data-addon]').forEach(b => b.addEventListener('click', () => {
       const cur = book.addons[b.dataset.addon] || 0;
       book.addons[b.dataset.addon] = Math.max(0, Math.min(5, cur + Number(b.dataset.d)));
@@ -648,7 +652,7 @@
       k.isFavourite = res.favourite;
       App.session.user.favourites = res.favourites;
       btn.setAttribute('aria-pressed', String(res.favourite));
-      btn.style.color = res.favourite ? 'var(--danger)' : '';
+      btn.setAttribute('aria-label', res.favourite ? 'Remove from favourites' : 'Save to favourites');
       UI.toast(res.favourite ? 'Saved to favourites' : 'Removed from favourites');
     } catch (e) { UI.error(e); }
   });
