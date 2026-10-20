@@ -185,9 +185,12 @@
           <p class="text-xs text-subtle" id="mapNote" style="margin:8px 0 0"></p>
         </section>
         <section class="card card-pad" aria-labelledby="itemsTitle">
-          <h2 class="title" id="itemsTitle">Your thali</h2>
-          <ul style="list-style:none;margin:10px 0 0;padding:0;display:grid;gap:6px">
-            ${Object.values(o.choices || {}).map(v => `<li class="flex items-center gap-2">${UI.foodMark(o.mealType)}${esc(v)}</li>`).join('') || '<li class="text-muted">Chef\'s menu of the day</li>'}
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h2 class="title" id="itemsTitle">Your thali</h2>
+            ${UI.thaliTag((o.dietaryNotes || []).includes('Jain') && (o.mealType || 'veg') === 'veg' ? 'jain' : (o.mealType || 'veg'))}
+          </div>
+          <ul style="list-style:disc;margin:10px 0 0;padding-left:20px;display:grid;gap:6px">
+            ${Object.values(o.choices || {}).map(v => `<li translate="no">${esc(v)}</li>`).join('') || '<li class="text-muted">Chef\'s menu of the day</li>'}
             ${(o.addons || []).map(a => `<li class="flex items-center justify-between text-sm"><span>+ ${esc(a.name)} × ${a.qty}</span><span class="num">${money(a.price * a.qty)}</span></li>`).join('')}
           </ul>
           ${o.dietaryNotes.length ? `<p class="text-xs text-subtle" style="margin:10px 0 0">Sent to the kitchen: ${esc(o.dietaryNotes.join(' · '))}</p>` : ''}
@@ -201,7 +204,7 @@
         </section>
         <section class="card card-pad" aria-labelledby="addrTitle">
           <h2 class="title" id="addrTitle">Delivering to</h2>
-          ${addr ? `<p style="margin:8px 0 0"><strong>${esc(addr.label)}</strong><br><span class="text-sm text-muted">${esc([addr.flat, addr.building, addr.landmark ? 'near ' + addr.landmark : '', addr.formatted].filter(Boolean).join(', '))}</span></p>` : '<p class="text-muted">No address</p>'}
+          ${addr ? `<p style="margin:8px 0 0"><strong>${esc(addr.label)}</strong><br><span class="text-sm text-muted">${esc(addressText(addr))}</span></p>` : '<p class="text-muted">No address</p>'}
           <div class="flex flex-wrap gap-2" style="margin-top:16px" id="orderActions"></div>
         </section>
       </div>

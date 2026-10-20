@@ -3,7 +3,8 @@
 // Keep the page hidden until the header, styles and icons are ready, so there is no flash of
 // unstyled content. layout.js reveals it; the timer makes sure a page never stays hidden.
 document.documentElement.classList.add('page-loading');
-setTimeout(() => document.documentElement.classList.remove('page-loading'), 2500);
+// Never keep a page hidden for long: after 1s show it anyway (its loading placeholders take over)
+setTimeout(() => document.documentElement.classList.remove('page-loading'), 1000);
 
 // Light or dark: the visitor's saved choice, otherwise their device setting.
 // Set here in <head> so a dark page never flashes light. (The admin console is always dark.)

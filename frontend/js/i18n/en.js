@@ -828,7 +828,15 @@
     "with": "with",
     "Plan meals can be skipped, or cancel the whole plan from \"Manage plan\".": "Plan meals can be skipped, or cancel the whole plan from \"Manage plan\".",
     "No skipped plan meals in those dates.": "No skipped plan meals in those dates.",
-    "No scheduled plan meals in those dates.": "No scheduled plan meals in those dates."
+    "No scheduled plan meals in those dates.": "No scheduled plan meals in those dates.",
+    "Veg thali": "Veg thali",
+    "Jain thali": "Jain thali",
+    "Eggetarian thali": "Eggetarian thali",
+    "Non-veg thali": "Non-veg thali",
+    "Veg & egg options": "Veg & egg options",
+    "Veg & non-veg options": "Veg & non-veg options",
+    "Thali": "Thali",
+    "Customers see this one tag for the day's thali. It comes from the dish types under Dish details; a dish you haven't listed there is judged by its name.": "Customers see this one tag for the day's thali. It comes from the dish types under Dish details; a dish you haven't listed there is judged by its name."
   },
   patterns: {
     "kitchensIn": "$0",

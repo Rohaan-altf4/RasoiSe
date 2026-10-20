@@ -93,7 +93,7 @@
               <div class="flex flex-wrap items-center gap-2"><h2 class="h3">${esc(k.name)}</h2>${UI.statusBadge(k.status)}</div>
               <p class="text-sm text-muted" style="margin:4px 0 0">${esc(k.chefName)} · ${esc(k.phone)}${k.ownerEmail ? ` · ${esc(k.ownerEmail)}` : ''} · applied ${UI.relTime(k.createdAt)}</p>
               <div class="flex flex-wrap gap-2" style="margin-top:8px">
-                <span class="badge badge-neutral">${UI.foodMark(k.dietType === 'veg' ? 'veg' : 'nonveg')}${k.dietType}</span>
+                ${UI.kitchenDietTag(k.dietType)}
                 <span class="badge badge-neutral">${icon('map-pin')}${esc(k.location.locality || 'No area')}${k.location.lat ? '' : ' · not pinned'}</span>
                 <span class="badge badge-neutral">${(k.radiusM / 1000).toFixed(1)} km</span>
                 <span class="badge ${k.fssai ? 'badge-success' : 'badge-warning'}">${k.fssai ? 'FSSAI ' + esc(k.fssai) : 'No FSSAI yet'}</span>

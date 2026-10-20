@@ -828,7 +828,15 @@
     "with": "સાથે",
     "Plan meals can be skipped, or cancel the whole plan from \"Manage plan\".": "પ્લાનના જમણ છોડી શકાય છે, અથવા \"પ્લાન સંભાળો\" માંથી આખો પ્લાન રદ કરો.",
     "No skipped plan meals in those dates.": "આ તારીખોમાં કોઈ છોડેલું પ્લાન જમણ નથી.",
-    "No scheduled plan meals in those dates.": "આ તારીખોમાં કોઈ નક્કી પ્લાન જમણ નથી."
+    "No scheduled plan meals in those dates.": "આ તારીખોમાં કોઈ નક્કી પ્લાન જમણ નથી.",
+    "Veg thali": "શાકાહારી થાળી",
+    "Jain thali": "જૈન થાળી",
+    "Eggetarian thali": "ઈંડાવાળી થાળી",
+    "Non-veg thali": "માંસાહારી થાળી",
+    "Veg & egg options": "શાકાહારી અને ઈંડાના વિકલ્પ",
+    "Veg & non-veg options": "શાકાહારી અને માંસાહારી વિકલ્પ",
+    "Thali": "થાળી",
+    "Customers see this one tag for the day's thali. It comes from the dish types under Dish details; a dish you haven't listed there is judged by its name.": "ગ્રાહકોને તે દિવસની થાળી માટે આ એક જ ટૅગ દેખાય છે. તે 'વાનગીની વિગતો' માંના વાનગીના પ્રકાર પરથી બને છે; ત્યાં ન હોય તે વાનગી તેના નામ પરથી નક્કી થાય છે."
   },
   patterns: {
     "kitchensIn": "$2 માં $1 કિચન",

@@ -108,6 +108,7 @@ function publicKitchen(d, k, from = null) {
     nextOpening: k.paused ? null : nextOpening(d, k),
     todaysMenu: dm.courses.map(c => c.options[0]).filter(Boolean),
     todaysSpecial: dm.special,
+    todaysThali: dm.courses.length ? meals.menuType(d, k, dm.courses) : null, // veg / egg / nonveg / mixed-...
     todaysDish: mainName ? {
       name: mainName,
       photo: (mainDish && mainDish.photo) || (dm.special && dm.special.photo) || '',

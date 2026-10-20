@@ -78,6 +78,7 @@ function runTest(file, now) {
   await dropMongo();
   ok = runTest('i18n.js', '07:00') && ok;
   ok = runTest('search.js', '07:00') && ok;
+  ok = runTest('thali.js', '07:00') && ok;
 
   console.log(ok ? '\nAll test files passed.' : '\nSome tests failed.');
   process.exitCode = ok ? 0 : 1;

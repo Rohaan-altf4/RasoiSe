@@ -29,7 +29,7 @@
       renderBottomNav();
       if (window.Live && u) Live.start();
       UI.icons();
-      // Two frames: let Tailwind apply its styles before fading the page in
+      // Two frames: let the header and styles settle before fading the page in
       requestAnimationFrame(() => requestAnimationFrame(() => document.documentElement.classList.remove('page-loading')));
       return this.session;
     },

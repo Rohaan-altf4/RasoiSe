@@ -259,6 +259,63 @@
     return `<span class="food-mark ${type}" role="img" aria-label="${label}" title="${label}"></span>`;
   }
 
+  // ---------- Thali type ----------
+  // One tag for the whole thali (Veg / Eggetarian / Non-veg / Jain thali), never a mark per dish:
+  // rice, roti and dal next to a chicken curry are veg, so per-dish marks from the meal's type were
+  // wrong. Each dish's type comes from the cook's dish list; a dish the cook hasn't tagged is
+  // judged by its name (chicken, fish, egg...) so a non-veg dish is never shown as veg.
+  const NONVEG_WORDS = /chicken|mutton|lamb|keema|kheema|gosht|nihari|kombdi|murg|fish|surmai|bangda|pomfret|rawas|prawn|shrimp|crab|bombil|kolambi|machli|bheja|paya|seekh|kebab/i;
+  const EGG_WORDS = /\begg|\banda\b|omelet/i;
+  const RANK = { veg: 0, egg: 1, nonveg: 2 };
+
+  function dishType(name, dishes = [], kitchenDiet = 'nonveg') {
+    if (kitchenDiet === 'veg') return 'veg';
+    const d = dishes.find(x => x.name && x.name.toLowerCase() === String(name).toLowerCase());
+    if (d && d.type) return d.type;
+    if (NONVEG_WORDS.test(name)) return 'nonveg';
+    return EGG_WORDS.test(name) ? 'egg' : 'veg';
+  }
+
+  // A fixed set of dishes (an order): the "strongest" dish decides. jain = cooked Jain for this customer.
+  function thaliType(names, dishes, kitchenDiet, { jain = false } = {}) {
+    const type = (names || []).reduce((t, n) => { const x = dishType(n, dishes, kitchenDiet); return RANK[x] > RANK[t] ? x : t; }, 'veg');
+    return type === 'veg' && jain ? 'jain' : type;
+  }
+
+  // A day's menu where some items have options: "Veg & non-veg options" when the customer can still
+  // pick an all-veg thali, else the type every possible thali has.
+  function menuType(courses, dishes, kitchenDiet) {
+    let least = 'veg';
+    let most = 'veg';
+    (courses || []).forEach(c => {
+      const types = (c.options || []).map(o => dishType(o, dishes, kitchenDiet));
+      if (!types.length) return;
+      const lo = types.reduce((a, b) => (RANK[b] < RANK[a] ? b : a));
+      const hi = types.reduce((a, b) => (RANK[b] > RANK[a] ? b : a));
+      if (RANK[lo] > RANK[least]) least = lo;
+      if (RANK[hi] > RANK[most]) most = hi;
+    });
+    return least === most ? most : `mixed-${most}`;
+  }
+
+  const THALI_LABEL = {
+    veg: 'Veg thali', jain: 'Jain thali', egg: 'Eggetarian thali', nonveg: 'Non-veg thali',
+    'mixed-egg': 'Veg & egg options', 'mixed-nonveg': 'Veg & non-veg options'
+  };
+  function thaliTag(type) {
+    const marks = type === 'mixed-nonveg' ? foodMark('veg') + foodMark('nonveg')
+      : type === 'mixed-egg' ? foodMark('veg') + foodMark('egg')
+        : foodMark(type === 'jain' ? 'veg' : type);
+    return `<span class="badge badge-neutral thali-tag">${marks}<span>${THALI_LABEL[type] || THALI_LABEL.veg}</span></span>`;
+  }
+
+  // Kitchen-level label (cards, kitchen page, admin)
+  function kitchenDietTag(dietType) {
+    const label = dietType === 'veg' ? 'Pure veg' : dietType === 'egg' ? 'Veg & egg' : 'Veg & non-veg';
+    const marks = dietType === 'veg' ? foodMark('veg') : foodMark('veg') + foodMark(dietType === 'egg' ? 'egg' : 'nonveg');
+    return `<span class="badge badge-neutral thali-tag">${marks}<span>${label}</span></span>`;
+  }
+
   function ratingPill(r, count) {
     if (r == null) return '<span class="badge badge-neutral">New</span>';
     const cls = r >= 4 ? '' : r >= 3 ? 'low' : 'bad';
@@ -362,7 +419,7 @@
   window.UI = {
     PLACEHOLDER, esc, money, date, dateTime, timeOnly, relTime, time12, distance, icons, icon,
     toast, error, openModal, closeModal, confirm, prompt, busy, clearErrors, setFieldError, showApiErrors,
-    statusBadge, statusLabel, foodMark, ratingPill, stars, img, empty, errorState, skeletonCards, skeletonRows,
+    statusBadge, statusLabel, foodMark, dishType, thaliType, menuType, thaliTag, kitchenDietTag, ratingPill, stars, img, empty, errorState, skeletonCards, skeletonRows,
     on, qs
   };
 })();

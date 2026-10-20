@@ -90,15 +90,47 @@ function priceAddons(dm, input = []) {
   return { items, total };
 }
 
-// veg / egg / nonveg, from the dish library tags of the chosen options
+// veg / egg / nonveg for the whole thali, from the dish library tags of the chosen options.
+// A dish the cook hasn't tagged is judged by its name, so it's never counted as veg by mistake
+// (same rules as UI.dishType in frontend/js/ui.js).
+const NONVEG_WORDS = /chicken|mutton|lamb|keema|kheema|gosht|nihari|kombdi|murg|fish|surmai|bangda|pomfret|rawas|prawn|shrimp|crab|bombil|kolambi|machli|bheja|paya|seekh|kebab/i;
+const EGG_WORDS = /\begg|\banda\b|omelet/i;
+
+const RANK = { veg: 0, egg: 1, nonveg: 2 };
+function dishTypeOf(name, dishes, kitchen) {
+  if (kitchen.dietType === 'veg') return 'veg';
+  const dish = dishes.find(x => x.name.toLowerCase() === String(name).toLowerCase());
+  if (dish && dish.type) return dish.type;
+  return NONVEG_WORDS.test(name) ? 'nonveg' : EGG_WORDS.test(name) ? 'egg' : 'veg';
+}
+
+// A day's whole menu (items may have options): veg / egg / nonveg when every possible thali is
+// that type, or 'mixed-nonveg' / 'mixed-egg' when the customer can still pick an all-veg thali.
+// Same rules as UI.menuType in frontend/js/ui.js.
+function menuType(d, kitchen, courses) {
+  const dishes = getMenu(d, kitchen.id).dishes || [];
+  let least = 'veg';
+  let most = 'veg';
+  (courses || []).forEach(c => {
+    const types = (c.options || []).map(o => dishTypeOf(o, dishes, kitchen));
+    if (!types.length) return;
+    const lo = types.reduce((a, b) => (RANK[b] < RANK[a] ? b : a));
+    const hi = types.reduce((a, b) => (RANK[b] > RANK[a] ? b : a));
+    if (RANK[lo] > RANK[least]) least = lo;
+    if (RANK[hi] > RANK[most]) most = hi;
+  });
+  return least === most ? most : `mixed-${most}`;
+}
+
 function mealType(d, kitchen, choices) {
   if (kitchen.dietType === 'veg') return 'veg';
   const dishes = getMenu(d, kitchen.id).dishes || [];
   let type = 'veg';
   Object.values(choices || {}).forEach(name => {
     const dish = dishes.find(x => x.name.toLowerCase() === String(name).toLowerCase());
-    if (dish && dish.type === 'nonveg') type = 'nonveg';
-    else if (dish && dish.type === 'egg' && type === 'veg') type = 'egg';
+    const t = dish && dish.type ? dish.type : NONVEG_WORDS.test(name) ? 'nonveg' : EGG_WORDS.test(name) ? 'egg' : 'veg';
+    if (t === 'nonveg') type = 'nonveg';
+    else if (t === 'egg' && type === 'veg') type = 'egg';
   });
   return type;
 }
@@ -315,7 +347,7 @@ function addMakeupDay(d, kitchen, customer, order, sub, why) {
 
 module.exports = {
   ACTIVE, CHEF_FLOW, PLAN_MEALS, PLAN_LABEL, SLOT_LABEL, httpError, getMenu, closedReason, dayMenu,
-  usedCapacity, capacityLeft, cleanChoices, priceAddons, mealType, findAddress, addressSnapshot,
+  usedCapacity, capacityLeft, cleanChoices, priceAddons, mealType, menuType, findAddress, addressSnapshot,
   checkDeliveryArea, prefsSnapshot, assertBookable, createOrder, planDates, splitPrice,
   dietaryNotes, orderTotal, slotStart, changeDeadline, canChange, assertCanChange, dayDeadline,
   planLastDate, nextOpenDate, skipLimit, addMakeupDay

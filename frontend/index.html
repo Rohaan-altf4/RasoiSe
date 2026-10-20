@@ -19,15 +19,15 @@
   <main id="main" class="page">
     <div class="container">
 
-      <section class="flex flex-col md:flex-row md:items-end justify-between gap-4" style="margin-bottom:var(--s6)">
+      <section class="hero flex flex-col md:flex-row md:items-end justify-between gap-5">
         <div>
           <h1 class="h1">Ghar ka khana, 5 minutes away</h1>
-          <p class="text-muted" style="margin:8px 0 0;max-width:560px">Home cooks in Lokhandwala, Versova and Oshiwara. Try one meal, book a tasting day, or subscribe for the month.</p>
+          <p class="hero-lead text-muted">Home cooks in Lokhandwala, Versova and Oshiwara. Try one meal, book a tasting day, or subscribe for the month.</p>
         </div>
-        <ol class="text-sm text-muted hidden sm:flex flex-wrap gap-x-5 gap-y-1" style="list-style:none;margin:0;padding:0">
-          <li class="flex items-center gap-2"><span class="badge badge-saffron">1</span>Pick a kitchen nearby</li>
-          <li class="flex items-center gap-2"><span class="badge badge-saffron">2</span>Order, trial or plan</li>
-          <li class="flex items-center gap-2"><span class="badge badge-saffron">3</span>Skip with a day's notice, get a make-up day</li>
+        <ol class="hero-steps text-sm text-muted hidden sm:flex flex-wrap gap-x-5 gap-y-2">
+          <li class="flex items-center gap-2"><span class="step-num">1</span>Pick a kitchen nearby</li>
+          <li class="flex items-center gap-2"><span class="step-num">2</span>Order, trial or plan</li>
+          <li class="flex items-center gap-2"><span class="step-num">3</span>Skip with a day's notice, get a make-up day</li>
         </ol>
       </section>
 
@@ -44,16 +44,16 @@
       <div id="reorderRow"></div>
 
       <!-- Cuisine shortcuts and today's dishes (filled from live kitchen data) -->
-      <section id="cuisineRow" aria-labelledby="cuisineTitle" style="margin-bottom:var(--s6)" hidden>
-        <h2 class="title" id="cuisineTitle" style="margin-bottom:12px">What are you in the mood for?</h2>
-        <div class="chip-scroll" id="cuisineList" role="group" aria-label="Cuisines" style="gap:16px"></div>
+      <section id="cuisineRow" aria-labelledby="cuisineTitle" style="margin-bottom:var(--s8)" hidden>
+        <h2 class="title" id="cuisineTitle" style="margin-bottom:var(--s3)">What are you in the mood for?</h2>
+        <div class="chip-scroll cuisine-row" id="cuisineList" role="group" aria-label="Cuisines"></div>
       </section>
-      <section id="todayRow" aria-labelledby="todayTitle" style="margin-bottom:var(--s6)" hidden>
-        <div class="flex items-end justify-between gap-3" style="margin-bottom:12px">
+      <section id="todayRow" aria-labelledby="todayTitle" style="margin-bottom:var(--s8)" hidden>
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-1 sm:gap-3" style="margin-bottom:var(--s3)">
           <h2 class="title" id="todayTitle">What's cooking today</h2>
           <span class="text-xs text-subtle" id="todayNote"></span>
         </div>
-        <div class="chip-scroll" id="todayList" style="gap:14px;padding-bottom:4px"></div>
+        <div class="chip-scroll dish-row" id="todayList"></div>
       </section>
 
       <!-- Filters & sort -->

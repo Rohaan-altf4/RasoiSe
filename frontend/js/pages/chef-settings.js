@@ -77,6 +77,10 @@
           </div>
           <p class="text-sm text-muted" style="margin:6px 0 12px">Add up to 3 options to any item and customers choose one before ${UI.time12(k.cutoffTime)}.</p>
           <div class="tabs" role="tablist" aria-label="Day">${DAYS.map(d => `<button type="button" role="tab" class="tab" data-mday="${d}" aria-selected="${d === menuDay}">${d.slice(0, 3)[0].toUpperCase() + d.slice(1, 3)}${(k.offDays || []).includes(d) ? ' <span class="count">off</span>' : ''}</button>`).join('')}</div>
+          <div class="flex flex-wrap items-center gap-2" style="margin-top:12px">
+            <span id="dayTag">${UI.thaliTag(UI.menuType(day.courses, menu.dishes, k.dietType))}</span>
+            <span class="text-xs text-subtle">Customers see this one tag for the day's thali. It comes from the dish types under Dish details; a dish you haven't listed there is judged by its name.</span>
+          </div>
           <datalist id="dishList">${dishNames.map(n => `<option value="${esc(n)}">`).join('')}</datalist>
           <div id="courseList" style="display:grid;gap:12px;margin-top:14px">
             ${day.courses.length ? day.courses.map((c, i) => `
@@ -283,8 +287,18 @@
     root.querySelector('#saveMenu').addEventListener('click', e => saveMenu(e.currentTarget));
   }
 
+  // Keep the day's thali tag in step with what the cook is typing
+  function refreshDayTag() {
+    const box = root.querySelector('#dayTag');
+    if (!box) return;
+    readCourses();
+    readDishes();
+    box.innerHTML = UI.thaliTag(UI.menuType((menu.weekly[menuDay] || {}).courses, menu.dishes, k.dietType));
+  }
+
   function onMenuInput(e) {
     if (currentTab() !== 'menu') return;
+    if (e.target.matches('[data-copt],[data-dname],select[data-dtype]')) refreshDayTag();
     if (e.target.matches('[data-clabel],[data-copt],[data-aname],[data-aprice],[data-dname],[data-dallergens],select[data-dtype],select[data-dspice]')) {
       if (!menuDirty) {
         menuDirty = true;

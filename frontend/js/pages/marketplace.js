@@ -39,7 +39,7 @@
     const host = document.getElementById('locationBanner');
     if (App.origin()) { host.innerHTML = ''; return; }
     host.innerHTML = `
-      <div class="alert alert-info" style="margin-bottom:var(--s5)">
+      <div class="alert alert-brand" style="margin-bottom:var(--s6)">
         ${icon('map-pin')}
         <div><div class="a-title">Set your delivery location</div><div>We'll show how far each kitchen is and who delivers to you.</div></div>
         <button type="button" class="btn btn-primary btn-sm" data-action="set-location">Set location</button>
@@ -131,7 +131,7 @@
           <div class="kcard-body">
             <div class="kcard-title"><h3 class="truncate">${esc(k.name)}</h3>${UI.ratingPill(k.stats.rating)}</div>
             <div class="kcard-meta flex items-center gap-2">
-              ${UI.foodMark(k.dietType === 'veg' ? 'veg' : 'nonveg')}
+              <span class="flex items-center" role="img" aria-label="${k.dietType === 'veg' ? 'Pure veg' : k.dietType === 'egg' ? 'Veg & egg' : 'Veg & non-veg'}">${k.dietType === 'veg' ? UI.foodMark('veg') : UI.foodMark('veg') + UI.foodMark(k.dietType === 'egg' ? 'egg' : 'nonveg')}</span>
               <span class="truncate">${esc([(k.cuisines || []).slice(0, 2).join(', ') || 'Home-style', k.location.locality].filter(Boolean).join(' · '))}</span>
             </div>
             ${k.todaysMenu.length ? `<div class="kcard-menu truncate">Today: ${esc(k.todaysMenu.slice(0, 3).join(', '))}</div>` : ''}
@@ -225,18 +225,20 @@
         return `<a class="dish-card" href="/kitchen.html?id=${k.id}">
           <div class="dc-img">${UI.img(dish.photo, dish.name)}${special}</div>
           <div class="dc-body">
-            <div class="dc-title flex items-center gap-2">${UI.foodMark(dish.type)}<span class="truncate" translate="no">${esc(dish.name)}</span></div>
+            <div class="dc-title flex items-center gap-2"><span class="truncate" translate="no">${esc(dish.name)}</span></div>
+            <div style="margin:4px 0">${UI.thaliTag(k.todaysThali || UI.thaliType(k.todaysMenu, [], k.dietType))}</div>
             <div class="dc-sub truncate"><span>with</span> <span translate="no">${esc(k.todaysMenu.filter(x => x !== dish.name).slice(0, 2).join(' · '))}</span></div>
-            <div class="dc-sub truncate" style="margin-top:6px;color:var(--ink-2)"><span translate="no">${esc(k.name)}</span> · ${money(k.pricing.single)}</div>
+            <div class="dc-sub truncate" style="color:var(--ink-2)"><span translate="no">${esc(k.name)}</span> · ${money(k.pricing.single)}</div>
           </div>
         </a>`;
       }
       return `<a class="dish-card" href="/kitchen.html?id=${k.id}">
         <div class="dc-img">${UI.img(k.coverUrl, k.name)}${special}</div>
         <div class="dc-body">
-          <div class="dc-title flex items-center gap-2">${UI.foodMark(dish.type)}<span class="truncate" translate="no">${esc(k.name)}</span></div>
+          <div class="dc-title flex items-center gap-2"><span class="truncate" translate="no">${esc(k.name)}</span></div>
+          <div style="margin:4px 0">${UI.thaliTag(k.todaysThali || UI.thaliType(k.todaysMenu, [], k.dietType))}</div>
           <div class="dc-sub" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden"><span>Today's thali:</span> <span translate="no">${esc(thali)}</span></div>
-          <div class="dc-sub truncate" style="margin-top:6px;color:var(--ink-2)">${money(k.pricing.single)} <span>per meal</span></div>
+          <div class="dc-sub truncate" style="color:var(--ink-2)">${money(k.pricing.single)} <span>per meal</span></div>
         </div>
       </a>`;
     }).join('');

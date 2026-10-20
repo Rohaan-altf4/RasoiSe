@@ -80,8 +80,10 @@
       `<button type="button" class="chip${k === preset ? ' is-active' : ''}" aria-pressed="${k === preset}" data-preset="${k}">${esc(p.label)}</button>`).join('');
     const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
     const w = MenuPresets[preset].weekly;
-    document.getElementById('menuPreview').innerHTML = `<table class="table"><thead><tr><th>Day</th><th>Sabzi</th><th>Dal</th><th>Roti & rice</th></tr></thead><tbody>
-      ${days.map(d => `<tr><td style="font-weight:600;text-transform:capitalize">${d.slice(0, 3)}</td>${w[d].courses.slice(0, 3).map(c => `<td>${esc(c.options.join(' / '))}</td>`).join('')}</tr>`).join('')}
+    const picked = document.querySelector('input[name="dietType"]:checked');
+    const diet = picked ? picked.value : 'veg';
+    document.getElementById('menuPreview').innerHTML = `<table class="table"><thead><tr><th>Day</th><th>Sabzi</th><th>Dal</th><th>Roti & rice</th><th>Thali</th></tr></thead><tbody>
+      ${days.map(d => `<tr><td style="font-weight:600;text-transform:capitalize">${d.slice(0, 3)}</td>${w[d].courses.slice(0, 3).map(c => `<td>${esc(c.options.join(' / '))}</td>`).join('')}<td>${UI.thaliTag(UI.menuType(w[d].courses, [], diet))}</td></tr>`).join('')}
     </tbody></table>`;
   }
   document.getElementById('presetChips').addEventListener('click', e => {
@@ -89,6 +91,8 @@
     if (b) { preset = b.dataset.preset; renderPresets(); }
   });
   renderPresets();
+  // The thali column depends on whether the kitchen cooks egg / non-veg
+  document.querySelectorAll('input[name="dietType"]').forEach(r => r.addEventListener('change', renderPresets));
 
   // ---------- Step validation ----------
   function validate(n) {

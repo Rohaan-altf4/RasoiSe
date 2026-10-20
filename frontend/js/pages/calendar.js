@@ -188,6 +188,7 @@
           ${['preparing', 'out_for_delivery'].includes(o.status) ? `<a class="btn btn-primary btn-sm" href="/orders.html?id=${o.id}">${icon('map')}Track</a>` : ''}
         </div>
         <div class="card-pad">
+          ${['paused', 'cancelled', 'holiday'].includes(o.status) ? '' : `<div style="margin-bottom:10px">${UI.thaliTag((o.dietaryNotes || []).includes('Jain') && (o.mealType || 'veg') === 'veg' ? 'jain' : (o.mealType || 'veg'))}</div>`}
           ${editable ? `
             ${(o.courses || []).map(c => c.options.length > 1 ? `
               <fieldset style="border:0;padding:0;margin:0 0 10px">

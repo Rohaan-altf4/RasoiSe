@@ -208,7 +208,7 @@
             <div style="min-width:0">
               <div class="flex items-center gap-2 flex-wrap">
                 ${stop > -1 && !inactive ? `<span class="badge badge-dark" title="Drop number">#${stop + 1}</span>` : ''}
-                <strong>${esc(o.customerName)}</strong>${UI.foodMark(o.mealType)}
+                <strong>${esc(o.customerName)}</strong>${UI.thaliTag((o.dietaryNotes || []).includes('Jain') && (o.mealType || 'veg') === 'veg' ? 'jain' : (o.mealType || 'veg'))}
                 <span class="text-xs text-subtle">${esc(o.code)} · ${o.slot} · ${o.type === 'subscription' ? 'plan' : o.type}</span>
                 ${o.isMakeup ? `<span class="badge badge-saffron">${icon('calendar-plus')}Make-up day</span>` : ''}
                 ${o.customerAway ? `<span class="badge badge-warning">${icon('door-closed')}Customer away</span>` : ''}
