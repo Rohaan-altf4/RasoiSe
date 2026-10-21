@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile · RasoiSe</title>
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <script src="/js/tw-config.js"></script>
+  <script src="/js/area.js"></script>
+  <script src="/js/i18n.js"></script>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/tailwind.css">
+</head>
+<body>
+  <main id="main" class="page">
+    <div class="container container-narrow" style="display:grid;gap:var(--s5)">
+      <div>
+        <h1 class="h1">Profile</h1>
+        <p class="text-muted" style="margin:6px 0 0">Your food preferences go to every kitchen with each meal, so you don't have to repeat them.</p>
+      </div>
+
+      <section class="card card-pad" aria-labelledby="prefTitle">
+        <h2 class="h3" id="prefTitle">Food preferences</h2>
+        <form id="prefForm" novalidate style="margin-top:var(--s4)">
+          <fieldset class="field" style="border:0;padding:0;margin:0">
+            <legend class="field-label" style="margin-bottom:6px">I eat</legend>
+            <div class="chips">
+              <label class="chip"><input type="radio" name="diet" value="veg"><span class="food-mark veg" aria-hidden="true"></span>Veg</label>
+              <label class="chip"><input type="radio" name="diet" value="jain"><span class="food-mark veg" aria-hidden="true"></span>Jain</label>
+              <label class="chip"><input type="radio" name="diet" value="egg"><span class="food-mark egg" aria-hidden="true"></span>Eggetarian</label>
+              <label class="chip"><input type="radio" name="diet" value="nonveg"><span class="food-mark nonveg" aria-hidden="true"></span>Non-veg</label>
+            </div>
+          </fieldset>
+          <label class="switch" style="margin-top:14px"><input type="checkbox" name="noOnionGarlic"><span class="track"></span><span>No onion, no garlic</span></label>
+          <fieldset class="field" style="border:0;padding:0;margin:16px 0 0">
+            <legend class="field-label" style="margin-bottom:6px">Spice level</legend>
+            <div class="chips">
+              <label class="chip"><input type="radio" name="spice" value="mild">Mild</label>
+              <label class="chip"><input type="radio" name="spice" value="medium">Medium</label>
+              <label class="chip"><input type="radio" name="spice" value="spicy">Spicy</label>
+            </div>
+          </fieldset>
+          <div class="form-grid cols-2" style="margin-top:16px">
+            <div class="field">
+              <label class="field-label" for="rotiCount">Rotis per meal</label>
+              <select id="rotiCount" name="rotiCount" class="select">
+                <option value="0">No roti</option><option value="2">2</option><option value="3">3</option><option value="4">4 (standard)</option><option value="5">5</option><option value="6">6</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="field-label" for="defaultSlot">I usually order</label>
+              <select id="defaultSlot" name="defaultSlot" class="select">
+                <option value="lunch">Lunch</option><option value="dinner">Dinner</option><option value="both">Lunch and dinner</option>
+              </select>
+            </div>
+          </div>
+          <label class="switch" style="margin-top:14px"><input type="checkbox" name="rice"><span class="track"></span><span>Include rice</span></label>
+          <div class="field" style="margin-top:16px">
+            <label class="field-label" for="allergies">Allergies</label>
+            <input id="allergies" name="allergies" class="input" placeholder="e.g. peanuts, cashew" maxlength="200">
+            <p class="field-hint">Separate with commas. Kitchens see these on every meal.</p>
+          </div>
+          <div class="field" style="margin-top:16px">
+            <label class="field-label" for="cookCancel">If the kitchen cancels a plan meal</label>
+            <select id="cookCancel" name="cookCancel" class="select">
+              <option value="makeup">Add a make-up day at the end of my plan</option><option value="refund">Refund the meal to my wallet</option>
+            </select>
+          </div>
+          <div class="flex items-center gap-3" style="margin-top:var(--s5)">
+            <button type="submit" class="btn btn-primary">Save preferences</button>
+            <span class="text-xs text-subtle">Applies to meals that are still open to change.</span>
+          </div>
+        </form>
+      </section>
+
+      <section class="card card-pad" id="addresses" aria-labelledby="addrTitle" style="scroll-margin-top:80px">
+        <div class="flex items-center justify-between"><h2 class="h3" id="addrTitle">Saved addresses</h2><button type="button" class="btn btn-secondary btn-sm" id="addAddress"><i data-lucide="plus"></i>Add</button></div>
+        <div id="addrList" style="margin-top:var(--s3)"></div>
+      </section>
+
+      <section class="card card-pad" aria-labelledby="favTitle">
+        <h2 class="h3" id="favTitle">Favourite kitchens</h2>
+        <div id="favList" style="margin-top:var(--s3)"></div>
+      </section>
+
+      <section class="card card-pad" aria-labelledby="accTitle">
+        <h2 class="h3" id="accTitle">Account</h2>
+        <form id="accForm" novalidate style="margin-top:var(--s4)">
+          <div class="form-grid cols-2">
+            <div class="field"><label class="field-label" for="accName">Name</label><input id="accName" name="name" class="input" autocomplete="name"><p class="field-error"></p></div>
+            <div class="field"><label class="field-label" for="accPhone">Mobile</label><input id="accPhone" name="phone" class="input" inputmode="numeric" maxlength="10" autocomplete="tel-national"><p class="field-error"></p></div>
+          </div>
+          <div class="field" style="margin-top:14px"><label class="field-label" for="accEmail">Email</label><input id="accEmail" name="email" type="email" class="input" autocomplete="email"><p class="field-error"></p></div>
+          <button type="submit" class="btn btn-primary" style="margin-top:var(--s4)">Save details</button>
+        </form>
+        <hr class="divider">
+        <details>
+          <summary class="field-label" style="cursor:pointer">Change password</summary>
+          <form id="pwForm" novalidate style="margin-top:12px">
+            <div class="form-grid cols-2">
+              <div class="field"><label class="field-label" for="pwCur">Current password</label><input id="pwCur" name="current" type="password" class="input" autocomplete="current-password"><p class="field-error"></p></div>
+              <div class="field"><label class="field-label" for="pwNew">New password</label><input id="pwNew" name="next" type="password" class="input" autocomplete="new-password"><p class="field-error"></p></div>
+            </div>
+            <button type="submit" class="btn btn-secondary" style="margin-top:12px">Update password</button>
+          </form>
+        </details>
+        <hr class="divider">
+        <button type="button" class="btn btn-danger" id="signOut"><i data-lucide="log-out"></i>Sign out</button>
+      </section>
+    </div>
+  </main>
+
+  <script src="/js/icons.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/ui.js"></script>
+  <script src="/js/live.js"></script>
+  <script src="/js/layout.js"></script>
+  <script src="/js/maps.js"></script>
+  <script src="/js/address.js"></script>
+  <script src="/js/pages/profile.js"></script>
+</body>
+</html>

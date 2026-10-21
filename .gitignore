@@ -1,2 +1,7 @@
 node_modules/
 backend/node_modules/
+backend/.env
+backend/data.json.tmp
+backend/*.legacy.json
+backend/test-data*.json
+backend/data.json

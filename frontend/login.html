@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign in · RasoiSe</title>
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <script src="/js/tw-config.js"></script>
+  <script src="/js/area.js"></script>
+  <script src="/js/i18n.js"></script>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/tailwind.css">
+</head>
+<body>
+  <main id="main" class="page">
+    <div class="container" style="max-width:440px">
+      <div class="card card-pad" style="padding:var(--s6)">
+        <h1 class="h2" id="authTitle">Welcome back</h1>
+        <p class="text-muted text-sm" id="authSub" style="margin:6px 0 var(--s5)">Sign in to order, manage your plan or run your kitchen.</p>
+
+        <div class="segmented" role="tablist" aria-label="Sign in or create account" style="margin-bottom:var(--s5)">
+          <button type="button" role="tab" id="tabSignin" aria-selected="true" aria-controls="signinForm">Sign in</button>
+          <button type="button" role="tab" id="tabSignup" aria-selected="false" aria-controls="signupForm">Create account</button>
+        </div>
+
+        <form id="signinForm" role="tabpanel" aria-labelledby="tabSignin" novalidate>
+          <div class="field">
+            <label class="field-label" for="siId">Email or mobile number</label>
+            <input id="siId" name="identifier" class="input" autocomplete="username" required>
+            <p class="field-error">Enter your email or 10-digit mobile number.</p>
+          </div>
+          <div class="field">
+            <label class="field-label" for="siPw">Password</label>
+            <input id="siPw" name="password" type="password" class="input" autocomplete="current-password" required>
+            <p class="field-error">Enter your password.</p>
+          </div>
+          <div id="signinError" class="alert alert-danger" style="margin-top:var(--s4)" hidden role="alert"></div>
+          <button type="submit" class="btn btn-primary btn-lg btn-block" style="margin-top:var(--s5)">Sign in</button>
+        </form>
+
+        <form id="signupForm" role="tabpanel" aria-labelledby="tabSignup" novalidate hidden>
+          <div class="field">
+            <label class="field-label" for="suName">Your name <span class="req">*</span></label>
+            <input id="suName" name="name" class="input" autocomplete="name" required>
+            <p class="field-error">Please enter your name.</p>
+          </div>
+          <div class="field">
+            <label class="field-label" for="suPhone">Mobile number <span class="req">*</span></label>
+            <div class="input-group">
+              <span class="prefix">+91</span>
+              <input id="suPhone" name="phone" class="input" inputmode="numeric" maxlength="10" autocomplete="tel-national" style="padding-left:48px">
+            </div>
+            <p class="field-hint">The kitchen uses this to reach you about deliveries.</p>
+            <p class="field-error"></p>
+          </div>
+          <div class="field">
+            <label class="field-label" for="suEmail">Email</label>
+            <input id="suEmail" name="email" type="email" class="input" autocomplete="email">
+            <p class="field-error"></p>
+          </div>
+          <div class="field">
+            <label class="field-label" for="suPw">Password <span class="req">*</span></label>
+            <input id="suPw" name="password" type="password" class="input" autocomplete="new-password" minlength="8">
+            <p class="field-hint">At least 8 characters.</p>
+            <p class="field-error"></p>
+          </div>
+          <div id="signupError" class="alert alert-danger" style="margin-top:var(--s4)" hidden role="alert"></div>
+          <button type="submit" class="btn btn-primary btn-lg btn-block" style="margin-top:var(--s5)">Create account</button>
+        </form>
+
+        <hr class="divider">
+        <p class="text-sm text-muted" style="margin:0;text-align:center">Cook at home and want to sell? <a class="link" href="/chef-onboarding.html">Register your kitchen</a></p>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/icons.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/ui.js"></script>
+  <script src="/js/layout.js"></script>
+  <script src="/js/address.js"></script>
+  <script src="/js/pages/login.js"></script>
+</body>
+</html>

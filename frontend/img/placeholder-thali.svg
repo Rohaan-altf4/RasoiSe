@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" aria-label="Thali">
+  <rect width="640" height="400" fill="#F8E7C8"/>
+  <circle cx="320" cy="200" r="150" fill="#FDF8F0" stroke="#EEDBCA" stroke-width="6"/>
+  <circle cx="320" cy="200" r="128" fill="none" stroke="#EEDBCA" stroke-width="2"/>
+  <circle cx="250" cy="150" r="38" fill="#F2C14E" stroke="#E68A00" stroke-width="4"/>
+  <circle cx="345" cy="128" r="34" fill="#C8642B" stroke="#9A4A1E" stroke-width="4"/>
+  <circle cx="400" cy="205" r="34" fill="#7A9A3A" stroke="#55702A" stroke-width="4"/>
+  <ellipse cx="300" cy="250" rx="70" ry="42" fill="#FFFFFF" stroke="#EEDBCA" stroke-width="4"/>
+  <ellipse cx="300" cy="244" rx="56" ry="28" fill="#FFF7E8"/>
+  <circle cx="395" cy="285" r="26" fill="#E9D6B9" stroke="#C9AE87" stroke-width="3"/>
+</svg>
