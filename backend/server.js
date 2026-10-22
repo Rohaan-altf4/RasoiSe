@@ -124,6 +124,11 @@ function ensureAdmin() {
     const existing = d.users.find(u => u.email === email);
     if (existing) {
       if (existing.role !== 'admin') console.warn(`[setup] ${email} exists but is not an admin. Use a different ADMIN_EMAIL.`);
+      // .env is the source of truth: a deployed copy of the data must not keep the old admin password
+      else if (!auth.checkPassword(password, existing.passwordHash)) {
+        existing.passwordHash = auth.hashPassword(password);
+        console.log(`[setup] Admin password updated from ADMIN_PASSWORD: ${email}`);
+      }
       return;
     }
     d.users.push({
